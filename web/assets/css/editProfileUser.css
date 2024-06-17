@@ -1,0 +1,128 @@
+.background-info {
+    background-image: url("/clothesstore/assets/img/bgshop.jpg") !important;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 20px;
+    border-radius: 10px;
+    min-height: 100vh;
+}
+.img-account-profile{
+    height: 10rem;
+    width: 10rem;
+    object-fit: cover;
+}
+.header-title {
+    color: white;
+}
+.rounded-circle {
+    border-radius: 50% !important;
+}
+.card {
+    box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
+}
+.card .card-header {
+    font-weight: 500;
+}
+.card-header:first-child {
+    border-radius: 0.35rem 0.35rem 0 0;
+}
+.card-header {
+    padding: 1rem 1.35rem;
+    margin-bottom: 0;
+    background-color: rgba(33, 40, 50, 0.03);
+    border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+}
+.form-control, .dataTable-input {
+    display: block;
+    width: 100%;
+    padding: 0.875rem 1.125rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1;
+    color: #69707a;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #c5ccd6;
+    border-radius: 0.35rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.custom-hr {
+    border-top: 2px solid white;
+}
+.password-wrapper {
+    position: relative;
+}
+.toggle-password {
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+.toggle-password:focus {
+    outline: none;
+    box-shadow: none;
+}
+.form-control:focus {
+    box-shadow: none;
+    outline: none;
+}
+.input-group-append {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-left: -1px;
+}
+.input-group {
+    position: relative;
+}
+.input-group .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+
+
+}
+.input-group-text {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.input-group-text:focus {
+    outline: none;
+    box-shadow: none;
+}
+.btn-back-home {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(45deg, #007BFF, #FFD700);
+    border: none;
+    border-radius: 30px;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-back-home:hover {
+    background: linear-gradient(45deg, #FFD700, #007BFF);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+    text-decoration: none;
+}
+
+.btn-back-home:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+}
+
