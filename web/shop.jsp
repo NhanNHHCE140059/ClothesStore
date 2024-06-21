@@ -189,11 +189,11 @@
                                             <div class="product-action">
                                                 <a class="btn btn-outline-dark btn-sm" href="#"><i class="fa fa-shopping-cart"></i> Add to Cart</a>
                                                 <a class="btn btn-outline-dark btn-sm" href="#"><i class="far fa-heart"></i> Add to Wishlist</a>
-                                                <a class="btn btn-outline-dark btn-sm" href="/clothesstore/detail"><i class="fa fa-info-circle"></i> More information</a>
+                                                <a class="btn btn-outline-dark btn-sm" href="/clothesstore/detail?pid=${o.pro_id}"><i class="fa fa-info-circle"></i> More information</a>
                                             </div>
                                         </div>
                                         <div class="text-center py-3">
-                                            <a class="h6 text-decoration-none text-truncate text-dark" href="/clothesstore/detail">${o.pro_name}</a>
+                                            <a class="h6 text-decoration-none text-truncate text-dark" href="/clothesstore/detail?pid=${o.pro_id}">${o.pro_name}</a>
                                             <div class="d-flex align-items-center justify-content-center mt-2">
                                                 <h5 class="font-weight-bold"><fmt:formatNumber value="${o.pro_price}" type="number" pattern="#,##0"/> VND</h5>
                                             </div>

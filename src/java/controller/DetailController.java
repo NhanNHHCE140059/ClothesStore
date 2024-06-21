@@ -15,9 +15,29 @@ import service.ProductService;
  */
 @WebServlet(value = "/detail")
 public class DetailController extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-       req.setAttribute("test", "TestA");
-       req.getRequestDispatcher("detail.jsp").forward(req, resp);
+        String idStr = req.getParameter("pid");
+        if (idStr != null) {
+            try {
+                int id = Integer.parseInt(idStr); // Chuyển đổi từ String sang int
+                ProductService ps = new ProductService();
+                Product p = ps.GetProById(id);
+                req.setAttribute("pro_detail", p);
+                req.getRequestDispatcher("detail.jsp").forward(req, resp);
+            } catch (NumberFormatException e) {
+                // Xử lý trường hợp idStr không phải là một số hợp lệ
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid product ID");
+            }
+        } else {
+            // Xử lý trường hợp pid không có trong request
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Product ID is required");
+        }
+//       String id = req.getParameter("pid");
+//       ProductService ps = new ProductService();
+//       Product p = ps.GetProById(id);
+//       req.setAttribute("pro_detail", p);
+//       req.getRequestDispatcher("detail.jsp").forward(req, resp);
     }
 }
