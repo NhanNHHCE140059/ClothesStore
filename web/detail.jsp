@@ -25,14 +25,14 @@
 
         <!-- Shop Detail Start -->
         <div class="container-fluid pb-5">
-            <div class="row px-xl-5">
+            <div class="row px-xl-5 align-items-center">
                 <div class="col-lg-5 mb-30">
                     <img class="w-100 h-100" src="${pro_detail.imageURL}" alt="Image">
                 </div>
 
-                <div class="col-lg-7 h-auto mb-30">
-                    <div class="h-100 bg-light p-30">
-                        <h3>${pro_detail.pro_name}</h3>
+                <div class="col-lg-7 h-100 mb-30 d-flex align-items-center">
+                    <div class="h-100 bg-light p-30 w-100">
+                        <h3 class="my-3">${pro_detail.pro_name}</h3>
                         <div class="d-flex mb-3">
                             <div class="text-primary mr-2">
                                 <small class="fas fa-star"></small>
@@ -43,7 +43,7 @@
                             </div>
                             <small class="pt-1">(99 Reviews)</small>
                         </div>
-                        <h3 class="font-weight-semi-bold mb-4"><fmt:formatNumber value="${pro_detail.pro_price}" type="number" pattern="#,##0"/> VND</h3>
+                        <h3 class="font-weight-semi-bold mb-4 my-3"><fmt:formatNumber value="${pro_detail.pro_price}" type="number" pattern="#,##0"/> VND</h3>
                         <p class="mb-4">${pro_detail.description}</p>
 
                         <div class="d-flex align-items-center mb-4 pt-2">
@@ -60,15 +60,15 @@
                                     </button>
                                 </div>
                             </div>
-                            <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To
-                                Cart</button>
+                            <button class="btn btn-primary px-3">
+                                <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
+                            </button>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </div>
+
         <!-- Shop Detail End -->
 
         <!-- Products End -->
