@@ -5,8 +5,9 @@
 <html>
 
     <jsp:include page="/shared/_head.jsp" />
+    <link rel="stylesheet" type="text/css" href="assets/css/reset-password.css" />
 
-    <body class="d-flex justify-content-center align-items-center" style="background: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920');height: 100vh;">
+    <body class="d-flex justify-content-center align-items-center">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-6">
