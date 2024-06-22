@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Product;
@@ -54,7 +56,8 @@ public class ProductService {
         }
         return true;
     }
-        public Product GetProById(int id) {
+
+    public Product GetProById(int id) {
         Product pro = null;
         String sql = "select * from Products where pro_id=?";
         try {
@@ -74,12 +77,59 @@ public class ProductService {
 
         return pro;
     }
+
+    public List<Product> getAllProduct() throws Exception {
+        List<Product> pList = new ArrayList<>();
+        try {
+            String query = "SELECT [pro_id]\n"
+                    + "      ,[pro_name]\n"
+                    + "      ,[pro_price]\n"
+                    + "      ,[imageURL]\n"
+                    + "      ,[description]\n"
+                    + "      ,[cat_name]\n"
+                    + "  FROM [dbo].[Products]";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                pList.add(new Product(rs.getInt(1), rs.getString(2), rs.getDouble(3), rs.getString(4), rs.getString(5), rs.getString(6)));
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL error occurred while fetching account.");
+        }
+        return pList;
+
+    }
+
+    public List<Product> searchProduct(String product) throws SQLException, Exception {
+        List<Product> pList = new ArrayList<>();
+        String query = "SELECT [pro_id]\n"
+                + "      ,[pro_name]\n"
+                + "      ,[pro_price]\n"
+                + "      ,[imageURL]\n"
+                + "      ,[description]\n"
+                + "      ,[cat_name]\n"
+                + "  FROM [dbo].[Products] WHERE [pro_name] like ?";
+        connection = dbcontext.getConnection();
+        ps = connection.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            pList.add(new Product(rs.getInt(1), rs.getString(2), rs.getDouble(3), rs.getString(4), rs.getString(5), rs.getString(6)));
+
+        }
+        return pList;
+    }
+
     public static void main(String[] args) {
         ProductService ps = new ProductService();
-        if ( ps.addProduct(2, 3, "Watch", 1,100)) {
+        if (ps.addProduct(2, 3, "Watch", 1, 100)) {
             System.out.println("Khong co van de");
-        }else {
+        } else {
             System.out.println("Xu li jsp");
         }
     }
+
 }
