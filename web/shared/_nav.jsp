@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!-- Navbar Start -->
 <div class="container-fluid bg-dark mb-30">
@@ -16,6 +17,17 @@
                         <a href="/clothesstore/home" class="nav-item nav-link active">Home</a>
                         <a href="/clothesstore/shop" class="nav-item nav-link">Shop</a>
                         <a href="/clothesstore/contact" class="nav-item nav-link">Contact</a>
+                        <!-- Chỉ hiển thị Lịch sử đặt hàng cho vai trò Customer -->
+                        
+                     <c:if test="${sessionScope.account.role == 'Customer'}">
+    <a href="OrderHistoryControl" class="nav-item nav-link">Order History</a>
+</c:if>
+                        
+                         <c:if test="${sessionScope.account.role == 'Staff'}">
+    <a href="OrderHistoryStaffControl" class="nav-item nav-link">Order History(Staff)</a>
+</c:if>
+
+                        
                     </div>
                     <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
                         <a href="/clothesstore/favorite" class="btn px-0">
