@@ -99,7 +99,7 @@ public class ProductService {
         List<Product> list = new ArrayList<>();
         String query = "select * from Products where pro_name like ?";
         
-        try {
+        try {                                                                                                                                   
             connection = new DBContext().getConnection();
             ps = connection.prepareStatement(query);
             ps.setString(1, "%"+txtSearch+"%");
