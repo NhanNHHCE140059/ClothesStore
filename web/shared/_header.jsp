@@ -83,7 +83,7 @@
     function register() {
         window.location.href = "/clothesstore/register";
     }
-    
+
     function editProfile() {
         window.location.href = "/clothesstore/edit";
     }

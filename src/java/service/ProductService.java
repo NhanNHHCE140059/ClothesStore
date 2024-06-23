@@ -7,8 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Cart;
 import model.Product;
 
 /**
@@ -113,11 +115,6 @@ public class ProductService {
         return list;
     }
     public static void main(String[] args) {
-//        ProductService ps = new ProductService();
-//        if ( ps.addProduct(2, 3, "Watch", 1,100)) {
-//            System.out.println("Khong co van de");
-//        }else {
-//            System.out.println("Xu li jsp");
-//        }
+        
     }
 }
