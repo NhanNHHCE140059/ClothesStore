@@ -27,7 +27,7 @@ import service.OrderService;
  *
  * @author My Computer
  */
-@WebServlet(value = {"/FeedBackManagementController", "/staff/manage"})
+@WebServlet(value = {"/FeedBackManagementController", "/managementfeedback"})
 public class FeedBackManagementController extends HttpServlet {
 
     @Override
@@ -37,19 +37,32 @@ public class FeedBackManagementController extends HttpServlet {
 
         if ((Account) session.getAttribute("account") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
-            return;
         } else {
             Account account = (Account) session.getAttribute("account");
-            if (account.getRole() == (helper.Role.Customer) || account == null) {
+            if (account.getRole() == (helper.Role.Customer)) {
                 session.removeAttribute("role");
                 session.removeAttribute("account");
                 response.sendRedirect("home");
-                return;
             } else {
-                AccountService as = new AccountService();
+                int indexPage;
+                if (request.getParameter("indexPage") != null) {
+                    indexPage = Integer.parseInt(request.getParameter("indexPage"));
+                } else {
+                    indexPage = 1;
+                }
+           
                 OrderService odsv = new OrderService();
-                List<Order> listOrderShipped = odsv.listAllOrdersShipped();
+                int count = odsv.countPageforFeedback();
+                int size = 5;
+                int endPage = count / size;
+                if (count % size != 0) {
+                    endPage++;
+                }
+
+                List<Order> listOrderShipped = odsv.getTop5Orders(indexPage);
+                request.setAttribute("indexPage", indexPage);
                 request.setAttribute("account", account);
+                request.setAttribute("endPage", endPage);
                 request.setAttribute("listOrderShipped", listOrderShipped);
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/feedbackManagement.jsp");
                 dispatcher.forward(request, response);
@@ -61,12 +74,31 @@ public class FeedBackManagementController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String action = request.getParameter("action");
+        int indexPage;
+        if (request.getParameter("indexPage") != null) {
+            indexPage = Integer.parseInt(request.getParameter("indexPage"));
+        } else {
+            indexPage = 1;
+        }
 
-        int idOrder = Integer.parseInt(request.getParameter("idOrder"));
-        OrderService odsv = new OrderService();
-        odsv.deleteFeedbackById(idOrder);
-        response.sendRedirect(request.getContextPath() + "/FeedBackManagementController");
+        switch (action) {
+            case "confirm":
+                int idOrderDelete = Integer.parseInt(request.getParameter("idOrder"));
+                session.setAttribute("deleteID", idOrderDelete);
+                response.sendRedirect(request.getContextPath() + "/FeedBackManagementController?indexPage=" + indexPage);
+                break;
+            case "delete":
+                int idOrder = Integer.parseInt(request.getParameter("idOrder"));
+                OrderService odsv = new OrderService();
+                odsv.deleteFeedbackById(idOrder);
+                response.sendRedirect(request.getContextPath() + "/FeedBackManagementController?indexPage=" + indexPage);
+                break;
+            case "cancel":
+                response.sendRedirect(request.getContextPath() + "/FeedBackManagementController?indexPage=" + indexPage);
+                break;
 
+        }
     }
-
 }
