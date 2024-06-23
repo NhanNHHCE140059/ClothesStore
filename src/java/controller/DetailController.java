@@ -34,10 +34,5 @@ public class DetailController extends HttpServlet {
             // Xử lý trường hợp pid không có trong request
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Product ID is required");
         }
-//       String id = req.getParameter("pid");
-//       ProductService ps = new ProductService();
-//       Product p = ps.GetProById(id);
-//       req.setAttribute("pro_detail", p);
-//       req.getRequestDispatcher("detail.jsp").forward(req, resp);
     }
 }
