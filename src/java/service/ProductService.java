@@ -116,11 +116,6 @@ public class ProductService {
     }
 
     public static void main(String[] args) {
-//        ProductService ps = new ProductService();
-//        if ( ps.addProduct(2, 3, "Watch", 1,100)) {
-//            System.out.println("Khong co van de");
-//        }else {
-//            System.out.println("Xu li jsp");
-//        }
+        
     }
 }
