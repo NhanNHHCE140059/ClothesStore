@@ -112,4 +112,27 @@ public class OrderService {
         }
 
     }
+    
+    public int changeOrderStatus(int orderStatus, int id){
+        try{
+            
+            String query = "UPDATE [dbo].[Orders] SET [order_status] = ? WHERE order_id = ?";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, orderStatus);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+           
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL error occurred while fetching account.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("An unexpected error occurred.");
+        }
+         return orderStatus;
+    }
+    
+    
+            
 }
