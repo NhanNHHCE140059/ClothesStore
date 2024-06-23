@@ -54,6 +54,26 @@ public class ProductService {
         }
         return true;
     }
+        public Product GetProById(int id) {
+        Product pro = null;
+        String sql = "select * from Products where pro_id=?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                pro = new Product(rs.getInt("pro_id"),
+                        rs.getString("pro_name"), rs.getDouble("pro_price"), rs.getString("imageURL"),
+                        rs.getString("description"), rs.getString("cat_name"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+        }
+
+        return pro;
+    }
     public static void main(String[] args) {
         ProductService ps = new ProductService();
         if ( ps.addProduct(2, 3, "Watch", 1,100)) {
