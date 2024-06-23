@@ -21,7 +21,8 @@ import service.OrderService;
  *
  * @author HP
  */
-@WebServlet(name = "OrderHistoryControl", urlPatterns = {"/OrderHistoryControl"})
+@WebServlet(value ="/OrderHistoryControl")
+
 public class OrderHistoryControl extends HttpServlet {
 
     /**

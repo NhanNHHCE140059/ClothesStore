@@ -6,6 +6,7 @@ package controller;
 
 import java.io.IOException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import model.OrderDetail;
 import model.Product;
 import service.OrderDetailService;
 import service.ProductService;
+@WebServlet(value ="/OrderDetailControl")
 
 public class OrderDetailControl extends HttpServlet {
 
