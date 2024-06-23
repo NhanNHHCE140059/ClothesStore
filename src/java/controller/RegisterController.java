@@ -37,32 +37,22 @@ public class RegisterController extends HttpServlet {
             
             if (aService.exists(username)) {
                 req.setAttribute("usernameErr", username);
-                req.setAttribute("emailVal", email);
-                req.setAttribute("pwdVal", password);
                 flag = true;
             } 
             if (!email.contains("@")) {
                 req.setAttribute("emailErr", "Email is invalid, please enter again");
-                req.setAttribute("userVal", username);
-                req.setAttribute("pwdVal", password);
                 flag = true;
             } 
             if (!password.equals(repassword)) {
                 req.setAttribute("repwdErr", "Re-password must be matched password");
-                req.setAttribute("emailVal", email);
-                req.setAttribute("userVal", username);
                 flag = true;
             }
             if(!phoneNumber.matches("^(0[3|5|7|8|9])+([0-9]{8})\\b$")){
                 req.setAttribute("phoneErr", "Phone is invalid, please enter again");
-                req.setAttribute("userVal", username);
-                req.setAttribute("pwdVal", password);
                 flag = true;
             }
             if(!password.matches("^[a-zA-Z0-9]{6,20}$")){
                 req.setAttribute("pwdErr", "Password must have at least 6 characters");
-                req.setAttribute("userVal", username);
-                req.setAttribute("pwdVal", password);
                 flag = true;
             }
             
