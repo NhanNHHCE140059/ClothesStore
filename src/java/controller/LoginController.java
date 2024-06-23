@@ -10,7 +10,9 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import misc.Hash;
 import model.Account;
+import model.Cart;
 import service.AccountService;
+import service.CartService;
 
 /**
  *
@@ -32,7 +34,13 @@ public class LoginController extends HttpServlet {
         AccountService acsv = new AccountService();
         Account acc = acsv.getAccount(username, hash.getMd5(password));
         if (acc != null) {
+            CartService cservice = new CartService();
+            int quantitypro = 0;
+            for (Cart c : cservice.GetListCartByAccID(acc.getAcc_id())) {
+                quantitypro++;
+            }
             HttpSession session = req.getSession();
+            session.setAttribute("quantitypro", quantitypro);
             session.setAttribute("account", acc);
             session.setAttribute("role", acc.getRole().name());
             
