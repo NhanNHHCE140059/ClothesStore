@@ -57,7 +57,7 @@
 
         <div class="content">
             <div class="header">
-                <input oninput="searchByPhone(this)" value="${phoneSearch}" type="text" id="autoSubmitInput" name="searchText" placeholder="Enter phone to search...">
+                <input oninput="searchByPhone(this)" value="${phoneSearch}" type="number" id="autoSubmitInput" name="searchText" placeholder="Enter phone to search...">
                 </form>
                 <div class="role-info">
                     <span><%= account.getRole()%> :</span><span><%= account.getName()%></span>
