@@ -73,8 +73,7 @@ public class CartController extends HttpServlet {
                                 if (newquantity <= 0) {
                                     messageloi = "Product quantity cannot be reduced to 0 or less than 1";
                                     break;
-                                }
-                                if (newquantity <= wservice.GetProByIdInWareHouse(pro_id).getInventory_number()) {
+                                } else {
                                     int UpdateQuan = cservice.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getPro_id());
                                     if (UpdateQuan == 0) {
                                         message = "Error";
@@ -98,11 +97,11 @@ public class CartController extends HttpServlet {
                             if (pro_id == c.getPro_id()) {
                                 int newquantity = c.getPro_quantity();
                                 newquantity++;
-                                if (newquantity > wservice.GetProByIdInWareHouse(pro_id).getInventory_number()) {
-                                    messageloi = "Qua so luong";
+                                if (wservice.GetProByIdInWareHouse(pro_id).getInventory_number() == 0) {
+                                    messageloi = "Too much quantity";
                                     break;
                                 }
-                                if (newquantity <= wservice.GetProByIdInWareHouse(pro_id).getInventory_number()) {
+                                if (wservice.GetProByIdInWareHouse(pro_id).getInventory_number() > 0) {
                                     int UpdateQuan = cservice.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getPro_id());
                                     if (UpdateQuan == 0) {
                                         message = "Error";
