@@ -37,9 +37,18 @@ public class OrderHistoryStaffControl extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
+        
         HttpSession session = request.getSession();
+        if(session.getAttribute("account")==null){
+            response.sendRedirect(request.getContextPath()+"/login.jsp");
+           
+        }else{
+            
         Account a = (Account) session.getAttribute("account");
+        if(a.getRole()== helper.Role.Customer){
+                        response.sendRedirect(request.getContextPath()+"/index.jsp");
+
+        }else{
         OrderService ordersv = new OrderService();
         int indexPage;
         if (request.getParameter("indexPage") != null) {
@@ -62,7 +71,8 @@ public class OrderHistoryStaffControl extends HttpServlet {
         request.getRequestDispatcher("/OrderHistoryStaff.jsp").forward(request, response);
 
     }
-
+    }
+    }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

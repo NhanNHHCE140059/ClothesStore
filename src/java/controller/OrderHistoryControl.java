@@ -54,6 +54,10 @@ public class OrderHistoryControl extends HttpServlet {
              response.setContentType("text/html;charset=UTF-8");
 
         HttpSession session = request.getSession();
+           if(session.getAttribute("account")==null){
+            response.sendRedirect(request.getContextPath()+"/login.jsp");
+           
+        }else{
         Account a = (Account) session.getAttribute("account");
        OrderService ordersv = new OrderService();
         List<Order> lstOrder = ordersv.getOrderHistoryByAccountID(a.getUsername());
@@ -61,6 +65,7 @@ public class OrderHistoryControl extends HttpServlet {
         request.setAttribute("lstOrder", lstOrder);
         System.out.println(lstOrder.toString());
         request.getRequestDispatcher( "/orderHistory.jsp").forward(request, response);
+    }
     }
     /**
      * Handles the HTTP <code>POST</code> method.

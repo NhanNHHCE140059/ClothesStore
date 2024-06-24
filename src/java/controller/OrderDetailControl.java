@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,11 @@ public class OrderDetailControl extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+         HttpSession session = request.getSession();
+            if(session.getAttribute("account")==null){
+            response.sendRedirect(request.getContextPath()+"/login.jsp");
+           
+        }else{
          String orderID = request.getParameter("orderId");
 
         try {
@@ -58,6 +64,7 @@ public class OrderDetailControl extends HttpServlet {
             System.out.println(errorMessage);
         }
      
+    }
     }
 
     @Override
