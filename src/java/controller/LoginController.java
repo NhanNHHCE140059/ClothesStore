@@ -2,6 +2,7 @@ package controller;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,6 +35,14 @@ public class LoginController extends HttpServlet {
             HttpSession session = req.getSession();
             session.setAttribute("account", acc);
             session.setAttribute("role", acc.getRole().name());
+            
+//            Cookie u = new Cookie("uCookie", username);
+//            Cookie p = new Cookie("pwdCookie", password);
+//            u.setMaxAge(60);
+//            p.setMaxAge(60);
+//            res.addCookie(u);
+//            res.addCookie(p);
+            
             res.sendRedirect("home");
         } else {
             req.setAttribute("msgError", "Wrong username or password.");
