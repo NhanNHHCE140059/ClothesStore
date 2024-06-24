@@ -188,34 +188,41 @@ public class AccountService {
         Matcher matcher = pattern.matcher(fullName);
         return matcher.matches();
     }
-
-//    public void updateHashPass()  {
-//        try {
-//            String selectSQL = "SELECT acc_id, password FROM accounts";
-//            connection = dbcontext.getConnection();
-//            ps = connection.prepareStatement(selectSQL);
-//            rs = ps.executeQuery();
-//            String updateSQL = "UPDATE accounts SET password = ? WHERE acc_id = ?";
-//            PreparedStatement psUpdate = null;
-//            psUpdate = connection.prepareStatement(updateSQL);
-//            while (rs.next()) {
-//                int accountId = rs.getInt("acc_id");
-//                String password = rs.getString("password");
-//                String hashedPassword = hash.getMd5(password);
-//                psUpdate.setString(1, hashedPassword);
-//                psUpdate.setInt(2, accountId);
-//                psUpdate.executeUpdate();
-//            }
-//        } catch (SQLException e) {
-//            System.out.println("hash khong thanh cong");
-//        }catch (Exception e) {
-//            System.out.println("hash khong thanh cong");
-//        }
-//
-//    }
-//    public static void main(String[] args) {
-//        AccountService acsv = new AccountService();
-//        acsv.updateHashPass();
-//    }
+    
+    //for register
+    public void createAccount(String username, String name, String email, 
+                                     String phoneNumber, String password, String address) {
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement("insert into [Accounts](username, name, "
+                    + "email, phone, password, address, role, acc_status) values(?, ?, ?, ?, ?, ?, ?, ?)");
+            ps.setString(1, username);
+            ps.setString(2, name);
+            ps.setString(3, email);
+            ps.setString(4, phoneNumber);
+            ps.setString(5, password);
+            ps.setString(6, address);
+            ps.setInt(7, 1); // Role => 1 == Customer
+            ps.setInt(8, 0); // Account Status => 0 == Active
+            ps.executeUpdate();
+        } catch (Exception ex) {
+            System.out.println("Loi create account");
+            System.out.println(ex);
+        }
+    }
+    
+    // Return true if a username already existed
+    public boolean exists(String username)  {
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement("select * from [Accounts] where username=?");
+            ps.setString(1, username);
+            rs = ps.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            System.out.println("Error! user exists");
+        }
+        return false;
+    }
     
 }
