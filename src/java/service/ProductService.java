@@ -5,10 +5,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Cart;
 import model.Product;
 
 /**
@@ -42,7 +42,6 @@ public class ProductService {
 
         return pro;
     }
-
     public boolean addProduct(int id_account, int productID, String proname, int quantity, double price) {
         // Thực hiện kết nối đến cơ sở dữ liệu
         try {
@@ -78,16 +77,43 @@ public class ProductService {
         return true;
     }
 
-    public static void main(String[] args) {
-        ProductService ps = new ProductService();
-
+    
+    public List<Product> getAllProducts(){
+        List<Product> list = new ArrayList<>();
+        String query = "select * from Products";
+        
         try {
-            Product product = ps.GetProById(32);
-            System.out.println(product);
+            connection = new DBContext().getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()){
+                list.add(new Product(rs.getInt(1), rs.getString(2), rs.getDouble(3), 
+                        rs.getString(4), rs.getString(5), rs.getString(6)));
+            }
         } catch (Exception e) {
-
-            e.printStackTrace();
         }
+        return list;
+    }
+    
+    public List<Product> searchByName(String txtSearch){
+        List<Product> list = new ArrayList<>();
+        String query = "select * from Products where pro_name like ?";
+        
+        try {                                                                                                                                   
+            connection = new DBContext().getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setString(1, "%"+txtSearch+"%");
+            rs = ps.executeQuery();
+            while (rs.next()){
+                list.add(new Product(rs.getInt(1), rs.getString(2), rs.getDouble(3), 
+                        rs.getString(4), rs.getString(5), rs.getString(6)));
+            }
+        } catch (Exception e) {
+        }
+        return list;
+    }
+    public static void main(String[] args) {
+        
 
     }
 }
