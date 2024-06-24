@@ -9,10 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- *
- * @author Nguyen Thanh Thien - CE171253
- */
 @Getter
 @Setter
 @AllArgsConstructor
