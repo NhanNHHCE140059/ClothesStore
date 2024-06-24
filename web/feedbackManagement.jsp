@@ -6,6 +6,9 @@
     <%@page import="java.util.List"%>
     <% Account account = (Account) request.getAttribute("account"); %>
     <% List<Order> listOrderS = (List<Order>) request.getAttribute("listOrderShipped"); %>
+    <% Integer endPage = (Integer) request.getAttribute("endPage");%>
+    <% String searchText = (String) request.getAttribute("searchText"); %>
+    <% Integer indexPage =(Integer) request.getAttribute("indexPage"); %>
     <head>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/feedbackManagement.css"/>
         <meta charset="UTF-8">
@@ -54,7 +57,8 @@
 
         <div class="content">
             <div class="header">
-                <input type="text" placeholder="Search...">
+                <input oninput="searchByPhone(this)" value="${phoneSearch}" type="number" id="autoSubmitInput" name="searchText" placeholder="Enter phone to search...">
+                </form>
                 <div class="role-info">
                     <span><%= account.getRole()%> :</span><span><%= account.getName()%></span>
                 </div>
@@ -64,17 +68,21 @@
                 <thead>
                     <tr>
                         <th>ID Order</th>
+                        <th>Phone Number</th>
                         <th>Feedback Content</th>
                         <th>Actions</th>
+
                     </tr>
+
                 </thead>
-                <tbody>
+                <tbody id="contentFeedBack">
 
                     <%  if (listOrderS!=null && !listOrderS.isEmpty() ) {
                       for ( Order o : listOrderS ) {
                     %>            
                     <tr>
                         <td><%= o.getOrder_id() %></td>
+                        <td><%= o.getPhone() %></td>
                         <% if (o.getFeedback_order()==null) { %>
                         <td class="error-message">There are no feedback yet or the feedback has been deleted</td>
                         <% } else { %>
@@ -83,13 +91,14 @@
                         <td>
                             <form action="FeedBackManagementController" method="POST">
                                 <% if (o.getFeedback_order()==null) { %>
-                              
-                                 <button class="non-action-button" type="submit">Delete Feedback</button>
+                                <button class="non-action-button">Delete Feedback</button>
                                 <% }else {%>
-                                  <input type="hidden" name="idOrder" value="<%= o.getOrder_id() %>">
-                                  <button class="action-button" type="submit">Delete Feedback</button>
+                                <input type="hidden" name="indexPage" value="<%= indexPage %>">
+                                <input type="hidden" name="action" value="confirm"/>
+                                <input type="hidden" name="idOrder" value="<%= o.getOrder_id() %>"/>
+                                <button class="action-button" type="submit">Delete Feedback</button>
                                 <% }%>
-                               
+
                             </form>
                         </td>
                     </tr>
@@ -104,7 +113,35 @@
                     <% }%>
                 </tbody>
             </table>
+
+            <div class="pagination" id="pagination">
+                <% if (endPage != 0) {
+               for (int i =1; i<=endPage;i++) {
+                %>
+                <a href="managementfeedback?indexPage=<%=i%>" onclick="setActive(this, <%=i%>)" class="page-link"><%=i%></a>
+                <% } } %>
+            </div>
         </div>
+        <% if ( session.getAttribute("deleteID")!= null) { 
+         int deleteID = (Integer) session.getAttribute("deleteID");
+           session.removeAttribute("deleteID");
+        %>
+
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <p>DO YOU WANT DELE FEEDBACK ID: <span id="feedbackId"><%= deleteID%></span>?</p>
+                <div class="modal-footer">
+                    <form action="FeedBackManagementController" method="POST">
+                        <input type="hidden" name="idOrder" value="<%=deleteID%>">
+                        <input type="hidden" name="indexPage" value="<%= indexPage %>">
+                        <button class="modal-button" name="action" value="delete" type="submit">Delete</button>
+                        <button class="modal-button cancel"  name="action" value="cancel" type="submit">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <% }%>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
     </body>
 

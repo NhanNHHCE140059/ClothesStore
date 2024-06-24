@@ -18,12 +18,16 @@ height: 100%;
 align-content: center;
 }
 
+.card.error {
+    height: 710px;
+}
+
 .card{
-height: 600px;
+height: 550px;
 margin-top: auto;
 margin-bottom: auto;
 width: 400px;
-background-color: rgba(0,0,0,0.9) !important;
+background-color: rgba(0,0,0,0.9);
 }
 
 .card-header h3{

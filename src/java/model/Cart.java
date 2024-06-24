@@ -13,12 +13,13 @@ import lombok.Setter;
  *
  * @author Nguyen Thanh Thien - CE171253
  */
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cart {
-     private int cart_id;
+    private int cart_id;
     private int acc_id;
     private int pro_id;
     private String pro_name;
