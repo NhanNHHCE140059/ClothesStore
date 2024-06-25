@@ -193,7 +193,7 @@ public class AccountService {
         Account account = null;
         try {
 
-            String query = "select * from [Accounts] where email=?";
+            String query = "select * from accounts where email=?";
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
             ps.setString(1, email);

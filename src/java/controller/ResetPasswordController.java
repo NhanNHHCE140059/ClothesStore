@@ -67,7 +67,7 @@ public class ResetPasswordController extends HttpServlet {
         }
 
         // Request reset password
-        if ("request-change".equals(state) && acc != null) {
+        else if ("request-change".equals(state) && acc != null) {
             String password = req.getParameter("password");
             String confirmPassword = req.getParameter("confirm_password");
             // password khong bang nhau
@@ -92,7 +92,7 @@ public class ResetPasswordController extends HttpServlet {
         }
         // Co email nhung khong co code
         // thi tao code va gui email
-        if (email != null && reqCode == null) {
+        else if (email != null && reqCode == null) {
             String code = UUID.randomUUID().toString();
             keyStore.set(code, email);
             req.setAttribute("message", "We have sent you an email to you, please check your inbox/spam.");
