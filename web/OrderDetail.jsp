@@ -39,6 +39,22 @@
         tr:hover {
             background-color: #f1f1f1; /* màu nền khi rê chuột */
         }
+        .back-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .back-button a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .back-button a:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -53,7 +69,7 @@
                 <h2>Order Detail</h2>
             </c:if>
             <c:if test="${sessionScope.account.role == 'Staff'}">
-                <h2>Order Detail(Staff)</h2>
+                <h2>Order Detail (Staff)</h2>
             </c:if>
         </div>
 
@@ -98,6 +114,16 @@
                     </c:forEach>
                 </tbody>
             </table>
+        </div>
+        
+        <!-- Nút Back -->
+        <div class="back-button">
+            <c:if test="${sessionScope.account.role == 'Customer'}">
+                <a href="/clothesstore/OrderHistoryControl">Back to Order History</a>
+            </c:if>
+            <c:if test="${sessionScope.account.role == 'Staff'}">
+                <a href="/clothesstore/OrderHistoryStaffControl">Back to Staff Order History</a>
+            </c:if>
         </div>
     </div>
 
