@@ -14,10 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Cart;
 
-/**
- *
- * @author Nguyen Thanh Thien - CE171253
- */
 public class CartService {
 
     Connection connection = null;

@@ -19,10 +19,6 @@ import service.CartService;
 import service.ProductService;
 import service.WarehouseService;
 
-/**
- *
- * @author Nguyen Thanh Thien - CE171253
- */
 @WebServlet(value = "/cart")
 public class CartController extends HttpServlet {
 
