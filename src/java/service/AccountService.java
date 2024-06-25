@@ -3,14 +3,20 @@ package service;
 import model.Account;
 import db.DBContext;
 import helper.AccountStatus;
+import helper.OrderStatus;
+import helper.PayStatus;
 import helper.Role;
+import helper.ShipStatus;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import misc.Hash;
+import model.Order;
 
 /**
  *
@@ -189,6 +195,72 @@ public class AccountService {
         return matcher.matches();
     }
 
+    //// Xu li phan trang Account 
+    public int countPageAccount(String Status) {
+        int countPage = 0;
+        String query;
+        if (Status != null) {
+            query = "select count(*) from accounts where acc_status=?";
+        } else {
+            query = "select count(*) from accounts";
+        }
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            if (Status != null) {
+                ps.setInt(1, Integer.parseInt(Status));
+            }
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                countPage = rs.getInt(1);
+            }
+            return countPage;
+        } catch (Exception e) {
+        }
+        return 0;
+    }
+
+    // Xuat ra so luong 5 order moi trang 
+    public List<Order> getTop5Orders(int indexPage, String status) {
+        List<Order> listTop5 = new ArrayList<>();
+        String query;
+        if (status != null) {
+            query = " with x as (select ROW_NUMBER() over (order by acc_id asc) as r \n"
+                    + "                    , * from Accounts where acc_status = ?)\n"
+                    + "                    select * from x where r between ?*5-4 and ?*5";
+        }else {
+            query = " with x as (select ROW_NUMBER() over (order by acc_id asc) as r \n"
+                    + "                    , * from Accounts where acc_status = ?)\n"
+                    + "                    select * from x where r between ?*5-4 and ?*5";
+        }
+
+        try {
+
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, indexPage);
+            ps.setInt(2, indexPage);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                listTop5.add(new Order(
+                        rs.getInt(2),
+                        rs.getString(3),
+                        rs.getDate(4),
+                        rs.getString(5),
+                        rs.getString(6),
+                        rs.getString(7),
+                        rs.getDouble(8),
+                        OrderStatus.values()[rs.getInt(9)],
+                        PayStatus.values()[rs.getInt(10)],
+                        ShipStatus.values()[rs.getInt(11)]
+                ));
+            }
+            return listTop5;
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
 //    public void updateHashPass()  {
 //        try {
 //            String selectSQL = "SELECT acc_id, password FROM accounts";
@@ -215,7 +287,6 @@ public class AccountService {
 //    }
 //    public static void main(String[] args) {
 //        AccountService acsv = new AccountService();
-//        acsv.updateHashPass();
+//        System.out.println( acsv.countPageAccount("1"));
 //    }
-    
 }
