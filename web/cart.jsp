@@ -21,6 +21,38 @@
                 border: 1px solid #ccc;
                 border-radius: 4px;
             }
+
+            /* Styling the input field */
+            .quantity-custom {
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                padding: 10px;
+                font-size: 16px;
+            }
+
+            /* CSS to style number input as text input */
+            input[type="number"] {
+                -moz-appearance: textfield; /* Firefox */
+                -webkit-appearance: none; /* Chrome and Safari */
+                appearance: none;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                padding: 10px;
+                font-size: 16px;
+            }
+
+            /* Remove arrows in Firefox */
+            input[type="number"]::-webkit-inner-spin-button,
+            input[type="number"]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            /* Remove arrows in Internet Explorer */
+            input[type="number"]::-ms-clear {
+                display: none;
+            }
+
         </style>
 
         <jsp:include page="/shared/_header.jsp" />
@@ -48,19 +80,14 @@
                     <table class="table table-light table-borderless table-hover text-center mb-0">
                         <thead class="thead-dark">
 
-                            <c:if test="${not empty message}">
-                                <c:set var="message" value="${message}"/>
+                            <c:if test="${not empty sessionScope.message}">
+                                <c:set var="message" value="${sessionScope.message}"/>
                             <div id="message" style="display: none;">
-                                <h1 class="btn btn-block btn-primary font-weight-bold my-3 py-3">${message} &#10004;</h1>
+                                <h1 class="btn btn-block btn-primary font-weight-bold my-3 py-3">${sessionScope.message}</h1>
                             </div>
+                            <c:remove var="message" scope="session"/>
                         </c:if>
 
-                        <c:if test="${not empty messageloi}">
-                            <c:set var="messageloi" value="${messageloi}"/>
-                            <div id="message" style="display: none;">
-                                <h1 class="btn btn-block btn-primary font-weight-bold my-3 py-3">${messageloi} &#9888;</h1>
-                            </div>
-                        </c:if>
                         <tr>
                             <th style="padding-right: 150px;">Products</th>
                             <th>Price</th>
@@ -79,17 +106,21 @@
                                         <c:forEach var="entry" items="${map}">
                                             <c:set var="c" value="${entry.key}" />
                                             <c:set var="product" value="${entry.value}" />
-                                            <tr>
-                                                <td class="align-middle"> <div style="width: 150px; display: inline-block;" >${c.pro_name}</div><img src="${product.imageURL}" alt="" style="width: 100px; height: 100px; margin-left: 35px"></td>
+                                            <tr>                                       
+                                                <td class="align-middle"> <div style="width: 150px;
+                                                                               display: inline-block;" >${c.pro_name}</div><img src="${product.imageURL}" alt="" style="width: 100px;
+                                                                               height: 100px;
+                                                                               margin-left: 35px"></td>
                                                 <td class="align-middle"><fmt:formatNumber value="${c.pro_price}" type="number" pattern="#,##0" /> VND</td>
                                                 <td class="align-middle">
                                                     <div class="input-group quantity mx-auto" style="width: 100px;">
                                                         <div class="input-group-btn">
                                                             <a href="${pageContext.request.contextPath}/cart?action=decQuan&pro_id=${c.pro_id}&indexpage=${indexpage}"><button class="btn btn-sm btn-primary btn-minus">
                                                                     <i class="fa fa-minus"></i>
-                                                                </button> </a>
-                                                        </div>
-                                                        <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="${c.pro_quantity}" readonly></a> 
+                                                                </button> 
+                                                            </a>
+                                                        </div>                                                         
+                                                        <input class="form-control form-control-sm bg-secondary border-0 text-center quantity-custom" id="quantityCustom_${c.pro_id}" type="number" value="${c.pro_quantity}" onblur="handleBlur(${c.pro_id})" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                                         <div class="input-group-btn">
                                                             <a href="${pageContext.request.contextPath}/cart?action=incQuan&pro_id=${c.pro_id}&indexpage=${indexpage}"><button class="btn btn-sm btn-primary btn-plus">
                                                                     <i class="fa fa-plus"></i>
@@ -108,7 +139,8 @@
                                     </c:forEach>
                                 </c:when>                     
                                 <c:otherwise>
-                                <h2 style="color: #ffd333; margin-left: 60px;">There are currently no products in your shopping cart &#9888;</h2>
+                                <h2 style="color: #ffd333;
+                                    margin-left: 60px;">There are currently no products in your shopping cart &#9888;</h2>
                             </c:otherwise>
                         </c:choose>
 
@@ -162,6 +194,27 @@
             setTimeout(function () {
                 div.style.display = "none";
             }, 3000); // Ẩn sau 3 giây
+        }
+
+        async function sendGetRequest(proId) {
+
+            try {
+                const quantityCustom = document.getElementById('quantityCustom_' + proId);
+
+                const quantityCustomValue = quantityCustom.value;
+                if (!quantityCustomValue) {
+                    window.location.href = 'cart';
+                    return;
+                }
+                const idValue = proId;
+                window.location.href = 'cart?action=quantityCustom&quantity=' + quantityCustomValue + '&pro_id=' + proId + '&indexpage=' +${indexpage};
+            } catch (error) {
+                console.error('Lỗi:', error);
+            }
+        }
+
+        function handleBlur(proId) {
+            sendGetRequest(proId);
         }
     </script>
 </html>
