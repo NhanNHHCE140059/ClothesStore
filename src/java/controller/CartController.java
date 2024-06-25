@@ -54,12 +54,16 @@ public class CartController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login"); //chuyen den trang login va bat nguoi dung login lai
         } else {
             String message = null;
-            String messageloi = null;
+
+            if (session.getAttribute("message") != null) {
+                message = (String) session.getAttribute("message");
+            }
+
             if (request.getParameter("action") != null) {
                 String action = request.getParameter("action");
                 switch (action) {
-
                     case "addToCart":
+
                         break;
 
                     case "decQuan":
@@ -71,7 +75,7 @@ public class CartController extends HttpServlet {
                                 int newquantity = c.getPro_quantity();
                                 newquantity--;
                                 if (newquantity <= 0) {
-                                    messageloi = "Product quantity cannot be reduced to 0 or less than 1";
+                                    message = "Product quantity cannot be reduced less than 1!!!";
                                     break;
                                 } else {
                                     int UpdateQuan = cservice.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getPro_id());
@@ -82,7 +86,7 @@ public class CartController extends HttpServlet {
                                         message = "Exceeded quantity";
                                         break;
                                     } else {
-                                        message = "Reduce the number of successful products";
+                                        message = "Reduce the number of successful products ✔";
                                     }
                                 }
                             }
@@ -98,7 +102,7 @@ public class CartController extends HttpServlet {
                                 int newquantity = c.getPro_quantity();
                                 newquantity++;
                                 if (wservice.GetProByIdInWareHouse(pro_id).getInventory_number() == 0) {
-                                    messageloi = "Too much quantity";
+                                    message = "The number of products in the Warehouse is no longer available!!";
                                     break;
                                 }
                                 if (wservice.GetProByIdInWareHouse(pro_id).getInventory_number() > 0) {
@@ -111,11 +115,48 @@ public class CartController extends HttpServlet {
                                         message = "Exceeded quantity";
                                         break;
                                     } else {
-                                        message = "Increase the number of successful products";
+                                        message = "Increase the number of successful products ✔";
                                     }
                                 }
                             }
                         }
+                        break;
+
+                    case "quantityCustom":
+                        cart = cservice.GetListCartByAccID(acc.getAcc_id());
+                        pro_id = Integer.parseInt(request.getParameter("pro_id"));
+                        p = pservice.GetProById(pro_id);
+                        if (request.getParameter("quantity") == null) {
+                            message = "Product quantity cannot be left blank ✘";
+                            break;
+                        } else {
+                            int quantity = Integer.parseInt(request.getParameter("quantity"));
+                            if (quantity <= 0) {
+                                message = "Update product quantity failed ☺ <br> Default product quantity is 1";
+                                break;
+                            }
+                            for (Cart c : cart) {
+                                if (pro_id == c.getPro_id()) {
+                                    int newquantity = quantity - c.getPro_quantity();
+                                    if (newquantity < 0) {
+                                        int UpdateQuan = cservice.UpdateQuan(quantity, c.getPro_price() * quantity, c.getCart_id(), c.getPro_id());
+                                        message = "Reduce the number of successful products ✔";
+                                        break;
+                                    } else {
+                                        if (newquantity > wservice.GetProByIdInWareHouse(pro_id).getInventory_number()) {
+                                            message = "The quantity of the product you want to buy is currently insufficient ☺<br> Number of products in Warehouse: " + wservice.GetProByIdInWareHouse(pro_id).getInventory_number();
+                                            break;
+                                        } else {
+                                            int UpdateQuan = cservice.UpdateQuan(quantity, c.getPro_price() * quantity, c.getCart_id(), c.getPro_id());
+                                            message = "Increase the number of successful products ✔";
+                                            break;
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+
                         break;
 
                     case "deletePro":
@@ -128,7 +169,6 @@ public class CartController extends HttpServlet {
                             }
                         }
                 }
-
             }
             int indexpage;
             if (request.getParameter("indexpage") != null) {
@@ -144,8 +184,7 @@ public class CartController extends HttpServlet {
             }
             LinkedList<Cart> cart_list = cservice.GetTop5CartByAccID(acc.getAcc_id(), indexpage);
             request.setAttribute("cart_list", cart_list);
-            request.setAttribute("message", message);
-            request.setAttribute("messageloi", messageloi);
+            session.setAttribute("message", message);
             request.setAttribute("indexpage", indexpage);
             LinkedList<Map<Cart, Product>> cp_list = new LinkedList<>();
             for (Cart c : cart_list) {
