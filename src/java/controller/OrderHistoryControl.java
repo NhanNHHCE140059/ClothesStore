@@ -21,7 +21,7 @@ import service.OrderService;
  *
  * @author HP
  */
-@WebServlet(value ="/OrderHistoryControl")
+@WebServlet(value = "/OrderHistoryControl")
 
 public class OrderHistoryControl extends HttpServlet {
 
@@ -34,9 +34,9 @@ public class OrderHistoryControl extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-  
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -50,23 +50,28 @@ public class OrderHistoryControl extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-   throws ServletException, IOException {
-             response.setContentType("text/html;charset=UTF-8");
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
 
         HttpSession session = request.getSession();
-           if(session.getAttribute("account")==null){
-            response.sendRedirect(request.getContextPath()+"/login.jsp");
-           
-        }else{
-        Account a = (Account) session.getAttribute("account");
-       OrderService ordersv = new OrderService();
-        List<Order> lstOrder = ordersv.getOrderHistoryByAccountID(a.getUsername());
+        if (session.getAttribute("account") == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
 
-        request.setAttribute("lstOrder", lstOrder);
-        System.out.println(lstOrder.toString());
-        request.getRequestDispatcher( "/orderHistory.jsp").forward(request, response);
+        } else {
+            Account a = (Account) session.getAttribute("account");
+            if (a.getRole() != helper.Role.Customer) {
+                response.sendRedirect(request.getContextPath() + "/index.jsp");
+                return;
+            }
+            OrderService ordersv = new OrderService();
+            List<Order> lstOrder = ordersv.getOrderHistoryByAccountID(a.getUsername());
+
+            request.setAttribute("lstOrder", lstOrder);
+            System.out.println(lstOrder.toString());
+            request.getRequestDispatcher("/orderHistory.jsp").forward(request, response);
+        }
     }
-    }
+
     /**
      * Handles the HTTP <code>POST</code> method.
      *

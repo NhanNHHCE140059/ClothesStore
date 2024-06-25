@@ -1,7 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -55,32 +54,30 @@
                 color: #fff;
             }
             
-
-      
             .pagination {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-    }
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
 
-    .page-link {
-        margin: 0 5px;
-        padding: 8px 16px;
-        text-decoration: none;
-        color: #000;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
+            .page-link {
+                margin: 0 5px;
+                padding: 8px 16px;
+                text-decoration: none;
+                color: #000;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
 
-    .page-link:hover {
-        background-color: #f0f0f0;
-    }
+            .page-link:hover {
+                background-color: #f0f0f0;
+            }
 
-    .page-link.active {
-        background-color: #4CAF50;
-        color: white;
-        border: 1px solid #4CAF50;
-    }
+            .page-link.active {
+                background-color: #4CAF50;
+                color: white;
+                border: 1px solid #4CAF50;
+            }
         </style>
     </head>
     <body>
@@ -136,7 +133,7 @@
                 <div class="pagination" id="pagination">
                     <c:if test="${endPage != 0}">
                         <c:forEach var="i" begin="1" end="${endPage}">
-                            <a href="OrderHistoryStaffControl?indexPage=${i}" onclick="setActive(this,${i})"class="page-link">${i}</a>
+                            <a href="OrderHistoryStaffControl?indexPage=${i}" class="page-link">${i}</a>
                         </c:forEach>
                     </c:if>
                 </div>
@@ -147,32 +144,36 @@
         <jsp:include page="/shared/_footer.jsp" />
         <!-- End of Footer Area -->
         <script>
-            function setActive(element, pageIndex) {
-            var links = document.querySelectorAll('.page-link');
-            links.forEach(function(link) {
-                link.classList.remove('active');
-            });
-            element.classList.add('active');
-            localStorage.setItem('activePage', pageIndex); // Save active page index to localStorage
-        }
+            function getQueryParameter(name) {
+                var urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(name);
+            }
 
-        // Set the initial active page link from localStorage
-        document.addEventListener('DOMContentLoaded', function() {
-            var activePage = localStorage.getItem('activePage');
-            if (activePage) {
+            function setActivePage(pageIndex) {
                 var links = document.querySelectorAll('.page-link');
                 links.forEach(function(link) {
-                    if (link.textContent === activePage) {
+                    link.classList.remove('active');
+                    if (link.textContent == pageIndex) {
                         link.classList.add('active');
                     }
                 });
-            } else {
-                var links = document.querySelectorAll('.page-link');
-                if (links.length > 0) {
-                    links[0].classList.add('active'); // Set the first page link as active initially
-                }
             }
-        });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var pageIndex = getQueryParameter('indexPage');
+                if (pageIndex) {
+                    setActivePage(pageIndex);
+                } else {
+                    var links = document.querySelectorAll('.page-link');
+                    if (links.length > 0) {
+                        links[0].classList.add('active'); // Set the first page link as active initially
+                    }
+                }
+            });
+
+            window.addEventListener('beforeunload', function() {
+                localStorage.removeItem('activePage');
+            });
         </script>
     </body>
 </html>
