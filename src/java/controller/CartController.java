@@ -141,7 +141,7 @@ public class CartController extends HttpServlet {
                                             return;
                                         }
                                         Product p = pservice.GetProById(pro_id);
-                                        int newproductaddtocart = cservice.AddCart(acc.getAcc_id(), p.getPro_id(), p.getPro_name(), quantity, p.getPro_price(), p.getPro_price());
+                                        int newproductaddtocart = cservice.AddCart(acc.getAcc_id(), p.getPro_id(), p.getPro_name(), quantity, p.getPro_price(), p.getPro_price()*quantity);
                                         success = "1";
                                     }
                                 }
