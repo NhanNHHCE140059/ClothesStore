@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import model.Product;
 import service.ProductService;
+import service.WarehouseService;
 
 /**
  *
@@ -23,8 +24,13 @@ public class DetailController extends HttpServlet {
             try {
                 int id = Integer.parseInt(idStr); // Chuyển đổi từ String sang int
                 ProductService ps = new ProductService();
+                WarehouseService wservice = new WarehouseService();
                 Product p = ps.GetProById(id);
+                if (req.getParameter("success") != null) {
+                    req.setAttribute("successP", p);
+                }
                 req.setAttribute("pro_detail", p);
+                req.setAttribute("remainingPro", (wservice.GetProByIdInWareHouse(id)).getInventory_number());
                 req.getRequestDispatcher("detail.jsp").forward(req, resp);
             } catch (NumberFormatException e) {
                 // Xử lý trường hợp idStr không phải là một số hợp lệ

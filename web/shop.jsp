@@ -8,7 +8,79 @@
         <jsp:include page="/shared/_header.jsp" />
         <jsp:include page="/shared/_nav.jsp" />
 
+        <style>
+            .box {
+                width: 310px;
+                height: 100px;
+                background-color: #ffd333;
+                position: absolute;
+                top: 50%;
+                right: -350px; /* Start outside the screen */
+                transform: translateY(-50%);
+                animation: moveAndHide 5s forwards;
+                z-index: 1000;
+                border: 2px solid #3d464d;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                display: flex;
+                align-items: center;
+                padding: 10px;
+            }
+
+            .box img {
+                width: 50px;
+                height: 50px;
+                border-radius: 5px;
+                margin-left: 10px;
+            }
+
+            .box .content {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                flex-grow: 1;
+            }
+
+            .box .content p {
+                color: #3d464d;
+                font-weight: 600;
+                margin: 0;
+            }
+
+            .box .content .product-name {
+                font-size: 1.2em;
+            }
+
+            .box .content .product-price {
+                color: #000;
+                font-size: 1.1em;
+            }
+
+            @keyframes moveAndHide {
+                0% {
+                    right: -350px; /* Start outside the screen */
+                    opacity: 1;
+                }
+                50% {
+                    right: 10px; /* Fully visible */
+                    opacity: 1;
+                }
+                100% {
+                    right: 10px;
+                    opacity: 0;
+                }
+            }
+        </style>
         <!-- Breadcrumb Start -->
+        <c:if test="${not empty successP}">
+            <div class="box">
+                <div class="content">
+                    <p>Thank you for adding to cart!</p>
+                    <p class="product-name">${successP.pro_name}</p>
+                </div>
+                <img src="${successP.imageURL}" alt="Product Image">
+            </div>
+        </c:if>  
         <div class="container-fluid">
             <div class="row px-xl-5">
                 <div class="col-12">
@@ -61,7 +133,7 @@
 
                             .product-img img {
                                 height: 340px; /* Điều chỉnh chiều cao của hình ảnh */
-                                object-fit: fill; 
+                                object-fit: fill;
                             }
                         </style>
                         <div class="row">
@@ -71,7 +143,7 @@
                                         <div class="product-img position-relative overflow-hidden">
                                             <img class="img-fluid w-100" src="${o.imageURL}">
                                             <div class="product-action">
-                                                <a class="btn btn-outline-dark btn-sm" href="#"><i class="fa fa-shopping-cart"></i> Add to Cart</a>
+                                                <a class="btn btn-outline-dark btn-sm" href="${pageContext.request.contextPath}/cart?action=addToCart&pro_id=${o.pro_id}&indexpage=${currentPage}"><i class="fa fa-shopping-cart"></i> Add to Cart</a>
                                                 <a class="btn btn-outline-dark btn-sm" href="#"><i class="far fa-heart"></i> Add to Wishlist</a>
                                                 <a class="btn btn-outline-dark btn-sm" href="/clothesstore/detail?pid=${o.pro_id}"><i class="fa fa-info-circle"></i> More information</a>
                                             </div>
@@ -101,13 +173,13 @@
                                 <ul class="pagination justify-content-center">
                                     <c:if test="${currentPage > 1}">
                                         <li class="page-item"><a class="page-link" href="shop?page=${currentPage - 1}">Previous</a></li>
-                                    </c:if>
-                                    <c:forEach var="i" begin="1" end="${noOfPages}">
+                                        </c:if>
+                                        <c:forEach var="i" begin="1" end="${noOfPages}">
                                         <li class="page-item ${i == currentPage ? 'active' : ''}"><a class="page-link" href="shop?page=${i}">${i}</a></li>
-                                    </c:forEach>
-                                    <c:if test="${currentPage < noOfPages}">
+                                        </c:forEach>
+                                        <c:if test="${currentPage < noOfPages}">
                                         <li class="page-item"><a class="page-link" href="shop?page=${currentPage + 1}">Next</a></li>
-                                    </c:if>
+                                        </c:if>
                                 </ul>
                             </nav>
                         </div>

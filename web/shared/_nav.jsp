@@ -1,5 +1,18 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.util.LinkedList"%>
+<%@ page import="model.Cart"%>
+<%@ page import="service.CartService"%>
+<%@ page import="model.Account" %>
+<% CartService cservice = new CartService();
+int quantityPro = 0;
+if (session.getAttribute("account") != null) {
+Account acc = (Account) session.getAttribute("account");
+for (Cart c : cservice.GetListCartByAccID(acc.getAcc_id())) {
+quantityPro++;
+    }  
+    }
+%>
 <!-- Navbar Start -->
 <div class="container-fluid bg-dark mb-30">
     <div class="row px-xl-5">
@@ -37,13 +50,7 @@
                         <a href="/clothesstore/cart" class="btn px-0 ml-3">
                             <i class="fas fa-shopping-cart text-primary"></i>
                             <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">
-                                <% if ( session.getAttribute("quantitypro")!=null) {
-                                Integer quantity = (Integer) session.getAttribute("quantitypro");
-                                %>
-                                <%= quantity %>
-                                <% } else {%>
-                                0
-                                <%}%>
+                                <%= quantityPro %>
                             </span>
                         </a>
                     </div>
