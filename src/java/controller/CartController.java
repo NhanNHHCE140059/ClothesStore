@@ -118,14 +118,16 @@ public class CartController extends HttpServlet {
                                             response.sendRedirect(request.getContextPath() + "/detail?pid=" + pro_id);
                                             return;
                                         } else {
+
                                             int newquantity = quantity + c.getPro_quantity();
-                                            if (newquantity > wservice.GetProByIdInWareHouse(pro_id).getInventory_number()) {
+                                            if (quantity <= wservice.GetProByIdInWareHouse(pro_id).getInventory_number()) {
+                                                int UpdateQuan = cservice.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getPro_id());
+                                                duplicate = true;
+                                                success = "1";
+                                            } else {
                                                 response.sendRedirect(request.getContextPath() + "/detail?pid=" + pro_id);
                                                 return;
                                             }
-                                            int UpdateQuan = cservice.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getPro_id());
-                                            duplicate = true;
-                                            success = "1";
                                         }
                                     }
                                 }
@@ -139,7 +141,7 @@ public class CartController extends HttpServlet {
                                             return;
                                         }
                                         Product p = pservice.GetProById(pro_id);
-                                        int newproductaddtocart = cservice.AddCart(acc.getAcc_id(), p.getPro_id(), p.getPro_name(), quantity, p.getPro_price(), p.getPro_price());
+                                        int newproductaddtocart = cservice.AddCart(acc.getAcc_id(), p.getPro_id(), p.getPro_name(), quantity, p.getPro_price(), p.getPro_price() * quantity);
                                         success = "1";
                                     }
                                 }
