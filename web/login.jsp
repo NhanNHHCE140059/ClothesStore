@@ -46,7 +46,7 @@
                             Don't have an account?<a href="/clothesstore/register">Register</a>
                         </div>
                         <div class="d-flex justify-content-center">
-                            <a href="#">Forgot your password?</a>
+                            <a href="/clothesstore/reset-password">Forgot your password?</a>
                         </div>
                     </div>
                 </div>

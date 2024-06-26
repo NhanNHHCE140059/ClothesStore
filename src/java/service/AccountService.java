@@ -188,6 +188,81 @@ public class AccountService {
         Matcher matcher = pattern.matcher(fullName);
         return matcher.matches();
     }
+
+    public Account getAccountByEmail(String email) {
+        Account account = null;
+        try {
+
+            String query = "select * from accounts where email=?";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setString(1, email);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                account = new Account(
+                        rs.getInt("acc_id"),
+                        rs.getString("username"),
+                        rs.getString("name"),
+                        rs.getString("image"),
+                        rs.getString("email"),
+                        rs.getString("phone"),
+                        rs.getString("address"),
+                        rs.getString("password"),
+                        Role.values()[rs.getInt("role")],
+                        AccountStatus.values()[rs.getInt("acc_status")]);
+
+            }
+        } catch (Exception e) {
+            System.out.println("Loi get account bang email");
+            System.out.println(e);
+        }
+        return account;
+    }
+    
+        public void updateAccountPassword(Account account) {
+        String email = account.getEmail();
+        String password = account.getPassword();
+        String hashPassword = this.hash.getMd5(password);
+        try {
+            PreparedStatement stmt = connection.prepareStatement("UPDATE accounts SET password = ? WHERE email = ?");
+            stmt.setString(1, hashPassword);
+            stmt.setString(2, email);
+            // update Account
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+//    public void updateHashPass()  {
+//        try {
+//            String selectSQL = "SELECT acc_id, password FROM accounts";
+//            connection = dbcontext.getConnection();
+//            ps = connection.prepareStatement(selectSQL);
+//            rs = ps.executeQuery();
+//            String updateSQL = "UPDATE accounts SET password = ? WHERE acc_id = ?";
+//            PreparedStatement psUpdate = null;
+//            psUpdate = connection.prepareStatement(updateSQL);
+//            while (rs.next()) {
+//                int accountId = rs.getInt("acc_id");
+//                String password = rs.getString("password");
+//                String hashedPassword = hash.getMd5(password);
+//                psUpdate.setString(1, hashedPassword);
+//                psUpdate.setInt(2, accountId);
+//                psUpdate.executeUpdate();
+//            }
+//        } catch (SQLException e) {
+//            System.out.println("hash khong thanh cong");
+//        }catch (Exception e) {
+//            System.out.println("hash khong thanh cong");
+//        }
+//
+//    }
+//    public static void main(String[] args) {
+//        AccountService acsv = new AccountService();
+//        acsv.updateHashPass();
+//    }
     
     //for register
     public void createAccount(String username, String name, String email, 
@@ -224,5 +299,4 @@ public class AccountService {
         }
         return false;
     }
-    
 }
