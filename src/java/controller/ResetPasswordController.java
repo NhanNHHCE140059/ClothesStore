@@ -65,7 +65,7 @@ public class ResetPasswordController extends HttpServlet {
             req.setAttribute("error-message", "The email is not found on our system!");
             req.getRequestDispatcher("reset-password-error.jsp").forward(req, res);
         }
-
+        
         // Request reset password
         else if ("request-change".equals(state) && acc != null) {
             String password = req.getParameter("password");
@@ -84,6 +84,8 @@ public class ResetPasswordController extends HttpServlet {
                 // Xoa code
                 keyStore.remove(reqCode);
                 req.setAttribute("message", "Success! Now you can login with your new password!");
+                req.setAttribute("login", "d-inline");
+                req.setAttribute("home", "d-none");
                 req.getRequestDispatcher("reset-password-ok.jsp").forward(req, res);
             } catch (Exception e) {
                 req.setAttribute("error-message", "Cannot update your account! Please try again later!");
@@ -96,14 +98,16 @@ public class ResetPasswordController extends HttpServlet {
             String code = UUID.randomUUID().toString();
             keyStore.set(code, email);
             req.setAttribute("message", "We have sent you an email to you, please check your inbox/spam.");
-            req.setAttribute("code", "<a href=\"http://localhost:8080/clothesstore/reset-password?email=" + email + "&code=" + code + "\">Reset Link</a>");
+            req.setAttribute("login", "d-none");
+            req.setAttribute("home", "d-inline");
+            req.getRequestDispatcher("reset-password-ok.jsp").forward(req, res);
+
             try {
                 this.emailService.sendEmail(email, code);
                 System.out.println("Reset email sent to: " + email);
             } catch (MessagingException e) {
                 e.printStackTrace();
             }
-            req.getRequestDispatcher("reset-password-ok.jsp").forward(req, res);
         }
     }
 }

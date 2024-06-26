@@ -20,7 +20,8 @@
                             <div class="alert alert-success" role="alert">
                                 ${message}
                             </div>
-                            <button type="button" class="btn btn-primary btn-block" onclick="location.href='/clothesstore'">Go Home</button>
+                                <button type="button" class="btn btn-primary btn-block ${home}" onclick="location.href = '/clothesstore'">Go to Home</button>
+                                <button type="button" class="btn btn-primary btn-block ${login}" onclick="location.href = '/clothesstore/login'">Go to Login</button>
                         </div>
                     </div>
                 </div>
