@@ -20,6 +20,7 @@ public class LogoutController extends HttpServlet {
         HttpSession session = req.getSession();
         session.removeAttribute("role");
         session.removeAttribute("account");
+        session.removeAttribute("quantitypro");
         res.sendRedirect("home");
     } 
 }
