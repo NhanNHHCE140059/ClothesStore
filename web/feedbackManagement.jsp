@@ -53,15 +53,18 @@
                 <a href="#">Update Product (Warehouse)</a>
                 <a href="#">Delete Product (Warehouse)</a>
             </div>
+       
         </div>
-
+    
         <div class="content">
+             <a href="${pageContext.request.contextPath}/home" class=" back-home">Back to Home</a>
             <div class="header">
                 <input oninput="searchByPhone(this)" value="${phoneSearch}" type="number" id="autoSubmitInput" name="searchText" placeholder="Enter phone to search...">
-                </form>
+                  
                 <div class="role-info">
                     <span><%= account.getRole()%> :</span><span><%= account.getName()%></span>
                 </div>
+             
             </div>
 
             <table class="table">

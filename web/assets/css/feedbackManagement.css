@@ -75,6 +75,7 @@ body {
 }
 
 .header {
+    margin-top:12px;
     background-color: #fff;
     padding: 15px 20px;
     border-bottom: 1px solid #e9ecef;
@@ -298,4 +299,14 @@ input[type="number"] {
     border-radius: 4px;
     width: 20%;
     box-sizing: border-box;
+}
+.back-home {
+
+    background-color: #34db86;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    text-decoration: none;
 }
