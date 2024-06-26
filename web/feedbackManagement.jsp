@@ -57,7 +57,7 @@
         </div>
     
         <div class="content">
-             <a href="${pageContext.request.contextPath}/index.jsp" class=" back-home">Back to Home</a>
+             <a href="${pageContext.request.contextPath}/home" class=" back-home">Back to Home</a>
             <div class="header">
                 <input oninput="searchByPhone(this)" value="${phoneSearch}" type="number" id="autoSubmitInput" name="searchText" placeholder="Enter phone to search...">
                   
