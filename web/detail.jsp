@@ -19,12 +19,83 @@
             max-height: 100%;
             object-fit: cover;
         }
+
+        .box {
+            width: 310px;
+            height: 100px;
+            background-color: #ffd333;
+            position: absolute;
+            top: 50%;
+            right: -350px; /* Start outside the screen */
+            transform: translateY(-50%);
+            animation: moveAndHide 5s forwards;
+            z-index: 1000;
+            border: 2px solid #3d464d;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .box img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .box .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .box .content p {
+            color: #3d464d;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .box .content .product-name {
+            font-size: 1.2em;
+        }
+
+        .box .content .product-price {
+            color: #000;
+            font-size: 1.1em;
+        }
+
+        @keyframes moveAndHide {
+            0% {
+                right: -350px; /* Start outside the screen */
+                opacity: 1;
+            }
+            50% {
+                right: 10px; /* Fully visible */
+                opacity: 1;
+            }
+            100% {
+                right: 10px;
+                opacity: 0;
+            }
+        }
     </style>
     <body>
         <jsp:include page="/shared/_header.jsp" />
         <jsp:include page="/shared/_nav.jsp" />
 
         <!-- Breadcrumb Start -->
+        <c:if test="${not empty successP}">
+            <div class="box">
+                <div class="content">
+                    <p>Thank you for adding to cart!</p>
+                    <p class="product-name">${successP.pro_name}</p>
+                </div>
+                <img src="${successP.imageURL}" alt="Product Image">
+            </div>
+        </c:if>        
         <div class="container-fluid">
             <div class="row px-xl-5">
                 <div class="col-12">
@@ -70,16 +141,17 @@
                                         <i class="fa fa-minus"></i>
                                     </button>
                                 </div>
-                                <input type="text" class="form-control bg-secondary border-0 text-center" value="1">
+                                <input id="quantityInput" type="text" class="form-control bg-secondary border-0 text-center" value="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                 <div class="input-group-append">
                                     <button class="btn btn-primary btn-plus">
                                         <i class="fa fa-plus"></i>
                                     </button>
                                 </div>
                             </div>
-                            <button class="btn btn-primary px-3">
+                            <a id="addToCartBtn" class="btn btn-primary px-3" href="${pageContext.request.contextPath}/cart?action=addToCart&pro_id=${pro_detail.pro_id}&">
                                 <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
-                            </button>
+                            </a>
+                            <p style="padding-left: 50px; margin-top: 22px;">${remainingPro} Product availability</p>
                         </div>
                     </div>
                 </div>
@@ -93,4 +165,15 @@
 
         <jsp:include page="/shared/_footer.jsp" />
     </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('addToCartBtn').addEventListener('click', function (event) {
+                event.preventDefault();
+                var quantity = document.getElementById('quantityInput').value;
+                var href = this.getAttribute('href');
+                var newHref = href + 'quantity=' + quantity;
+                window.location.href = newHref;
+            });
+        });
+    </script>
 </html>

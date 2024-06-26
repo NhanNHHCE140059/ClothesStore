@@ -131,10 +131,7 @@
                                                 </td>
                                                 <td class="align-middle"><fmt:formatNumber value="${c.total_price}" type="number" pattern="#,##0" /> VND</td>                                            
                                                 <td class="align-middle"><a onclick="return confirm('Do you want to delete this cart?')" href="${pageContext.request.contextPath}/cart?action=deletePro&card_id=${c.cart_id}&indexpage=${indexpage}" class="btn btn-sm btn-danger" style="margin-left: 2px"><i class="fa fa-times"></i> Remove</a></td>
-                                            </tr>
-                                            <c:set var="totalQuantity" value="${totalQuantity + c.pro_quantity}" />
-                                            <c:set var="totalPrice" value="${totalPrice + c.total_price}" />
-
+                                            </tr>                                            
                                         </c:forEach>
                                     </c:forEach>
                                 </c:when>                     
@@ -161,7 +158,7 @@
                         <div class="border-bottom pb-2">
                             <div class="d-flex justify-content-between mb-3">
                                 <h5>Products in the cart:</h5>
-                                <h5>${totalQuantity}</h5>
+                                <h5><%=(Integer) request.getAttribute("totalQuantity")%></h5>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <h5 class="font-weight-medium">Promotion:</h5>
@@ -171,7 +168,7 @@
                         <div class="pt-2">
                             <div class="d-flex justify-content-between mt-2">
                                 <h3>Total</h3>
-                                <h3><fmt:formatNumber value="${totalPrice}" type="number" pattern="#,##0" /> VND</h3>
+                                <h3><%=request.getAttribute("totalPrice")%></h3>
                             </div>
                             <a href="/clothesstore/checkout" class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</a>
                         </div>
