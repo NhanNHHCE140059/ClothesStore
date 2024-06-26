@@ -26,11 +26,12 @@ public class SearchController extends HttpServlet {
         List<Product> list = p.searchByName(txtSearch);
 
         if (list.size() <= 0) {
+            System.out.println("Search not found");
             req.getRequestDispatcher("shop-search-error.jsp").forward(req, resp);
+        } else {
+            req.setAttribute("listP", list);
+            req.setAttribute("txtS", txtSearch);
+            req.getRequestDispatcher("shop.jsp").forward(req, resp);
         }
-        
-        req.setAttribute("listP", list);
-        req.setAttribute("txtS", txtSearch);
-        req.getRequestDispatcher("shop.jsp").forward(req, resp);
     }
 }
