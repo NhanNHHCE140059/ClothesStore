@@ -81,6 +81,10 @@
                 opacity: 0;
             }
         }
+
+        .faillength {
+            background: red;
+        }
     </style>
     <body>
         <jsp:include page="/shared/_header.jsp" />
@@ -95,7 +99,21 @@
                 </div>
                 <img src="${successP.imageURL}" alt="Product Image">
             </div>
-        </c:if>        
+        </c:if>   
+        <c:if test="${param.fail == 1}">
+            <div class="box faillength">
+                <div class="content">
+                    <p style="padding-left:20px">You entered too many quantities!!!</p>                    
+                </div>               
+            </div>
+        </c:if>
+        <c:if test="${param.fail == 3}">
+            <div class="box faillength">
+                <div class="content">
+                    <p style="padding-left:40px">This product is out of stock!!!</p>                    
+                </div>               
+            </div>
+        </c:if>
         <div class="container-fluid">
             <div class="row px-xl-5">
                 <div class="col-12">
@@ -141,7 +159,14 @@
                                         <i class="fa fa-minus"></i>
                                     </button>
                                 </div>
-                                <input id="quantityInput" type="text" class="form-control bg-secondary border-0 text-center" value="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                <c:choose>
+                                    <c:when test= "${param.fail == 3}">
+                                        <input id="quantityInput" type="text" class="form-control bg-secondary border-0 text-center" value="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <input id="quantityInput" type="text" class="form-control bg-secondary border-0 text-center" value="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </c:otherwise> 
+                                </c:choose>                                
                                 <div class="input-group-append">
                                     <button class="btn btn-primary btn-plus">
                                         <i class="fa fa-plus"></i>

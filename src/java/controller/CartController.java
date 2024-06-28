@@ -62,6 +62,7 @@ public class CartController extends HttpServlet {
                 switch (action) {
                     case "addToCart":
                         String success = null;
+                        String fail = null;
                         if (request.getParameter("quantity") == null) {
                             int indexpage = 1;
                             if (request.getParameter("pro_id") != null) {
@@ -102,12 +103,15 @@ public class CartController extends HttpServlet {
                         } else {
                             int pro_id = Integer.parseInt(request.getParameter("pro_id"));
                             if (request.getParameter("quantity").length() > 9) {
-                                response.sendRedirect(request.getContextPath() + "/detail?pid=" + pro_id);
+                                fail = "1";
+                                System.out.println(fail);
+                                response.sendRedirect(request.getContextPath() + "/detail?pid=" + pro_id + "&fail=" + fail);
                                 return;
                             } else {
                                 int quantity = Integer.parseInt(request.getParameter("quantity"));
                                 if (quantity <= 0) {
-                                    response.sendRedirect(request.getContextPath() + "/detail?pid=" + pro_id);
+                                    fail = "2";
+                                    response.sendRedirect(request.getContextPath() + "/detail?pid=" + pro_id + "&fail=" + fail);
                                     return;
                                 }
                                 LinkedList<Cart> cart = cservice.GetListCartByAccID(acc.getAcc_id());
@@ -115,17 +119,20 @@ public class CartController extends HttpServlet {
                                 for (Cart c : cart) {
                                     if (pro_id == c.getPro_id()) {
                                         if (wservice.GetProByIdInWareHouse(pro_id).getInventory_number() == 0) {
-                                            response.sendRedirect(request.getContextPath() + "/detail?pid=" + pro_id);
+                                            fail = "3";
+                                            response.sendRedirect(request.getContextPath() + "/detail?pid=" + pro_id + "&fail=" + fail);
                                             return;
                                         } else {
+
                                             int newquantity = quantity + c.getPro_quantity();
-                                            if (newquantity > wservice.GetProByIdInWareHouse(pro_id).getInventory_number()) {
+                                            if (quantity <= wservice.GetProByIdInWareHouse(pro_id).getInventory_number()) {
+                                                int UpdateQuan = cservice.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getPro_id());
+                                                duplicate = true;
+                                                success = "1";
+                                            } else {
                                                 response.sendRedirect(request.getContextPath() + "/detail?pid=" + pro_id);
                                                 return;
                                             }
-                                            int UpdateQuan = cservice.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getPro_id());
-                                            duplicate = true;
-                                            success = "1";
                                         }
                                     }
                                 }
@@ -139,7 +146,7 @@ public class CartController extends HttpServlet {
                                             return;
                                         }
                                         Product p = pservice.GetProById(pro_id);
-                                        int newproductaddtocart = cservice.AddCart(acc.getAcc_id(), p.getPro_id(), p.getPro_name(), quantity, p.getPro_price(), p.getPro_price());
+                                        int newproductaddtocart = cservice.AddCart(acc.getAcc_id(), p.getPro_id(), p.getPro_name(), quantity, p.getPro_price(), p.getPro_price() * quantity);
                                         success = "1";
                                     }
                                 }
@@ -256,9 +263,14 @@ public class CartController extends HttpServlet {
                         }
                 }
             }
+
             int indexpage;
             if (request.getParameter("indexpage") != null) {
                 indexpage = Integer.parseInt(request.getParameter("indexpage"));
+                LinkedList<Cart> cart_list = cservice.GetTop5CartByAccID(acc.getAcc_id(), indexpage);
+                if (cart_list.size() == 0) {                    
+                    indexpage = --indexpage;
+                }
             } else {
                 indexpage = 1;
             }
