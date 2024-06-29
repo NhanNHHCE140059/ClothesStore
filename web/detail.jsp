@@ -1,23 +1,32 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@page import="model.ProductImage" %>
+<%@page import="java.util.List" %>
+<%@page import="service.ProductImageService" %>
+<% ProductImageService proImgService = new  ProductImageService();
+    List<ProductImage> imgList = proImgService.getImageByID(Integer.parseInt(request.getParameter("pid")));
+%> 
 <!DOCTYPE html>
 <html>
     <jsp:include page="/shared/_head.jsp" />
     <style>
         .product-detail-img-container {
             width: 100%;
-            height: 400px;
+            height: 520px;
             display: flex;
-            justify-content: center;
+             padding: 0 !important;
+            justify-content: space-between;
             align-items: center;
             background-color: #f8f9fa;
+          box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
         }
 
         .product-detail-img {
             max-width: 100%;
             max-height: 100%;
             object-fit: cover;
+          box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
         }
 
         .box {
@@ -81,6 +90,55 @@
                 opacity: 0;
             }
         }
+
+        .faillength {
+            background: red;
+        }
+
+        .thumbnail-container {
+            display: flex;
+            justify-content: center;
+            margin: 32px 30px 10px 0px;
+        }
+
+        .thumbnail {
+            width: 85px;
+            height: 85px;
+            margin: 0 5px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+            cursor: pointer;
+        }
+        .thumbnail:hover {
+            box-shadow: rgba(255, 211, 51, 1) 0px 0px 0px 3px;
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+             .size-options, .color-options {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .size-options button, .color-options button {
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: white;
+        }
+
+        .size-options button:hover, .color-options button:hover {
+            border-color: #007bff;
+        }
+
+        .size-options button.active, .color-options button.active {
+            border-color: #007bff;
+            background-color: #007bff;
+            color: white;
+        }
     </style>
     <body>
         <jsp:include page="/shared/_header.jsp" />
@@ -95,7 +153,21 @@
                 </div>
                 <img src="${successP.imageURL}" alt="Product Image">
             </div>
-        </c:if>        
+        </c:if>   
+        <c:if test="${param.fail == 1}">
+            <div class="box faillength">
+                <div class="content">
+                    <p style="padding-left:20px">You entered too many quantities!!!</p>                    
+                </div>               
+            </div>
+        </c:if>
+        <c:if test="${param.fail == 3}">
+            <div class="box faillength">
+                <div class="content">
+                    <p style="padding-left:40px">This product is out of stock!!!</p>                    
+                </div>               
+            </div>
+        </c:if>
         <div class="container-fluid">
             <div class="row px-xl-5">
                 <div class="col-12">
@@ -114,7 +186,21 @@
         <div class="container-fluid pb-5">
             <div class="row px-xl-5 align-items-center">
                 <div class="col-lg-5 mb-4 mb-lg-0 product-detail-img-container">
-                    <img class="product-detail-img" src="${pro_detail.imageURL}" alt="Image">
+                       <!-- Thumbnail Images Start -->
+            <div class="row px-xl-5">
+                <div class="col-12 text-center">
+                    <%         if (imgList.size() !=0 ) {
+                             for (ProductImage img :imgList){ %>
+                    <div class="thumbnail-container">                       
+                            <div class="thumbnail">
+                                <img src="<%= img.getImageURL()%>" alt="Thumbnail" onmouseover="changeMainImage('<%= img.getImageURL() %>')">
+                            </div>
+                    </div>
+                    <% }}%>
+                </div>
+            </div>
+            <!-- Thumbnail Images End -->
+                    <img class="product-detail-img" id="mainImage" src="${pro_detail.imageURL}" alt="Image">
                 </div>
                 <div class="col-lg-7">
                     <div class="bg-light p-4 rounded">
@@ -133,7 +219,22 @@
                             <fmt:formatNumber value="${pro_detail.pro_price}" type="number" pattern="#,##0"/> VND
                         </h4>
                         <p class="mb-4">${pro_detail.description}</p>
-
+                          <!-- Size and Color Options Start -->
+                        <div class="size-options mb-4">
+                            <label for="size" style="margin:6px 12px 0 0;" >Size:</label>
+                            <button class="size-btn">S</button>
+                            <button class="size-btn">M</button>
+                            <button class="size-btn">L</button>
+                            <button class="size-btn">XL</button>
+                        </div>
+                        <div class="color-options mb-4">
+                            <label for="color" style="margin:6px 12px 0 0;">Color:</label>
+                            <button class="color-btn" style="background-color: #000000;"></button>
+                            <button class="color-btn" style="background-color: #ffffff;"></button>
+                            <button class="color-btn" style="background-color: #ff0000;"></button>
+                            <button class="color-btn" style="background-color: #0000ff;"></button>
+                        </div>
+                        <!-- Size and Color Options End -->
                         <div class="d-flex align-items-center mb-4 pt-2">
                             <div class="input-group quantity mr-3" style="width: 130px;">
                                 <div class="input-group-prepend">
@@ -141,7 +242,14 @@
                                         <i class="fa fa-minus"></i>
                                     </button>
                                 </div>
-                                <input id="quantityInput" type="text" class="form-control bg-secondary border-0 text-center" value="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                <c:choose>
+                                    <c:when test= "${param.fail == 3}">
+                                        <input id="quantityInput" type="text" class="form-control bg-secondary border-0 text-center" value="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <input id="quantityInput" type="text" class="form-control bg-secondary border-0 text-center" value="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </c:otherwise> 
+                                </c:choose>                                
                                 <div class="input-group-append">
                                     <button class="btn btn-primary btn-plus">
                                         <i class="fa fa-plus"></i>
@@ -151,21 +259,24 @@
                             <a id="addToCartBtn" class="btn btn-primary px-3" href="${pageContext.request.contextPath}/cart?action=addToCart&pro_id=${pro_detail.pro_id}&">
                                 <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
                             </a>
-                            <p style="padding-left: 50px; margin-top: 22px;">${remainingPro} Product availability</p>
+                            <p style="padding-left: 50px; margin-top: 22px;"><%= request.getAttribute("totalP")%> Product availability</p>
                         </div>
                     </div>
                 </div>
             </div>
+
+         
+
         </div>
-
-
         <!-- Shop Detail End -->
-
-        <!-- Products End -->
 
         <jsp:include page="/shared/_footer.jsp" />
     </body>
     <script>
+        function changeMainImage(newSrc) {
+            document.getElementById('mainImage').src = newSrc;
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('addToCartBtn').addEventListener('click', function (event) {
                 event.preventDefault();
@@ -175,5 +286,6 @@
                 window.location.href = newHref;
             });
         });
+        
     </script>
 </html>

@@ -22,7 +22,7 @@ public class Warehouse {
 
     private int ware_id;
     private int bill_id;
-    private int pro_id;
+    private int variant_id; 
     private Date import_date;
     private int inventory_number;
 }

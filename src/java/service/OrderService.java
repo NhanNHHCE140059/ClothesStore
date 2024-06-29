@@ -28,51 +28,13 @@ public class OrderService {
     ResultSet rs = null;
     DBContext dbcontext = new DBContext();
 
-    public PayStatus mapPayStatus(int statusNumber) {
-        switch (statusNumber) {
-            case 0:
-                return PayStatus.NOT_YET;
-            case 1:
-                return PayStatus.SUCCESS;
-            default:
-                throw new IllegalArgumentException("Unknown PayStatus value: " + statusNumber);
-
-        }
-    }
-
-    public OrderStatus mapOrderStatus(int orderStatus) {
-        switch (orderStatus) {
-            case 0:
-                return OrderStatus.NOT_YET;
-            case 1:
-                return OrderStatus.SUCCESS;
-            default:
-                throw new IllegalArgumentException("Unknown OrderStatus value: " + orderStatus);
-
-        }
-    }
-
-    public ShipStatus mapShipStatus(int shipStatusNumber) {
-        switch (shipStatusNumber) {
-            case 0:
-                return ShipStatus.NOT_YET;
-            case 1:
-                return ShipStatus.SHIPPING;
-            case 2:
-                return ShipStatus.SUCCESS;
-            default:
-                throw new IllegalArgumentException("Unknown ShipStatus value: " + shipStatusNumber);
-
-        }
-    }
-
     public List<Order> listAllOrdersShipped() {
         List<Order> listOrderShipped = new ArrayList<>();
         try {
             String query = "Select * from orders where shipping_status = 0";
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()) {
                 listOrderShipped.add(new Order(
                         rs.getInt(1),
@@ -80,19 +42,18 @@ public class OrderService {
                         rs.getDate(3),
                         rs.getString(4),
                         rs.getString(5),
-                        rs.getString(6),
-                        rs.getDouble(7),
-                        mapOrderStatus(rs.getInt(8)),
-                        mapPayStatus(rs.getInt(9)),
-                        mapShipStatus(rs.getInt(10))
+                        rs.getInt(6),
+                        rs.getString(7),
+                        rs.getDouble(8),
+                        OrderStatus.values()[rs.getInt(9)],
+                        PayStatus.values()[rs.getInt(10)],
+                        ShipStatus.values()[rs.getInt(11)]
                 ));
             }
             return listOrderShipped;
         } catch (SQLException e) {
-            e.printStackTrace();
             System.out.println("SQL error occurred while fetching account.");
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("An unexpected error occurred.");
         }
         return listOrderShipped;
@@ -110,10 +71,10 @@ public class OrderService {
             while (rs.next()) {
                 countPage = rs.getInt(1);
             }
-            return countPage;
+
         } catch (Exception e) {
         }
-        return 0;
+        return countPage;
     }
 
     // Xuat ra so luong 5 order moi trang 
@@ -135,11 +96,12 @@ public class OrderService {
                         rs.getDate(4),
                         rs.getString(5),
                         rs.getString(6),
-                        rs.getString(7),
-                        rs.getDouble(8),
-                        OrderStatus.values()[rs.getInt(9)],
-                        PayStatus.values()[rs.getInt(10)],
-                        ShipStatus.values()[rs.getInt(11)]
+                        rs.getInt(7),
+                        rs.getString(8),
+                        rs.getDouble(9),
+                        OrderStatus.values()[rs.getInt(10)],
+                        PayStatus.values()[rs.getInt(11)],
+                        ShipStatus.values()[rs.getInt(12)]
                 ));
             }
             return listTop5;
@@ -168,11 +130,12 @@ public class OrderService {
                         rs.getDate(4),
                         rs.getString(5),
                         rs.getString(6),
-                        rs.getString(7),
-                        rs.getDouble(8),
-                        OrderStatus.values()[rs.getInt(9)],
-                        PayStatus.values()[rs.getInt(10)],
-                        ShipStatus.values()[rs.getInt(11)]
+                        rs.getInt(7),
+                        rs.getString(8),
+                        rs.getDouble(9),
+                        OrderStatus.values()[rs.getInt(10)],
+                        PayStatus.values()[rs.getInt(11)],
+                        ShipStatus.values()[rs.getInt(12)]
                 ));
             }
             return listTop5;
@@ -189,10 +152,8 @@ public class OrderService {
             ps.setInt(1, order_id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
             System.out.println("SQL error occurred while fetching account.");
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("An unexpected error occurred.");
         }
 
@@ -214,11 +175,12 @@ public class OrderService {
                         rs.getDate(3),
                         rs.getString(4),
                         rs.getString(5),
-                        rs.getString(6),
-                        rs.getDouble(7),
-                        OrderStatus.values()[(rs.getInt(8))],
-                        PayStatus.values()[(rs.getInt(9))],
-                        ShipStatus.values()[(rs.getInt(10))]
+                        rs.getInt(6),
+                        rs.getString(7),
+                        rs.getDouble(8),
+                        OrderStatus.values()[rs.getInt(9)],
+                        PayStatus.values()[rs.getInt(10)],
+                        ShipStatus.values()[rs.getInt(11)]
                 ));
             }
             return ls;
@@ -246,16 +208,17 @@ public class OrderService {
                         rs.getDate(4),
                         rs.getString(5),
                         rs.getString(6),
-                        rs.getString(7),
-                        rs.getDouble(8),
-                        OrderStatus.values()[(rs.getInt(9))],
-                        PayStatus.values()[(rs.getInt(10))],
-                        ShipStatus.values()[(rs.getInt(11))]
+                        rs.getInt(7),
+                        rs.getString(8),
+                        rs.getDouble(9),
+                        OrderStatus.values()[rs.getInt(10)],
+                        PayStatus.values()[rs.getInt(11)],
+                        ShipStatus.values()[rs.getInt(12)]
                 ));
             }
             return as;
         } catch (Exception e) {
-            e.printStackTrace(); // In ra thông báo lỗi
+            System.out.println("Loi");
         }
         return null;
     }
@@ -264,24 +227,20 @@ public class OrderService {
         String query = "select count(*) from orders ";
         int count = 0;
         try {
-            List<Order> as = new ArrayList<>();
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
 
-            rs = ps.executeQuery(); // chạy câu lệnh query, nhận kết quả trả về
-
+            rs = ps.executeQuery();
             while (rs.next()) {
                 count = rs.getInt(1);
-
             }
-
         } catch (Exception e) {
-            e.printStackTrace(); // In ra thông báo lỗi
+            System.out.println("Loi");
         }
         return count;
     }
 
-    public static void main(String[] args) {
-
-    }
+   public static void main(String[] args) {
+    OrderService orderService = new OrderService();
+   }
 }

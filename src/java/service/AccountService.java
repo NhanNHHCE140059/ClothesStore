@@ -24,32 +24,6 @@ public class AccountService {
     DBContext dbcontext = new DBContext();
     Hash hash = new Hash();
 
-    //chuyen role tu db sang java
-    public Role mapRole(int roleValue) {
-        switch (roleValue) {
-            case 0:
-                return Role.Admin;
-            case 1:
-                return Role.Customer;
-            case 2:
-                return Role.Staff;
-            default:
-                throw new IllegalArgumentException("Unknown role value: " + roleValue);
-        }
-    }
-
-    // Chuyen status tu db sang java
-    public AccountStatus getStatusAccount(int status) {
-        switch (status) {
-            case 0:
-                return AccountStatus.ACTIVATE;
-            case 1:
-                return AccountStatus.DEACTIVATE;
-            default:
-                throw new IllegalArgumentException("Unknown role value: " + status);
-        }
-    }
-
     // Lay account ra tu Username
     public Account getAccountByUsername(String username) {
         Account account = null;
@@ -69,9 +43,9 @@ public class AccountService {
                         rs.getString(6),
                         rs.getString(7),
                         rs.getString(8),
-                        mapRole(rs.getInt(9)),
-                        getStatusAccount(rs.getInt(10))
-                );
+                        Role.values()[rs.getInt(9)],
+                        AccountStatus.values()[rs.getInt(10)]);
+
             }
             return account;
         } catch (SQLException e) {
@@ -218,8 +192,8 @@ public class AccountService {
         }
         return account;
     }
-    
-        public void updateAccountPassword(Account account) {
+
+    public void updateAccountPassword(Account account) {
         String email = account.getEmail();
         String password = account.getPassword();
         String hashPassword = this.hash.getMd5(password);
@@ -233,7 +207,41 @@ public class AccountService {
             e.printStackTrace();
         }
     }
+        //for register
+    public void createAccount(String username, String name, String email,
+            String phoneNumber, String password, String address) {
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement("insert into [Accounts](username, name, "
+                    + "email, phone, password, address, role, acc_status) values(?, ?, ?, ?, ?, ?, ?, ?)");
+            ps.setString(1, username);
+            ps.setString(2, name);
+            ps.setString(3, email);
+            ps.setString(4, phoneNumber);
+            ps.setString(5, password);
+            ps.setString(6, address);
+            ps.setInt(7, 1); // Role => 1 == Customer
+            ps.setInt(8, 0); // Account Status => 0 == Active
+            ps.executeUpdate();
+        } catch (Exception ex) {
+            System.out.println("Loi create account");
+            System.out.println(ex);
+        }
+    }
 
+    // Return true if a username already existed
+    public boolean exists(String username) {
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement("select * from [Accounts] where username=?");
+            ps.setString(1, username);
+            rs = ps.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            System.out.println("Error! user exists");
+        }
+        return false;
+    }
 
 //    public void updateHashPass()  {
 //        try {
@@ -263,40 +271,5 @@ public class AccountService {
 //        AccountService acsv = new AccountService();
 //        acsv.updateHashPass();
 //    }
-    
-    //for register
-    public void createAccount(String username, String name, String email, 
-                                     String phoneNumber, String password, String address) {
-        try {
-            connection = dbcontext.getConnection();
-            ps = connection.prepareStatement("insert into [Accounts](username, name, "
-                    + "email, phone, password, address, role, acc_status) values(?, ?, ?, ?, ?, ?, ?, ?)");
-            ps.setString(1, username);
-            ps.setString(2, name);
-            ps.setString(3, email);
-            ps.setString(4, phoneNumber);
-            ps.setString(5, password);
-            ps.setString(6, address);
-            ps.setInt(7, 1); // Role => 1 == Customer
-            ps.setInt(8, 0); // Account Status => 0 == Active
-            ps.executeUpdate();
-        } catch (Exception ex) {
-            System.out.println("Loi create account");
-            System.out.println(ex);
-        }
-    }
-    
-    // Return true if a username already existed
-    public boolean exists(String username)  {
-        try {
-            connection = dbcontext.getConnection();
-            ps = connection.prepareStatement("select * from [Accounts] where username=?");
-            ps.setString(1, username);
-            rs = ps.executeQuery();
-            return rs.next();
-        } catch (Exception e) {
-            System.out.println("Error! user exists");
-        }
-        return false;
-    }
+
 }

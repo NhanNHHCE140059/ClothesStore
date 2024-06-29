@@ -23,6 +23,7 @@
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-primary btn-block">Reset Password</button>
+                                    <button type="button" class="btn btn-primary btn-block" onclick="location.href = '/clothesstore/login'">Go to Login</button>
                                 </div>
                             </form>
                         </div>
