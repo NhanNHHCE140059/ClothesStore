@@ -41,29 +41,33 @@ function searchByPhone(param) {
         }
     });
 }
-function setActive(element, pageIndex) {
+function getQueryParameter(name) {
+    var urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+
+function setActivePage(pageIndex) {
     var links = document.querySelectorAll('.page-link');
     links.forEach(function (link) {
         link.classList.remove('active');
+        if (link.textContent == pageIndex) {
+            link.classList.add('active');
+        }
     });
-    element.classList.add('active');
-    localStorage.setItem('activePage', pageIndex); // Save active page index to localStorage
 }
 
-// Set the initial active page link from localStorage
 document.addEventListener('DOMContentLoaded', function () {
-    var activePage = localStorage.getItem('activePage');
-    if (activePage) {
-        var links = document.querySelectorAll('.page-link');
-        links.forEach(function (link) {
-            if (link.textContent === activePage) {
-                link.classList.add('active');
-            }
-        });
+    var pageIndex = getQueryParameter('indexPage');
+    if (pageIndex) {
+        setActivePage(pageIndex);
     } else {
         var links = document.querySelectorAll('.page-link');
         if (links.length > 0) {
             links[0].classList.add('active'); // Set the first page link as active initially
         }
     }
+});
+
+window.addEventListener('beforeunload', function () {
+    localStorage.removeItem('activePage');
 });
