@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  *
@@ -37,34 +38,39 @@ public class ProductVariantService {
         try {
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
-            ps.setInt(1,productId);
+            ps.setInt(1, productId);
             rs = ps.executeQuery();
             while (rs.next()) {
                 String size = rs.getString("size_name");
                 String color = rs.getString("color_name");
+                   variants.computeIfAbsent(size, new Function<String, Set<String>>() {
+                       @Override
+                    public Set<String> apply(String k) {
+                        return new HashSet<>();
+                    }
+                }).add(color);
 
-                variants.computeIfAbsent(size, k -> new HashSet<>()).add(color);
                 uniqueColors.add(color);
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("loiroibanoi@@@");
         }
 
-        variants.put("ALL_COLORS", uniqueColors); // Add all unique colors under a special key
+        variants.put("ALL_COLORS", uniqueColors);
         return variants;
     }
 
     public static void main(String[] args) {
         ProductVariantService service = new ProductVariantService();
-        int productId = 1; 
+        int productId = 1; // Thay đổi ID sản phẩm theo yêu cầu của bạn
         Map<String, Set<String>> variants = service.getVariantsByProductId(productId);
         for (Map.Entry<String, Set<String>> entry : variants.entrySet()) {
             String size = entry.getKey();
             Set<String> colors = entry.getValue();
-            System.out.println("Size: " + size);
+            System.out.println(size);
             for (String color : colors) {
-                System.out.println("  Color: " + color);
+                System.out.println(color);
             }
         }
     }
