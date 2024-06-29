@@ -29,8 +29,9 @@ public class DetailController extends HttpServlet {
                 if (req.getParameter("success") != null) {
                     req.setAttribute("successP", p);
                 }
+
+                req.setAttribute("totalP", wservice.countTotalProductInWareHouseByID(id));
                 req.setAttribute("pro_detail", p);
-                req.setAttribute("remainingPro", (wservice.GetProByIdInWareHouse(id)).getInventory_number());
                 req.getRequestDispatcher("detail.jsp").forward(req, resp);
             } catch (NumberFormatException e) {
                 // Xử lý trường hợp idStr không phải là một số hợp lệ

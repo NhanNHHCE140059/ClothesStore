@@ -13,8 +13,9 @@ import java.sql.ResultSet;
  *
  * @author My Computer
  */
-public class BillService {
-      Connection connection = null;
+public class ImportBillService {
+
+    Connection connection = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
     DBContext dbcontext = new DBContext();

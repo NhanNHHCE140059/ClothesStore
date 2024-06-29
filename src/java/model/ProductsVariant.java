@@ -4,7 +4,7 @@
  */
 package model;
 
-import java.sql.Date;
+import helper.ProductSizeType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,20 +12,16 @@ import lombok.Setter;
 
 /**
  *
- * @author Huenh
+ * @author My Computer
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Bill {
-      private int bill_id;
-    private Date create_date;
-    private double total_amount;
-    private String pro_name;
-    private double import_price;
-    private int quantity;
-    private String image_bill;
+public class ProductsVariant {
+    private int variant_id;
     private int pro_id;
-    
+    private ProductSizeType size_name;
+    private int color_id;
+    private int image_id;
 }

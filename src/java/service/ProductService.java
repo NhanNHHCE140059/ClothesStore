@@ -1,6 +1,7 @@
 package service;
 
 import db.DBContext;
+import helper.ProductStatus;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,89 +34,106 @@ public class ProductService {
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
-                pro = new Product(rs.getInt("pro_id"),
-                        rs.getString("pro_name"), rs.getDouble("pro_price"), rs.getString("imageURL"),
-                        rs.getString("description"), rs.getString("cat_name"));
+                pro = new Product(
+                        rs.getInt("pro_id"),
+                        rs.getString("pro_name"),
+                        rs.getDouble("pro_price"),
+                        rs.getString("imageURL"),
+                        rs.getString("description"),
+                        rs.getInt("cat_id"),
+                        ProductStatus.values()[rs.getInt("status_product")]
+                );
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception e) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
         }
 
         return pro;
     }
 
-    public boolean addProduct(int id_account, int productID, String proname, int quantity, double price) {
-        // Thực hiện kết nối đến cơ sở dữ liệu
+    public List<Product> getAllProducts() {
+        List<Product> list = new ArrayList<>();
+        String query = "SELECT * FROM Products";
+
         try {
-            try {
-                connection = dbcontext.getConnection();
-            } catch (Exception ex) {
-                Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, ex);
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Product(rs.getInt("pro_id"),
+                        rs.getString("pro_name"),
+                        rs.getDouble("pro_price"),
+                        rs.getString("imageURL"),
+                        rs.getString("description"),
+                        rs.getInt("cat_id"),
+                        ProductStatus.values()[rs.getInt("status_product")]));
             }
-            String sql = "INSERT INTO Carts (acc_id, pro_id, pro_name, pro_quantity, pro_price) "
-                    + "VALUES (?, ?, ?, ?, ?)";
+        } catch (Exception e) {
+            System.out.println("An error occurred while fetching products: " + e.getMessage());
+        }
+        return list;
+    }
 
+    public boolean addProduct(String pro_name, double pro_price, String imageURL, String description, int cat_id, ProductStatus status_product) {
+
+        try {
+
+            String sql = "INSERT INTO Products (pro_name, pro_price, imageURL, description, cat_id, status_product) "
+                    + "VALUES (?, ?, ?, ?, ?, ?)";
+            connection = dbcontext.getConnection();
             ps = connection.prepareStatement(sql);
-
-            ps.setInt(1, id_account);
-            ps.setInt(2, productID);
-            ps.setString(3, proname);
-            ps.setInt(4, quantity);
-            ps.setDouble(5, price);
+            ps.setString(1, pro_name);
+            ps.setDouble(2, pro_price);
+            ps.setString(3, imageURL);
+            ps.setString(4, description);
+            ps.setInt(5, cat_id);
+            ps.setInt(6, status_product.ordinal());
 
             ps.executeUpdate();
 
-            System.out.println("Sản phẩm đã được thêm vào giỏ hàng!");
+            System.out.println("Sản phẩm đã được thêm vào cơ sở dữ liệu!");
 
         } catch (SQLException e) {
-            if (e.getSQLState().equals("S0001")) {
-                System.out.println("Qua so Luong");
-                return false;
-            }
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
+            return false;
         } catch (Exception e) {
-            System.out.println("error");
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
             return false;
         }
         return true;
     }
 
-    public List<Product> getAllProducts() {
-        List<Product> list = new ArrayList<>();
-        String query = "select * from Products";
-
-        try {
-            connection = new DBContext().getConnection();
-            ps = connection.prepareStatement(query);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(new Product(rs.getInt(1), rs.getString(2), rs.getDouble(3),
-                        rs.getString(4), rs.getString(5), rs.getString(6)));
-            }
-        } catch (Exception e) {
-        }
-        return list;
-    }
-
     public List<Product> searchByName(String txtSearch) {
         List<Product> list = new ArrayList<>();
-        String query = "select * from Products where pro_name like ?";
+        String query = "SELECT * FROM Products WHERE pro_name LIKE ?";
 
         try {
-            connection = new DBContext().getConnection();
+            connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
             ps.setString(1, "%" + txtSearch + "%");
             rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new Product(rs.getInt(1), rs.getString(2), rs.getDouble(3),
-                        rs.getString(4), rs.getString(5), rs.getString(6)));
+                list.add(new Product(
+                        rs.getInt("pro_id"),
+                        rs.getString("pro_name"),
+                        rs.getDouble("pro_price"),
+                        rs.getString("imageURL"),
+                        rs.getString("description"),
+                        rs.getInt("cat_id"),
+                        ProductStatus.values()[rs.getInt("status_product")]
+                ));
             }
+        } catch (SQLException e) {
+            System.out.println("loi roi ban oi");
         } catch (Exception e) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
         }
         return list;
     }
 
-    public static void main(String[] args) {
-        
-    }
+   public static void main(String[] args) {
+    ProductService productService = new ProductService();
+   }
 }

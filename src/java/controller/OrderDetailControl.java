@@ -35,36 +35,36 @@ public class OrderDetailControl extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-         HttpSession session = request.getSession();
-            if(session.getAttribute("account")==null){
-            response.sendRedirect(request.getContextPath()+"/login.jsp");
-           
-        }else{
-         String orderID = request.getParameter("orderId");
-
-        try {
-            int parsedOrderID = Integer.parseInt(orderID);
-            OrderDetailService dao = new OrderDetailService();
-            ProductService daoo = new ProductService();
-
-            List<OrderDetail> lstOrderDetail = dao.getOrderDetailByOrderID(parsedOrderID); //ok
-            List<Map<OrderDetail, Product>> lsoderduct = new ArrayList<>();
-            for (OrderDetail od : lstOrderDetail) {
-               
-                Map<OrderDetail, Product> aaa = new HashMap<>();
-                aaa.put(od,(daoo.GetProById(od.getPro_id())));
-                lsoderduct.add(aaa);
-            }
-         
-            request.setAttribute("lstOrderDetail", lsoderduct);
-             request.getRequestDispatcher("OrderDetail.jsp").forward(request, response);
-        } catch (NumberFormatException e) {
-            String errorMessage = "ID đơn hàng không hợp lệ.";
-            request.setAttribute("errorMessage", errorMessage);
-            System.out.println(errorMessage);
-        }
-     
-    }
+//         HttpSession session = request.getSession();
+//            if(session.getAttribute("account")==null){
+//            response.sendRedirect(request.getContextPath()+"/login.jsp");
+//           
+//        }else{
+//         String orderID = request.getParameter("orderId");
+//
+//        try {
+//            int parsedOrderID = Integer.parseInt(orderID);
+//            OrderDetailService dao = new OrderDetailService();
+//            ProductService daoo = new ProductService();
+//
+//            List<OrderDetail> lstOrderDetail = dao.getOrderDetailByOrderID(parsedOrderID); //ok
+//            List<Map<OrderDetail, Product>> lsoderduct = new ArrayList<>();
+//            for (OrderDetail od : lstOrderDetail) {
+//               
+//                Map<OrderDetail, Product> aaa = new HashMap<>();
+//                aaa.put(od,(daoo.GetProById(od.getPro_id())));
+//                lsoderduct.add(aaa);
+//            }
+//         
+//            request.setAttribute("lstOrderDetail", lsoderduct);
+//             request.getRequestDispatcher("OrderDetail.jsp").forward(request, response);
+//        } catch (NumberFormatException e) {
+//            String errorMessage = "ID đơn hàng không hợp lệ.";
+//            request.setAttribute("errorMessage", errorMessage);
+//            System.out.println(errorMessage);
+//        }
+//     
+//    }
     }
 
     @Override

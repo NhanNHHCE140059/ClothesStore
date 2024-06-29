@@ -9,11 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Cart {
-    private int cart_id;
+public class Favorite {
+    private int favorite_id;
     private int acc_id;
-    private int variant_id; 
-    private int pro_quantity;
-    private double pro_price;
-    private double Total_price;
+    private int pro_id;
 }
