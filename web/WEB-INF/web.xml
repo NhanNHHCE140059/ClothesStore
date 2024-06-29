@@ -8,6 +8,10 @@
         <servlet-name>ViewProductController</servlet-name>
         <servlet-class>controller.ViewProductController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>OrderStatusController</servlet-name>
+        <servlet-class>controller.OrderStatusController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>OrderController</servlet-name>
         <url-pattern>/Order</url-pattern>
@@ -15,6 +19,10 @@
     <servlet-mapping>
         <servlet-name>ViewProductController</servlet-name>
         <url-pattern>/products</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OrderStatusController</servlet-name>
+        <url-pattern>/OrderStatus</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -24,7 +24,7 @@ public class DBContext {
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         return DriverManager.getConnection(url, userID, password);
     }
-    private final String serverName = "LAPTOP-IJDIVEIH";
+    private final String serverName = "localhost";
     private final String dbName = "ClothesStore";
     private final String userID = "sa";
     private final String password = "123";

@@ -189,33 +189,33 @@ public class AccountService {
         return matcher.matches();
     }
 
-//    public void updateHashPass()  {
-//        try {
-//            String selectSQL = "SELECT acc_id, password FROM accounts";
-//            connection = dbcontext.getConnection();
-//            ps = connection.prepareStatement(selectSQL);
-//            rs = ps.executeQuery();
-//            String updateSQL = "UPDATE accounts SET password = ? WHERE acc_id = ?";
-//            PreparedStatement psUpdate = null;
-//            psUpdate = connection.prepareStatement(updateSQL);
-//            while (rs.next()) {
-//                int accountId = rs.getInt("acc_id");
-//                String password = rs.getString("password");
-//                String hashedPassword = hash.getMd5(password);
-//                psUpdate.setString(1, hashedPassword);
-//                psUpdate.setInt(2, accountId);
-//                psUpdate.executeUpdate();
-//            }
-//        } catch (SQLException e) {
-//            System.out.println("hash khong thanh cong");
-//        }catch (Exception e) {
-//            System.out.println("hash khong thanh cong");
-//        }
-//
-//    }
-//    public static void main(String[] args) {
-//        AccountService acsv = new AccountService();
-//        acsv.updateHashPass();
-//    }
+    public void updateHashPass()  {
+        try {
+           String selectSQL = "SELECT acc_id, password FROM accounts";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(selectSQL);
+            rs = ps.executeQuery();
+            String updateSQL = "UPDATE accounts SET password = ? WHERE acc_id = ?";
+            PreparedStatement psUpdate = null;
+            psUpdate = connection.prepareStatement(updateSQL);
+            while (rs.next()) {
+                int accountId = rs.getInt("acc_id");
+                String password = rs.getString("password");
+                String hashedPassword = hash.getMd5(password);
+                psUpdate.setString(1, hashedPassword);
+                psUpdate.setInt(2, accountId);
+                psUpdate.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.out.println("hash khong thanh cong");
+        }catch (Exception e) {
+            System.out.println("hash khong thanh cong");
+        }
+
+    }
+    public static void main(String[] args) {
+        AccountService acsv = new AccountService();
+        acsv.updateHashPass();
+    }
     
 }
