@@ -27,9 +27,10 @@ public class Order {
     private Date orderDate;
     private String addressReceive;
     private String phone;
+    private int acc_id; 
     private String username;
     private double totalPrice;
     private OrderStatus order_status;
     private PayStatus pay_status;
-    private ShipStatus ship_status;
+    private ShipStatus shipping_status;
 }

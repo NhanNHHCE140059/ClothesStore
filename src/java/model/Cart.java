@@ -12,8 +12,7 @@ import lombok.Setter;
 public class Cart {
     private int cart_id;
     private int acc_id;
-    private int pro_id;
-    private String pro_name;
+    private int variant_id; 
     private int pro_quantity;
     private double pro_price;
     private double Total_price;

@@ -15,9 +15,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class OrderDetail {
 
+    private int order_detail_id;
     private int order_id;
-    private int pro_id;
+    private int variant_id;
     private double UnitPrice;
     private int Quantity;
+    private String feedback_details;
 
 }

@@ -5,6 +5,7 @@
 package model;
 
 import helper.CategoryType;
+import helper.ProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,6 @@ public class Product {
     private double pro_price;
     private String imageURL;
     private String description;
-    private String cat_name;
-
+    private int cat_id;
+    private ProductStatus status_product;
 }

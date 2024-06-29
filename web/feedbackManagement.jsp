@@ -121,7 +121,7 @@
                 <% if (endPage != 0) {
                for (int i =1; i<=endPage;i++) {
                 %>
-                <a href="managementfeedback?indexPage=<%=i%>" onclick="setActive(this, <%=i%>)" class="page-link"><%=i%></a>
+                <a href="managementfeedback?indexPage=<%=i%>"class="page-link"><%=i%></a>
                 <% } } %>
             </div>
         </div>

@@ -20,5 +20,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Category {
     private int cat_id;
-    private CategoryType cat_name;
+    private String cat_name;
 }
