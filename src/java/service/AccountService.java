@@ -60,6 +60,42 @@ public class AccountService {
 //    //update info account "Fullname","Address","Email","Number Phone"
 //
 
+    public Account getAccountByOrdeDetailID(int orderDetail_id) {
+        Account account = null;
+        try {
+            String query = "SELECT a.*\n"
+                    + "FROM OrderDetails od\n"
+                    + "JOIN orders o ON od.order_id = o.order_id\n"
+                    + "JOIN accounts a ON o.acc_id = a.acc_id\n"
+                    + "WHERE od.order_detail_id =  ?;";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, orderDetail_id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                account = new Account(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getString(6),
+                        rs.getString(7),
+                        rs.getString(8),
+                        Role.values()[rs.getInt(9)],
+                        AccountStatus.values()[rs.getInt(10)]);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL error occurred while fetching account.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("An unexpected error occurred.");
+        }
+        return account;
+    }
+
     public void updateInfoAccountUser(String fullName, String address, String emailAddress, String numberPhone, String username) {
         try {
             String query = "UPDATE accounts SET email = ?, phone= ?, name = ?,address=? WHERE username = ?";
@@ -207,7 +243,8 @@ public class AccountService {
             e.printStackTrace();
         }
     }
-        //for register
+    //for register
+
     public void createAccount(String username, String name, String email,
             String phoneNumber, String password, String address) {
         try {
@@ -267,9 +304,9 @@ public class AccountService {
 //        }
 //
 //    }
-//    public static void main(String[] args) {
-//        AccountService acsv = new AccountService();
-//        acsv.updateHashPass();
-//    }
-
+    public static void main(String[] args) {
+        AccountService acsv = new AccountService();
+          
+       
+    }
 }
