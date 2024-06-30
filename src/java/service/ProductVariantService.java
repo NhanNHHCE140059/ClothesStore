@@ -5,15 +5,18 @@
 package service;
 
 import db.DBContext;
+import helper.ProductSizeType;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import model.ProductsVariant;
 
 /**
  *
@@ -43,8 +46,8 @@ public class ProductVariantService {
             while (rs.next()) {
                 String size = rs.getString("size_name");
                 String color = rs.getString("color_name");
-                   variants.computeIfAbsent(size, new Function<String, Set<String>>() {
-                       @Override
+                variants.computeIfAbsent(size, new Function<String, Set<String>>() {
+                    @Override
                     public Set<String> apply(String k) {
                         return new HashSet<>();
                     }
@@ -61,17 +64,76 @@ public class ProductVariantService {
         return variants;
     }
 
-    public static void main(String[] args) {
-        ProductVariantService service = new ProductVariantService();
-        int productId = 1; // Thay đổi ID sản phẩm theo yêu cầu của bạn
-        Map<String, Set<String>> variants = service.getVariantsByProductId(productId);
-        for (Map.Entry<String, Set<String>> entry : variants.entrySet()) {
-            String size = entry.getKey();
-            Set<String> colors = entry.getValue();
-            System.out.println(size);
-            for (String color : colors) {
-                System.out.println(color);
+    public ProductsVariant getPVbyColorAndSize(int pro_id, String size_name, String color_name) {
+        ProductsVariant pv = null;
+        try {
+            String query = "SELECT pv.*\n"
+                    + "FROM ProductVariants pv\n"
+                    + "JOIN ProductSizes ps ON pv.size_id = ps.size_id\n"
+                    + "JOIN ProductColors pc ON pv.color_id = pc.color_id\n"
+                    + "WHERE pv.pro_id = ? AND ps.size_name = ? AND pc.color_name = ?;";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, pro_id);
+            ps.setString(2, size_name);
+            ps.setString(3, color_name);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                pv = new ProductsVariant(rs.getInt(1), rs.getInt(2), ProductSizeType.values()[rs.getInt(3)], rs.getInt(4), rs.getInt(5));
             }
+        } catch (Exception e) {
         }
+        return pv;
+    }
+
+    public Map<String, Integer> getProductVariantByProIDAndSizeID(int pro_id, int size_id) {
+        Map<String, Integer> colorQuantityMap = new HashMap<>();
+        try {
+            String query = "SELECT pc.color_name, w.inventory_number "
+                    + "FROM ProductVariants pv "
+                    + "JOIN ProductColors pc ON pv.color_id = pc.color_id "
+                    + "JOIN Warehouses w ON pv.variant_id = w.variant_id "
+                    + "WHERE pv.pro_id = ? AND pv.size_id = ?";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, pro_id);
+            ps.setInt(2, size_id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String colorName = rs.getString("color_name");
+                int quantity = rs.getInt("inventory_number");
+                colorQuantityMap.put(colorName, quantity);
+            }
+        } catch (Exception e) {
+            System.out.println("Error");
+        }
+        return colorQuantityMap;
+    }
+
+    public Set<String> getSizesByProIDAndColorName(int pro_id, String color_name) {
+        Set<String> sizes = new HashSet<>();
+        try {
+            String query = "SELECT DISTINCT pv.size_id "
+                    + "FROM ProductVariants pv "
+                    + "JOIN ProductColors pc ON pv.color_id = pc.color_id "
+                    + "WHERE pv.pro_id = ? AND pc.color_name = ?";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, pro_id);
+            ps.setString(2, color_name);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String size_id = ProductSizeType.values()[rs.getInt("size_id")].name();
+                sizes.add(size_id);
+            }
+        } catch (Exception e) {
+            System.out.println(" loi roi ");
+        }
+        return sizes;
+    }
+
+    public static void main(String[] args) {
+        ProductVariantService pv = new ProductVariantService();
+
     }
 }

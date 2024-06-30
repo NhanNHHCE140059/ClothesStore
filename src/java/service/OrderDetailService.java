@@ -22,6 +22,35 @@ public class OrderDetailService {
     ResultSet rs = null;
     DBContext dbcontext = new DBContext();
 
+    public List<OrderDetail> getTop10FeedbackNotNullByID(int pro_id) {
+        List<OrderDetail> listTop10 = new ArrayList<>();
+        String query = "SELECT TOP 10 od.*\n"
+                + "FROM OrderDetails od\n"
+                + "JOIN ProductVariants pv ON od.variant_id = pv.variant_id\n"
+                + "WHERE pv.pro_id = ?\n"
+                + "  AND od.feedback_details IS NOT NULL\n"
+                + "ORDER BY NEWID();";
+        try {
+
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, pro_id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                listTop10.add(new OrderDetail(
+                        rs.getInt(1),
+                        rs.getInt(2),
+                        rs.getInt(3),
+                        rs.getDouble(4),
+                        rs.getInt(5),
+                        rs.getString(6)
+                ));
+            }
+        } catch (Exception e) {
+        }
+        return listTop10;
+    }
+
     /**
      * Retrieves order details by order ID.
      *
@@ -58,6 +87,7 @@ public class OrderDetailService {
      */
     public static void main(String[] args) {
         OrderDetailService service = new OrderDetailService();
-      
+        service.getTop10FeedbackNotNullByID(1);
+        System.out.println(service.getTop10FeedbackNotNullByID(1).size());
     }
 }
