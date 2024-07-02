@@ -7,12 +7,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.Account;
 import java.io.IOException;
 import java.util.List;
-import model.Account;
-import model.Product;
 import model.ProductsVariant;
-import service.ProductService;
 import service.ProductVariantService;
 
 /**
@@ -36,19 +34,19 @@ public class ProductManageController extends HttpServlet {
             return;
         }
         int indexPage;
-                if (req.getParameter("indexPage") != null) {
-                    indexPage = Integer.parseInt(req.getParameter("indexPage"));
-                } else {
-                    indexPage = 1;
-                }
-           
-                ProductVariantService p = new ProductVariantService();
-                int count = p.countPageforProduct();
-                int size = 5;
-                int endPage = count / size;
-                if (count % size != 0) {
-                    endPage++;
-                }
+        if (req.getParameter("indexPage") != null) {
+            indexPage = Integer.parseInt(req.getParameter("indexPage"));
+        } else {
+            indexPage = 1;
+        }
+
+        ProductVariantService p = new ProductVariantService();
+        int count = p.countPageforProduct();
+        int size = 5;
+        int endPage = count / size;
+        if (count % size != 0) {
+            endPage++;
+        }
         List<ProductsVariant> listPVar = p.getTop5Pro(indexPage);
         req.setAttribute("endPage", endPage);
         req.setAttribute("list", listPVar);

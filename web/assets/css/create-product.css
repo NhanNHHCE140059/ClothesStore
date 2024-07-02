@@ -3,7 +3,6 @@
     Author     : Huenh
 */
 
-
 @keyframes blink {
     0% {
         opacity: 1;
@@ -316,6 +315,83 @@ input[type="number"] {
     text-decoration: none;
     border: 1px solid #000; /* Thêm viền đen */
     transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền */
+}
+
+.btn-create {
+    background-color: #0704c9;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    text-decoration: none;
+}
+
+.btn-update {
+    background-color: #00c40d;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    text-decoration: none;
+}
+
+.btn-delete {
+    background-color: #f50202;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    text-decoration: none;
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.sidebar {
+    width: 250px;
+    background: #333;
+    color: #fff;
+    position: fixed;
+    height: 100%;
+    padding: 20px;
+}
+
+.sidebar-header {
+    font-size: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.menu-item, .submenu a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    margin: 10px 0;
+}
+
+.menu-item:hover, .submenu a:hover {
+    background: #575757;
+    padding: 5px;
+}
+
+.separator {
+    border-bottom: 1px solid #575757;
+    margin: 10px 0;
+}
+
+.submenu {
+    margin-left: 10px;
+}
+
+.content {
+    margin-left: 270px;
+    padding: 20px;
 }
 
 .back-home:hover {

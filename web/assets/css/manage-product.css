@@ -230,7 +230,6 @@ body {
     color: white;
     border: 1px solid #4CAF50;
 }
-
 .modal {
     display: block;
     position: fixed;
@@ -321,6 +320,25 @@ input[type="number"] {
     text-decoration: none;
 }
 
+.btn-update {
+    background-color: #00c40d;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    text-decoration: none;
+}
+
+.btn-delete {
+    background-color: #f50202;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    text-decoration: none;
+}
 .imgPro{
     height: 60%;
     width: 60%;
@@ -422,4 +440,3 @@ a.btn, button.btn {
     padding: 0;
     width: 100%;
 }
-

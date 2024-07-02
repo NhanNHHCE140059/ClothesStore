@@ -38,23 +38,25 @@ public class CategoryService {
         }
         return category;
     }
-public boolean addNewCategory(String cat_name) {
-    boolean isAdded = false;
-    try {
-        String query = "INSERT INTO Categories (cat_name) VALUES (?)";
-        connection = dbcontext.getConnection();
-        ps = connection.prepareStatement(query);
-        ps.setString(1, cat_name);
-        int rowsAffected = ps.executeUpdate();
-        
-        if (rowsAffected > 0) {
-            isAdded = true;
+
+    public boolean addNewCategory(String cat_name) {
+        boolean isAdded = false;
+        try {
+            String query = "INSERT INTO Categories (cat_name) VALUES (?)";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setString(1, cat_name);
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                isAdded = true;
+            }
+        } catch (Exception e) {
+
         }
-    } catch (Exception e) {
-       
+        return isAdded;
     }
-    return isAdded;
-}
+
     public List<Category> getAllCate() {
         List<Category> list = new ArrayList<>();
         try {
@@ -72,6 +74,5 @@ public boolean addNewCategory(String cat_name) {
 
     public static void main(String[] args) {
         CategoryService cate = new CategoryService();
-
     }
 }
