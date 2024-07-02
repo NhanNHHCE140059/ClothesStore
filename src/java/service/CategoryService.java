@@ -36,6 +36,6 @@ public class CategoryService {
     }
     public static void main(String[] args) {
         CategoryService cate = new CategoryService();
-    
+        
     }
 }

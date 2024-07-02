@@ -38,6 +38,22 @@ public class ProductImageService {
         }
         return listImg;
     }
+    
+    public ProductImage getImageID(int id){
+       ProductImage img = new ProductImage();
+        try {
+            String query = "Select * from ProductImages where pro_id = ?";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1,id);
+            rs= ps.executeQuery();
+            while(rs.next()) {
+                img = new ProductImage(rs.getInt(1),rs.getInt(2),rs.getString(3));
+            }
+        } catch (Exception e) {
+        }
+        return img;
+    }
     public static void main(String[] args) {
 
     }
