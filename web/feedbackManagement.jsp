@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/feedbackManagement.css"/>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Producter Feedback Dashboard</title>
+        <title>Shop Management</title>
     </head>
 
     <body>
@@ -23,9 +23,7 @@
             <a href="#" class="menu-item">Product Management</a>
             <div class="separator"></div>
             <div class="submenu">
-                <a href="#">Create Product</a>
-                <a href="#">Update Product</a>
-                <a href="#">Delete Product</a>
+                <a href="/clothesstore/manage-product">Manage Product</a>
             </div>
             <a href="#" class="menu-item">Category Management</a>
             <div class="separator"></div>

@@ -8,6 +8,10 @@ import db.DBContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.ProductColor;
 
 /**
  *
@@ -19,4 +23,28 @@ public class ProductColorService {
     PreparedStatement ps = null;
     ResultSet rs = null;
     DBContext dbcontext = new DBContext();
+    
+    public ProductColor GetProColorByID(int id) {
+        ProductColor pro = null;
+        String sql = "select * from ProductColors where color_id =?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                pro = new ProductColor(
+                        rs.getInt("color_id"),
+                        rs.getString("color_name")
+                );
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return pro;
+    }
 }
