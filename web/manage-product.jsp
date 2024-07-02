@@ -96,8 +96,8 @@
                         <td><img class="imgPro" src="<%=p.getImageURL()%>"></td>
                         <td><%=p.getPro_name()%></td>
                         <td><fmt:formatNumber value="<%=p.getPro_price()%>" type="number" pattern="#,##0"/> VND</td>
-                        <td><%=p.getDescription()%></td>
-                        <td><%=cate.getNameCateByIDCate(p.getCat_id()).getCat_name()%></td>
+                        <td><%=p.getDescription().length() > 30 ? p.getDescription().substring(0, 100) + "..." : p.getDescription()%></td>
+                        <td><%=(cate.getNameCateByIDCate(p.getCat_id())).getCat_name()%></td>
                         <td><%=pv.getSize_name()%></td>
                         <td><%=color.GetProColorByID(pv.getColor_id()).getColor_name()%></td>
                         <td class="actions">
@@ -116,18 +116,18 @@
                 <nav>
                     <ul class="pagination justify-content-center">
                         <%if (currentPage > 1){%>
-                            <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage - 1}">Previous</a></li>
-                        <%}%>
-                        <%int pageRange = 5; 
-                          int startPage = Math.max(1, currentPage - pageRange);
-                          int end = Math.min(endPage, currentPage + pageRange);%>
-                        
+                        <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage - 1}">Previous</a></li>
+                            <%}%>
+                            <%int pageRange = 5; 
+                              int startPage = Math.max(1, currentPage - pageRange);
+                              int end = Math.min(endPage, currentPage + pageRange);%>
+
                         <%for (int i = startPage; i <= end; i++){%>
                         <li><a class="page-link" href="manage-product?indexPage=<%=i%>"><%=i%></a></li>
                             <%}%>
-                        <%if(currentPage < endPage){%>
-                            <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage + 1}">Next</a></li>
-                        <%}%>
+                            <%if(currentPage < endPage){%>
+                        <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage + 1}">Next</a></li>
+                            <%}%>
                     </ul>
                 </nav>
             </div>

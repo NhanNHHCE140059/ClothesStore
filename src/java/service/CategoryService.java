@@ -21,12 +21,13 @@ public class CategoryService {
     DBContext dbcontext = new DBContext();
     
     public Category getNameCateByIDCate(int id_cate) {
-        Category category = new Category();
+        Category category = null;
         try {
             String query = "Select * from Categories where cat_id=?";
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
             ps.setInt(1,id_cate);
+            rs = ps.executeQuery();
             while (rs.next()){
                 category = new Category(rs.getInt(1),rs.getString(2));
             }
@@ -36,6 +37,7 @@ public class CategoryService {
     }
     public static void main(String[] args) {
         CategoryService cate = new CategoryService();
+       
         
     }
 }
