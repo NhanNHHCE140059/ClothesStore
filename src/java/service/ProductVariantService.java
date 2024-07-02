@@ -9,10 +9,8 @@ import helper.ProductSizeType;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -185,7 +183,29 @@ public class ProductVariantService {
         return quantity;
     }
 
-    public static void main(String[] args) {
-        ProductVariantService pv = new ProductVariantService();
+    public ProductsVariant getProductByColorAndSize(String size_name, int color_id, int pro_id) {
+        ProductSizeType sizeType = ProductSizeType.valueOf(size_name);
+        int ordinalValue = sizeType.ordinal();
+        ProductsVariant productV = null;
+        String query = "Select * from ProductVariants where pro_id=? and size_id=? and color_id=?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, pro_id);
+            ps.setInt(2, ordinalValue);
+            ps.setInt(3, color_id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                productV = new ProductsVariant(
+                        rs.getInt(1),
+                        rs.getInt(2),
+                        ProductSizeType.values()[rs.getInt(3)],
+                        rs.getInt(4),
+                        rs.getInt(5)
+                );
+            }
+        } catch (Exception e) {
+        }
+        return productV;
     }
 }
