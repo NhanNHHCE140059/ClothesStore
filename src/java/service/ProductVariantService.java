@@ -193,7 +193,7 @@ public class ProductVariantService {
         variants.put("ALL_COLORS", uniqueColors);
         return variants;
     }
-
+    
     public List<ProductsVariant> getAllProducts() {
         List<ProductsVariant> list = new ArrayList<>();
         String query = "SELECT * FROM ProductVariants";
@@ -215,7 +215,7 @@ public class ProductVariantService {
         }
         return list;
     }
-
+    
     // Xu li phan trang cho order da ship ( for feedbackManager) 
     // Dem so luong trang can xu li 
     public int countPageforProduct() {
@@ -233,7 +233,7 @@ public class ProductVariantService {
         }
         return countPage;
     }
-
+    
     public List<ProductsVariant> getTop5Pro(int indexPage) {
         List<ProductsVariant> listTop5ProVar = new ArrayList<>();
         try {
