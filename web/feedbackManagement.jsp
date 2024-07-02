@@ -21,7 +21,8 @@
             <a href="#" class="menu-item">Product Management</a>
             <div class="separator"></div>
             <div class="submenu">
-                <a href="/clothesstore/manage-product">Manage Product</a>
+                <a href="/clothesstore/manage-product">Manage Product Variant</a>
+                <a href="/clothesstore/main-manage-product">Manage Product</a>
             </div>
             <a href="#" class="menu-item">Category Management</a>
             <div class="separator"></div>
