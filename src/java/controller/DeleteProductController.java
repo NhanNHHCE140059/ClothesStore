@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import model.Product;
+import model.ProductsVariant;
 import model.Warehouse;
 import service.ProductService;
 import service.WarehouseService;
@@ -26,7 +27,9 @@ public class DeleteProductController extends HttpServlet {
         int currentPage = 1;
         String action = null;
         int pro_id = -1;
+        Warehouse warehouse = new Warehouse();
         WarehouseService wareservice = new WarehouseService();
+        ProductsVariant pro_var = new ProductsVariant();
         if (req.getParameter("action") != null) {
             action = req.getParameter("action");
         }
@@ -38,10 +41,11 @@ public class DeleteProductController extends HttpServlet {
         }
         switch (action) {
             case "delete":
-                Warehouse warehouse = wareservice.GetProByIdInWareHouse(pro_id);
+                warehouse = wareservice.GetProByIdInWareHouse(pro_id);
                 if (warehouse.getInventory_number() != 0) {
                     session.setAttribute("quantity", warehouse.getInventory_number());
                     resp.sendRedirect(req.getContextPath() + "/manage-product?indexPage=" + currentPage);
+                    return;
                 }
                 break;
             default:

@@ -56,6 +56,7 @@ public class CategoryService {
         }
         return isAdded;
     }
+
     public List<Category> getAllCate() {
         List<Category> list = new ArrayList<>();
         try {

@@ -1,4 +1,3 @@
-
 <%-- 
     Document   : update-product
     Created on : Jul 1, 2024, 9:01:58 AM
@@ -89,11 +88,11 @@
                             <label>Choose category name:</label>
                             <select name="category">
                                 <c:forEach var="cate" items="${listcate}">
-                                <option value="${cate.cat_id}">${cate.cat_name}</option>
+                                    <option value="${cate.cat_id}">${cate.cat_name}</option>
                                 </c:forEach>
                             </select>
                         </div>               
-                        <div>                     
+                        <div>     
                         </div>
                         <div class="form-group d-flex justify-content-center">
                             <input type="submit" value="Update" class="btn-update">

@@ -339,6 +339,7 @@ input[type="number"] {
     font-size: 0.9em;
     text-decoration: none;
 }
+
 .imgPro{
     height: 60%;
     width: 60%;
@@ -400,6 +401,7 @@ input[type="number"] {
 
 .modal-button.cancel:hover {
     background-color: #333333;
+<<<<<<< HEAD
 }
 
 /* Định nghĩa các thuộc tính CSS chung cho cả thẻ <a> và <button> */
@@ -440,3 +442,6 @@ a.btn, button.btn {
     padding: 0;
     width: 100%;
 }
+=======
+}
+>>>>>>> f927cfe (feat: Product management)

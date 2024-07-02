@@ -23,16 +23,17 @@ public class ProductManageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-                
-        if(session.getAttribute("account")==null){
-            resp.sendRedirect(req.getContextPath()+"/login");
+
+        if (session.getAttribute("account") == null) {
+            resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
         Account acc = (Account) session.getAttribute("account");
-        if(acc.getRole() == Role.Customer ) {
-                  resp.sendRedirect(req.getContextPath() + "/home");
+        if (acc.getRole() == Role.Customer) {
+            resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
+
         int indexPage;
         if (req.getParameter("indexPage") != null) {
             indexPage = Integer.parseInt(req.getParameter("indexPage"));
@@ -53,5 +54,5 @@ public class ProductManageController extends HttpServlet {
         req.setAttribute("currentPage", indexPage);
         req.getRequestDispatcher("manage-product.jsp").forward(req, resp);
     }
-    
+
 }

@@ -94,6 +94,71 @@ public class ProductVariantService {
         variants.put("ALL_COLORS", uniqueColors);
         return variants;
     }
+    
+    public List<ProductsVariant> getAllProducts() {
+        List<ProductsVariant> list = new ArrayList<>();
+        String query = "SELECT * FROM ProductVariants";
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new ProductsVariant(rs.getInt("variant_id"),
+                        rs.getInt("pro_id"),
+                        ProductSizeType.values()[rs.getInt("size_id")],
+                        rs.getInt("color_id"),
+                        rs.getInt("image_id"))
+                );
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred while fetching products: " + e.getMessage());
+        }
+        return list;
+    }
+    
+    // Xu li phan trang cho order da ship ( for feedbackManager) 
+    // Dem so luong trang can xu li 
+    public int countPageforProduct() {
+        int countPage = 0;
+        try {
+            String query = "select count(*) from ProductVariants";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                countPage = rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+        }
+        return countPage;
+    }
+    
+    public List<ProductsVariant> getTop5Pro(int indexPage) {
+        List<ProductsVariant> listTop5ProVar = new ArrayList<>();
+        try {
+            String query = "with x as (select ROW_NUMBER() over (order by variant_id desc) as r \n"
+                    + ", * from ProductVariants)\n"
+                    + "select * from x where r between ?*5-4 and ?*5";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, indexPage);
+            ps.setInt(2, indexPage);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                listTop5ProVar.add(new ProductsVariant(rs.getInt("variant_id"),
+                        rs.getInt("pro_id"),
+                        ProductSizeType.values()[rs.getInt("size_id")],
+                        rs.getInt("color_id"),
+                        rs.getInt("image_id"))
+                );
+            }
+            return listTop5ProVar;
+        } catch (Exception e) {
+        }
+        return null;
+    }
 
     public List<ProductsVariant> getAllProductsVra() {
         List<ProductsVariant> list = new ArrayList<>();

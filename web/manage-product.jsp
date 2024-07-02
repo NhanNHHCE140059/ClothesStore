@@ -118,18 +118,18 @@
                 <nav>
                     <ul class="pagination justify-content-center">
                         <%if (currentPage > 1){%>
-                            <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage - 1}">Previous</a></li>
-                        <%}%>
-                        <%int pageRange = 5; 
-                          int startPage = Math.max(1, currentPage - pageRange);
-                          int end = Math.min(endPage, currentPage + pageRange);%>
-                        
+                        <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage - 1}">Previous</a></li>
+                            <%}%>
+                            <%int pageRange = 5; 
+                              int startPage = Math.max(1, currentPage - pageRange);
+                              int end = Math.min(endPage, currentPage + pageRange);%>
+
                         <%for (int i = startPage; i <= end; i++){%>
                         <li><a class="page-link" href="manage-product?indexPage=<%=i%>"><%=i%></a></li>
                             <%}%>
-                        <%if(currentPage < endPage){%>
-                            <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage + 1}">Next</a></li>
-                        <%}%>
+                            <%if(currentPage < endPage){%>
+                        <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage + 1}">Next</a></li>
+                            <%}%>
                     </ul>
                 </nav>
             </div>
