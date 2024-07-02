@@ -79,23 +79,27 @@ Integer indexpage = (Integer) request.getAttribute("indexpage");
             html {
                 position: relative;
             }
+            .cartmanagement {
+                position: relative;
+
+                height: auto;
+            }
+
             #cartsummary {
-                width: 92%;
+                margin-top: 20px;
+                width: 100%;
                 height: 115px; /* Để tự động điều chỉnh chiều cao */
                 text-align: center;
-                position: fixed;
-                bottom: 0; /* Gắn vào đáy trang */
-                left: 50%;
-                transform: translateX(-50%);
-                z-index: 100000;
+                bottom: 10px;
                 background-color: #fff;
                 border-top: 1px solid #ddd;
                 border: 1px solid #ffd333;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                z-index: 10000;
             }
 
             #cartsummary .bg-light {
-                padding: 10px 30px; /* Giảm padding */
+                padding: 15px 30px; /* Giảm padding */
             }
 
             #cartsummary h5 {
@@ -219,13 +223,10 @@ Integer indexpage = (Integer) request.getAttribute("indexpage");
                                                 <button name="action" value="decQuan" type="submit" class="btn btn-sm btn-primary btn-plus"/>
                                                 <i class="fa fa-minus"></i>
                                             </div>   
-                                        </form>
-                                        <form id="quantityCustom_<%=cart.getVariant_id()%>"action="cart" method="post" >     
-                                            <input class="form-control form-control-sm bg-secondary border-0 text-center quantity-custom" type="number" value="<%= cart.getPro_quantity() %>" name="quantityC" onblur="handleBlur(<%=cart.getVariant_id()%>)" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                                        </form>
+                                        </form>                                       
+                                        <input class="form-control form-control-sm bg-secondary border-0 text-center quantity-custom" type="number" value="<%= cart.getPro_quantity() %>" name="quantityC" onblur="handleBlur(<%=cart.getVariant_id()%>)" oninput="this.value = this.value.replace(/[^0-9]/g, '');">                                       
                                         <div class="input-group-btn">
                                             <form action="cart" method="post">
-
                                                 <input type="hidden" name="pro_Vid" value="<%=cart.getVariant_id()%>"> 
                                                 <button name="action" value="incQuan" type="submit" class="btn btn-sm btn-primary btn-plus">
                                                     <i class="fa fa-plus"></i>
@@ -257,27 +258,28 @@ Integer indexpage = (Integer) request.getAttribute("indexpage");
                                 <a href="cart?indexPage=${i}" class="page-link">${i}</a>
                             </c:forEach>
                         </c:if>
-                    </div>     
-                </div>
-                <div class="text-center mb-0" id="cartsummary">
-                    <div class="bg-light p-30 mb-5">
-                        <div class="pt-2">
-                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="checkbox-wrapper">
-                                        <input type="checkbox" id="tick-checkbox">
+                    </div> 
+                    <div class="text-center mb-0" id="cartsummary">
+                        <div class="bg-light p-30 mb-5">
+                            <div class="pt-2">
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="checkbox-wrapper">
+                                            <input type="checkbox" id="tick-checkbox">
+                                        </div>
+                                        <h5 class="m-0 ml-2">Select All (16)</h5>
                                     </div>
-                                    <h5 class="m-0 ml-2">Select All (16)</h5>
-                                </div>
-                                <h5 class="m-0 text-danger">Save to Loved</h5>
-                                <h5 class="m-0">Total Price (16 produts): <fmt:formatNumber value="<%=total_price%>" type="number" pattern="#,##0" /> VND</h5>
-                                <div class="d-flex flex-column align-items-end">
-                                    <a href="/clothesstore/checkout" class="btn btn-primary font-weight-bold py-3 px-4">Proceed To Checkout</a>                              
+                                    <h5 class="m-0 text-danger">Save to Loved</h5>
+                                    <h5 class="m-0">Total Price (16 produts): <fmt:formatNumber value="<%=total_price%>" type="number" pattern="#,##0" /> VND</h5>
+                                    <div class="d-flex flex-column align-items-end">
+                                        <a href="/clothesstore/checkout" class="btn btn-primary font-weight-bold py-3 px-4">Proceed To Checkout</a>                              
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
         <!-- Cart End -->
