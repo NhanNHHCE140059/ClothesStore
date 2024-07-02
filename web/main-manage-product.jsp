@@ -1,6 +1,6 @@
 <%-- 
-    Document   : manage-product
-    Created on : Jun 30, 2024, 9:17:04 PM
+    Document   : main-manage-product
+    Created on : Jul 2, 2024, 8:07:02 PM
     Author     : Huenh
 --%>
 
@@ -74,7 +74,7 @@
 
         <div class="content">
             <a href="${pageContext.request.contextPath}/home" class=" back-home">Back to Home</a>
-            <a href="/clothesstore/create-product" class="btn-create">Add new product</a>
+            <a href="/clothesstore/main-create-product" class="btn-create">Add new product</a>
             <table class="table">
                 <thead>
                     <tr>
@@ -86,56 +86,35 @@
                         <th>Category name</th>
                         <th>Sizes</th>
                         <th>Colors</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="manage-product">
-                    <%for(ProductsVariant pv : list){
-                    Product p = product.GetProById(pv.getPro_id());
-                    %>
+                <tbody id="main-manage-product">
                     <tr>
-                        <td><%=p.getPro_id()%></td>
-                        <td><img class="imgPro" src="<%=p.getImageURL()%>"></td>
-                        <td><%=p.getPro_name()%></td>
-                        <td><fmt:formatNumber value="<%=p.getPro_price()%>" type="number" pattern="#,##0"/> VND</td>
-                        <td><%=p.getDescription().length() > 30 ? p.getDescription().substring(0, 100) + "..." : p.getDescription()%></td>
-                        <td><%=(cate.getNameCateByIDCate(p.getCat_id())).getCat_name()%></td>
-                        <td><%=pv.getSize_name()%></td>
-                        <td><%=color.GetProColorByID(pv.getColor_id()).getColor_name()%></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="actions">
+                            <a href="/clothesstore/update-product" class="btn-update">Update</a>
+                            <a href="/clothesstore/delete-product" class="btn-delete">Delete</a>
+                        </td>
                     </tr>
-                    <%}%>
                 </tbody>
             </table>
             <div class="col-12">
                 <nav>
                     <ul class="pagination justify-content-center">
-                        <%if (currentPage > 1){%>
-                        <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage - 1}">Previous</a></li>
-                            <%}%>
-                            <%int pageRange = 5; 
-                              int startPage = Math.max(1, currentPage - pageRange);
-                              int end = Math.min(endPage, currentPage + pageRange);%>
-
-                        <%for (int i = startPage; i <= end; i++){%>
-                        <li><a class="page-link" href="manage-product?indexPage=<%=i%>"><%=i%></a></li>
-                            <%}%>
-                            <%if(currentPage < endPage){%>
-                        <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage + 1}">Next</a></li>
-                            <%}%>
+                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
                     </ul>
                 </nav>
             </div>
         </div>
-        <%if(session.getAttribute("quantity") != null){%>
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <p>The product is in stock so that cannot be deleted. The remaining quantity is: <%=quantity%></p>
-                <%session.removeAttribute("quantity");%>
-                <a href="manage-product?indexPage=${currentPage}">
-                    <button>OK</button>
-                </a>
-            </div>
-        </div>
-        <%}%>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
     </body>

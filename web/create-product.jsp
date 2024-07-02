@@ -116,7 +116,7 @@
                         </div>
                         <div class="form-group d-flex justify-content-center">
                             <input type="submit" value="Create" class="btn-create">
-                            <a href="${pageContext.request.contextPath}/manage-product" class="back-home">Cancel</a>
+                            <a href="${pageContext.request.contextPath}/main-manage-product" class="back-home">Cancel</a>
                         </div>
                     </form>
                 </div>
