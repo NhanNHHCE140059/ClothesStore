@@ -9,6 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page import="service.*" %>
 <%@page import="model.*" %>
+<%@page import="helper.*" %>
 <%@page import="java.util.*" %>
 <% CategoryService cateSv =  new CategoryService();%>
 <% Integer endPage = (Integer) request.getAttribute("endPage");%>
@@ -96,7 +97,11 @@
                             <td>${product.status_product}</td>
                             <td class="actions">
                                 <a href="/clothesstore/update-product?idPro=${product.pro_id}" class="btn-update">Update</a>
-                                <a href="/clothesstore/delete-product?idPro=${product.pro_id}" class="btn-delete">Delete</a>
+                                <% if(prod.getStatus_product() == ProductStatus.HIDDEN){ %>
+                                <a href="/clothesstore/delete-product?idPro=${product.pro_id}&action=visible" class="btn-delete">Visible</a>
+                                <%}else {%>
+                                <a href="/clothesstore/delete-product?idPro=${product.pro_id}&action=hidden" class="btn-delete">Hidden</a>
+                                <%}%>
                             </td>
                         </tr>
                     </c:forEach>
