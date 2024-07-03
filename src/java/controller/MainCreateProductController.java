@@ -17,11 +17,9 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import model.Product;
 import java.util.List;
-import java.util.UUID;
 import model.Category;
 import model.ProductColor;
 import service.CategoryService;
-import service.ProductColorService;
 import service.ProductImageService;
 import service.ProductService;
 

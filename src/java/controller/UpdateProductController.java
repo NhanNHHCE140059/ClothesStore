@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import service.*;
 import model.*;
+import helper.*;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.Part;
 import java.io.File;
@@ -85,6 +86,6 @@ public class UpdateProductController extends HttpServlet {
         // Gọi phương thức updateProduct từ ProductService
 
         // Chuyển hướng hoặc chuyển tiếp đến trang phù hợp
-        response.sendRedirect("main-manage-product");
+        response.sendRedirect("main-manage-product"); // Thay "somewhere.jsp" bằng trang thực tế
     }
 }

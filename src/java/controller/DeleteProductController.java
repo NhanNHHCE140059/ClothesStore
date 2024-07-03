@@ -63,12 +63,12 @@ public class DeleteProductController extends HttpServlet {
             if (request.getParameter("action") != null) {
                 String action = request.getParameter("action");
                 if (action.equals("hidden")) {
-                    productService.hiddenProduct(idPro, 1);
+                    productService.hiddenProduct(idPro,1);
                     response.sendRedirect(request.getContextPath() + ("/main-manage-product"));
                     return;
                 }
                 if (action.equals("visible")) {
-                    productService.hiddenProduct(idPro, 0);
+                    productService.hiddenProduct(idPro,0);
                     response.sendRedirect(request.getContextPath() + ("/main-manage-product"));
                     return;
                 }
