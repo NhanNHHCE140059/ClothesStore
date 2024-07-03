@@ -125,17 +125,7 @@
                 </nav>
             </div>
         </div>
-        <%if(session.getAttribute("quantity") != null){%>
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <p>The product is in stock so that cannot be deleted. The remaining quantity is: <%=quantity%></p>
-                <%session.removeAttribute("quantity");%>
-                <a href="manage-product?indexPage=${currentPage}">
-                    <button>OK</button>
-                </a>
-            </div>
-        </div>
-        <%}%>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
     </body>
