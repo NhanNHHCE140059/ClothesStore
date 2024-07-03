@@ -53,6 +53,12 @@ public class ProductVariantService {
                     }
                 }).add(color);
 
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        variants.computeIfAbsent(size, k -> new HashSet<>()).add(color);
+                    }
+                }.run();
                 uniqueColors.add(color);
             }
 

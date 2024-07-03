@@ -45,7 +45,12 @@ public class DetailController extends HttpServlet {
                 List<String> sizeOrder = Arrays.asList("S", "M", "L", "XL", "XXL", "XXXL", "XXXL", "XXXXL", "XXXXXL");
                 List<String> sizes = new ArrayList<>(size_color.keySet());
                 sizes.remove("ALL_COLORS");
-                Collections.sort(sizes, (o1, o2) -> Integer.compare(sizeOrder.indexOf(o1), sizeOrder.indexOf(o2)));
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        Collections.sort(sizes, (o1, o2) -> Integer.compare(sizeOrder.indexOf(o1), sizeOrder.indexOf(o2)));
+                    }
+                }.run();
                 // lay color
                 Set<String> allColors = size_color.get("ALL_COLORS");
                 ////////////////// Lay 9 product 
@@ -57,7 +62,7 @@ public class DetailController extends HttpServlet {
                 List<OrderDetail> listFeedback = orderdtSV.getTop10FeedbackNotNullByID(id);
                 System.out.println(listFeedback.size());
                 req.setAttribute("listFeedback", listFeedback);
-                  req.setAttribute("allColors", allColors);
+                req.setAttribute("allColors", allColors);
                 req.setAttribute("imgList", imgList);
                 req.setAttribute("sizes", sizes);
                 req.setAttribute("isCap", p.getCat_id());

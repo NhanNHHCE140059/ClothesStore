@@ -39,7 +39,13 @@ public class getSizeByColor extends HttpServlet {
         Map<String, Set<String>> size_color = pvService.getVariantsByProductId(pro_id);
         size_color.remove("ALL_COLORS");
         List<String> sizesList = new ArrayList<>(size_color.keySet());
-        Collections.sort(sizesList, (o1, o2) -> Integer.compare(sizeOrder.indexOf(o1), sizeOrder.indexOf(o2)));
+        new Runnable() {
+            @Override
+            public void run() {
+                Collections.sort(sizesList, (o1, o2) -> Integer.compare(sizeOrder.indexOf(o1), sizeOrder.indexOf(o2)));
+                System.out.println("Danh sách đã sắp xếp: " + sizesList);
+            }
+        }.run();
         Set<String> sizes = pvService.getSizesByProIDAndColorName(pro_id, color_name);
         System.out.println(size_color.keySet());
         if (sizes != null && !sizes.isEmpty()) {
