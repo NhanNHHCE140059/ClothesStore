@@ -15,14 +15,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
-import model.Category;
 import model.Product;
+import service.ProductImageService;
+import java.util.List;
+import model.Category;
 import model.ProductColor;
 import service.CategoryService;
 import service.ProductColorService;
-import service.ProductImageService;
 import service.ProductService;
 
 /**
@@ -48,68 +48,42 @@ public class MainCreateProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String nameProduct = request.getParameter("name_product");
-        ProductService productService = new ProductService();
-        for (Product product : productService.getAllProducts()) {
-            if (product.getPro_name().toUpperCase().trim().equals(nameProduct.toUpperCase().trim())) {
-                response.sendRedirect("main-create-product?error=duplicateName");
-                return;
-            }
-        }
+        String proPrice = request.getParameter("pro_price");
         String description = request.getParameter("description");
         String categoryID = request.getParameter("category");
         String status = request.getParameter("status");
-        String proPrice = request.getParameter("pro_price");
-        System.out.println(proPrice);
-        proPrice = proPrice.replace(" VND", "").replace(".", "");
+        Part part = request.getPart("img_product");
 
-        Collection<Part> parts = request.getParts();
-        String uploadDir = getServletContext().getRealPath("/") + "assets/img";
         String relativeFilePath = null;
-        for (Part part : parts) {
-            if (part.getName().equals("img_product") && part.getSize() > 0) {
-                String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-                String uniqueFilename = UUID.randomUUID().toString() + "_" + filename;
-                String absoluteFilePath = uploadDir + File.separator + uniqueFilename;
 
-                try {
-                    part.write(absoluteFilePath);
-                } catch (IOException e) {
-                    continue;
-                }
+        // Xử lý tệp hình ảnh nếu có
+        if (part != null && part.getSize() > 0) {
+            String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+            String uploadDir = getServletContext().getRealPath("/") + "assets/img";
 
-                relativeFilePath = "assets/img/" + uniqueFilename;
-          
-                    break;
-                
+            File uploadDirFile = new File(uploadDir);
+            if (!uploadDirFile.exists()) {
+                uploadDirFile.mkdirs();
             }
+
+            String absoluteFilePath = uploadDir + File.separator + filename;
+            relativeFilePath = "assets/img/" + filename;
+
+            part.write(absoluteFilePath);
         }
 
         if (nameProduct != null && proPrice != null && description != null && categoryID != null) {
-            int statusNUM = status.equals("active") ? 1 : 0;
-            ProductService prdS = new ProductService();
-            ProductImageService prImageService = new ProductImageService();
-            int productId = prdS.createProduct(nameProduct, Double.parseDouble(proPrice), description, relativeFilePath, Integer.parseInt(categoryID), statusNUM);
-
-            for (Part part : parts) {
-                if (part.getName().equals("img_product") && part.getSize() > 0) {
-                    String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-                    String uniqueFilename = UUID.randomUUID().toString() + "_" + filename;
-                    String absoluteFilePath = uploadDir + File.separator + uniqueFilename;
-
-                    try {
-                        part.write(absoluteFilePath);
-                    } catch (IOException e) {
-                        continue;
-                    }
-
-                    relativeFilePath = "assets/img/" + uniqueFilename;
-                    prImageService.addProductImage(productId, relativeFilePath);
-
-                }
+            int statusNUM = 1;
+            if(status.equals("VISIBLE")){
+                statusNUM =0;
             }
-
-            response.sendRedirect("main-create-product?success=true");
+            ProductService prdS = new ProductService();
+            prdS.createProduct(nameProduct, Double.parseDouble(proPrice), description, relativeFilePath, Integer.parseInt(categoryID), statusNUM);
+            response.sendRedirect("main-manage-product");
+            return;
         }
+
+        response.sendRedirect("main-create-product");
     }
 
 }

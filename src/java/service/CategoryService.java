@@ -56,7 +56,6 @@ public class CategoryService {
         }
         return isAdded;
     }
-
     public List<Category> getAllCate() {
         List<Category> list = new ArrayList<>();
         try {
@@ -70,9 +69,5 @@ public class CategoryService {
         } catch (Exception e) {
         }
         return list;
-    }
-
-    public static void main(String[] args) {
-        CategoryService cate = new CategoryService();
     }
 }

@@ -61,12 +61,11 @@ public class UpdateProductController extends HttpServlet {
         }
         proPrice = proPrice.replace(" VND", "").replace(".", "");
 
-        String filename = null;
         String relativeFilePath = null;
 
         // Xử lý tệp hình ảnh nếu có
         if (part != null && part.getSize() > 0) {
-            filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+            String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
             String uploadDir = getServletContext().getRealPath("/") + "assets/img";
 
             File uploadDirFile = new File(uploadDir);
