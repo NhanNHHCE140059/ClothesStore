@@ -28,6 +28,7 @@ public class getColorBySize extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         int pro_id = Integer.parseInt(request.getParameter("pro_id"));
+        boolean isStill = false;
         int size_id = ProductSizeType.valueOf(request.getParameter("size")).ordinal();
         String color_old = request.getParameter("color");
         PrintWriter out = response.getWriter();
@@ -39,16 +40,22 @@ public class getColorBySize extends HttpServlet {
         if (allColors != null && !allColors.isEmpty()) {
             out.print("<label for=\"color\" style=\"margin:6px 12px 0 0;\">Color:</label>");
             for (String color : allColors) {
-                if (color.equals(color_old) &&colorQuantityMap.containsKey(color_old)) {
+                if (color.equals(color_old) && colorQuantityMap.containsKey(color_old) && colorQuantityMap.get(color) > 0) {
+                         isStill = true;
                     out.print("<button class=\"color-btn active\" data-color=\"" + color + "\" style=\"background-color:" + color + "; opacity: 1;\" onclick=\"selectColor('" + color + "');fetchSizeAndQuantities('" + color + "')\"></button>");
                 } else {
-                    if (colorQuantityMap.containsKey(color) && colorQuantityMap.get(color) > 0 ) {
+                    if (colorQuantityMap.containsKey(color) && colorQuantityMap.get(color) > 0) {
+                        isStill = true;
                         out.print("<button class=\"color-btn\" data-color=\"" + color + "\" style=\"background-color:" + color + "; opacity: 1;box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;\"onclick=\"selectColor('" + color + "');fetchSizeAndQuantities('" + color + " ')\"></button>");
                     } else {
                         out.print("<button class=\"color-btn\" data-color=\"" + color + "\" style=\"background-color:" + color + "; opacity: 0.1;pointer-events: none;box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;\"></button>");
                     }
                 }
             }
+            if (!isStill) {
+                out.print("<div class=\"out-of-stock-message\"style=\"padding:0;margin:0;line-height:32px;\">This size is currently out of stock, please choose another size!</div>");
+            }
+
         } else {
             out.print("<p>No colors available for this size.</p>");
         }

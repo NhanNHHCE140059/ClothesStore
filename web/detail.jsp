@@ -206,6 +206,17 @@
                 opacity: 0;
             }
         }
+        .out-of-stock-message {
+            background-color: #ffe6e6;
+            color: #cc0000;
+            border: 1px solid #cc0000;
+            padding: 0 8px 0 8px !important;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
     </style>
     <body>
         <jsp:include page="/shared/_header.jsp" />
@@ -303,7 +314,7 @@
                             } } }
                             %>
                         </div>
-                        <div class="color-options mb-4" id="colorOptions">
+                        <div class="color-options mb-4" id="colorOptions" style="max-height:30px;">
                             <label for="color" style="margin:6px 12px 0 0;">Color:</label>
                             <%                             
                              for (String color : allColors) { 
@@ -442,7 +453,7 @@
             <div class="container-more">
                 <!-- Comments Section -->
                 <div class="comments col-lg-5">
-                    <h2>Feedback Product</h2>
+                    <h2>Feedback Product ${pro_detail.pro_name}</h2>
                     <% if (listFb != null) {
                         for (OrderDetail orderdetail : listFb) {
                     %>

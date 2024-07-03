@@ -132,8 +132,31 @@ public class ProductVariantService {
         return sizes;
     }
 
+    public int getQuantityBySizeAndProductID(int pro_id, String size_name) {
+        int quantity = 0;
+        try {
+            String query = "SELECT SUM(w.inventory_number) AS total_quantity\n"
+                    + "FROM ProductVariants pv\n"
+                    + "JOIN Warehouses w ON pv.variant_id = w.variant_id\n"
+                    + "WHERE pv.pro_id = ? AND pv.size_id = ?\n"
+                    + "GROUP BY pv.size_id;";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, pro_id);
+            ProductSizeType sizeEnum = ProductSizeType.valueOf(size_name);
+            int size_name_ordinal = sizeEnum.ordinal();
+            ps.setInt(2, size_name_ordinal);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                quantity = rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+        }
+        return quantity;
+    }
+
     public static void main(String[] args) {
         ProductVariantService pv = new ProductVariantService();
-
     }
 }
