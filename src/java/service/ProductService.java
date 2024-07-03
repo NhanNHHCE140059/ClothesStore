@@ -8,10 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Cart;
 import model.Product;
 
 /**
@@ -24,6 +22,49 @@ public class ProductService {
     PreparedStatement ps = null;
     ResultSet rs = null;
     DBContext dbcontext = new DBContext();
+
+    public void updateProduct(String pro_name, double pro_price, String des, String image, int cat_id, int pro_id) {
+        String updateProductQuery = "UPDATE Products "
+                + "SET pro_name = ?, "
+                + "    pro_price = ?, "
+                + "    description = ?, "
+                + "    imageURL = ?, "
+                + "    cat_id = ? "
+                + "WHERE pro_id = ?;";
+
+        String updateCartQuery = "UPDATE c "
+                + "SET c.pro_price = p.pro_price, "
+                + "    c.Total_price = p.pro_price * c.pro_quantity "
+                + "FROM Carts c "
+                + "INNER JOIN ProductVariants pv ON c.variant_id = pv.variant_id "
+                + "INNER JOIN Products p ON pv.pro_id = p.pro_id "
+                + "WHERE p.pro_id = ?;";
+
+        try {
+            connection = dbcontext.getConnection();
+
+            // Update Produc
+            ps = connection.prepareStatement(updateProductQuery);
+            ps.setString(1, pro_name);
+            ps.setDouble(2, pro_price);
+            ps.setString(3, des);
+            ps.setString(4, image);
+            ps.setInt(5, cat_id);
+            ps.setInt(6, pro_id);
+            ps.executeUpdate();
+            ps.close();
+
+            // Update Cart
+            ps = connection.prepareStatement(updateCartQuery);
+            ps.setInt(1, pro_id);
+            ps.executeUpdate();
+            ps.close();
+
+        } catch (Exception e) {
+            System.out.println("loiloiloi");
+            e.printStackTrace();
+        }
+    }
 
     public Product GetProById(int id) {
         Product pro = null;
@@ -156,7 +197,42 @@ public class ProductService {
         return list;
     }
 
-    public static void main(String[] args) {
-        ProductService productService = new ProductService();
+    public void hiddenProduct(int pro_id, int status) {
+        String query = "UPDATE Products SET status_product = ? WHERE pro_id = ?";
+
+        try {
+            Connection connection = dbcontext.getConnection();
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, status);
+            ps.setInt(2, pro_id);
+            ps.executeUpdate();
+            ps.close();
+            connection.close();
+        } catch (Exception e) {
+            System.out.println("Error while updating product status");
+            e.printStackTrace();
+        }
+    }
+
+    public void createProduct(String pro_name, double pro_price, String description, String imageURL, int cat_id, int status) {
+        String query = "INSERT INTO Products (pro_name, pro_price, description, imageURL, cat_id, status_product) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try {
+            Connection connection = dbcontext.getConnection();
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, pro_name);
+            ps.setDouble(2, pro_price);
+            ps.setString(3, description);
+            ps.setString(4, imageURL);
+            ps.setInt(5, cat_id);
+            ps.setInt(6, status);
+            ps.executeUpdate();
+            ps.close();
+            connection.close();
+        } catch (Exception e) {
+            System.out.println("Error while creating product");
+            e.printStackTrace();
+        }
     }
 }

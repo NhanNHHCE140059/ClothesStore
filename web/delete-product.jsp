@@ -6,16 +6,10 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+<%@page import="service.*" %>
+<%@page import="model.*" %>
+<% CategoryService cateSv =  new CategoryService();%>
 <html lang="en">
-    <%@page import="model.Account"%>
-    <%@page import="helper.Role"%>
-    <%@page import="model.Order"%>
-    <%@page import="java.util.List"%>
-    <% Account account = (Account) request.getAttribute("account"); %>
-    <% List<Order> listOrderS = (List<Order>) request.getAttribute("listOrderShipped"); %>
-    <% Integer endPage = (Integer) request.getAttribute("endPage");%>
-    <% String searchText = (String) request.getAttribute("searchText"); %>
-    <% Integer indexPage =(Integer) request.getAttribute("indexPage"); %>
     <head>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/create-product.css"/>
         <meta charset="UTF-8">
@@ -59,34 +53,33 @@
 
         <div class="content">
             <div class="card">
-                <div class="card-header">Create New Product</div>
+                <div class="card-header">Hidden Product</div>
                 <div class="card-body">
                     <form action="create-product">
                         <div class="input-group form-group">
                             <label>Product name:</label>
-                            <input type="text" name="" value="" class="form-control" readonly placeholder="Product name">
+                            <input type="text" name="" value="${product.pro_name}" class="form-control" readonly placeholder="Product name">
                         </div>
                         <div class="input-group form-group">
                             <label>Image URL:</label>
-                            <input type="text" name="" value="" class="form-control" readonly placeholder="Image URL">
+                            <input type="text" value="${product.imageURL}" class="form-control" readonly placeholder="Image URL">
                         </div>
                         <div class="input-group form-group">
                             <label>Price:</label>
-                            <input type="text" name="" value="" class="form-control" readonly placeholder="Price">
+                            <input type="text"  value="${product.pro_price}" class="form-control" readonly placeholder="Price">
                         </div>
                         <div class="input-group form-group">
                             <label>Description:</label>
-                            <input type="text" name="" value="" class="form-control" readonly placeholder="Description">
+                            <input type="text" name="" value="${product.description}" class="form-control" readonly placeholder="Description">
                         </div>
                         <div class="select">
-                            <label>Choose category name:</label>
-                            <select>
-                                <option value="shorts_and_trousers">SHORTS AND TROUSERS</option>
-                                <option value="t_shirt">T-SHIRT</option>
-                            </select>
+                            <% Product prod = (Product) pageContext.findAttribute("product");
+                             int cate_id = prod.getCat_id();%>
+                              <input type="text" name="" value="<%= cateSv.getNameCateByIDCate(cate_id).getCat_name()%>" class="form-control" readonly placeholder="category"> 
                         </div>
                         <div class="form-group d-flex justify-content-center">
-                            <input type="submit" value="Delete" class="btn-delete">
+                            
+                            <a href="/clothesstore/delete-product?idPro=${product.pro_id}&action=hidden" class="btn-delete">Hidden</a>
                             <a href="${pageContext.request.contextPath}/main-manage-product" class="back-home">Cancel</a>
                         </div>
                     </form>
