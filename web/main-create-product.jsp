@@ -5,12 +5,13 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
-    <%@page import="model.Account"%>
-    <%@page import="helper.Role"%>
-    <%@page import="model.Order"%>
-    <%@page import="java.util.List"%>
+    <%@page import="service.*" %>
+    <%@page import="model.*" %>
+    <%@page import="helper.*" %>
+    <%@page import="java.util.*" %>
     <% Account account = (Account) request.getAttribute("account"); %>
     <% List<Order> listOrderS = (List<Order>) request.getAttribute("listOrderShipped"); %>
     <% Integer endPage = (Integer) request.getAttribute("endPage");%>
@@ -63,57 +64,36 @@
             <div class="card">
                 <div class="card-header">Create New Product</div>
                 <div class="card-body">
-                    <form action="main-create-product">
+                    <form action="main-create-product" method="post"  enctype="multipart/form-data">
                         <div class="input-group form-group">
                             <label>Product name:</label>
-                            <input type="text" name="" value="" class="form-control" required placeholder="Product name">
+                            <input type="text" name="name_product" value="" class="form-control" required placeholder="Product name">
                         </div>
-                        <div class="input-group form-group">
+                      <div class="input-group form-group">
                             <label>Image URL:</label>
-                            <input type="text" name="" value="" class="form-control" required placeholder="Image URL">
+                            <input type="file" name="img_product" value="" class="form-control" required placeholder="Image URL">
                         </div>
                         <div class="input-group form-group">
                             <label>Price:</label>
-                            <input type="text" name="" value="" class="form-control" required placeholder="Price">
+                            <input type="text" name="pro_price" value="" class="form-control" required placeholder="Price">
                         </div>
                         <div class="input-group form-group">
                             <label>Description:</label>
-                            <input type="text" name="" value="" class="form-control" required placeholder="Description">
+                            <input type="text" name="description" value="" class="form-control" required placeholder="Description">
                         </div>
                         <div class="select">
                             <label>Choose category name:</label>
-                            <select>
-                                <option value="shorts_and_trousers">SHORTS AND TROUSERS</option>
-                                <option value="t_shirt">T-SHIRT</option>
+                            <select name="category">
+                                <c:forEach var="cate" items="${listcate}">
+                                    <option value="${cate.cat_id}">${cate.cat_name}</option>
+                                </c:forEach>
                             </select>
-                        </div>
-                        <div class="choose-size">
-                            <fieldset>
-                                <legend>Choose Sizes</legend>
-                                <input type="checkbox" name="size" value="S"> S<br>
-                                <input type="checkbox" name="size" value="M"> M<br>
-                                <input type="checkbox" name="size" value="L"> L<br>
-                                <input type="checkbox" name="size" value="XL"> XL<br>
-                                <input type="checkbox" name="size" value="XXL"> XXL<br>
-                                <input type="checkbox" name="size" value="3XL"> 3XL<br>
-                                <input type="checkbox" name="size" value="4XL"> 4XL<br>
-                                <input type="checkbox" name="size" value="5XL"> 5XL
-                            </fieldset>
-                        </div>
-                        <div class="choose-color">
-                            <fieldset>
-                                <legend>Choose Colors</legend>
-                                <input type="checkbox" name="color" value="red"> Red<br>
-                                <input type="checkbox" name="color" value="black"> Black<br>
-                                <input type="checkbox" name="color" value="white"> White<br>
-                                <input type="checkbox" name="color" value="blue"> Blue<br>
-                                <button type="button" onclick="addColor()">New Color</button>
-                            </fieldset>
-                        </div>
+                        </div> 
                         <div>
                             <fieldset>
                                 <legend>Product Status</legend>
-                                <input type="radio" name="status" value="active"> Active<br>
+                                <input type="radio" name="status" value="active"> VISIBLE<br>
+                                <input type="radio" name="status" value="hidden">HIDDEN<br>
                             </fieldset> 
                         </div>
                         <div class="form-group d-flex justify-content-center">
