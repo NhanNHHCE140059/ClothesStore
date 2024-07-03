@@ -72,6 +72,13 @@
             }
         </style>
         <!-- Breadcrumb Start -->
+        <c:if test="${param.fvss ==1}">
+            <div class="box">
+                <div class="content">
+                    <p style="padding-left: 10px">Product is available in Favorite List!!!</p>
+                </div>
+            </div>
+        </c:if>  
         <c:if test="${not empty successP}">
             <div class="box">
                 <div class="content">
@@ -139,8 +146,8 @@
                                         <div class="product-img position-relative overflow-hidden">
                                             <img class="img-fluid w-100" src="${o.imageURL}">
                                             <div class="product-action">
-                                                <a class="btn btn-outline-dark btn-sm" href="${pageContext.request.contextPath}/cart?action=addToCart&pro_id=${o.pro_id}&indexpage=${currentPage}"><i class="fa fa-shopping-cart"></i> Add to Cart</a>
-                                                <a class="btn btn-outline-dark btn-sm" href="#"><i class="far fa-heart"></i> Add to Wishlist</a>
+                                                <c:set var="page" value="${param.page != null ? param.page : 1}" />
+                                                <a class="btn btn-outline-dark btn-sm" href="/clothesstore/favorite?pid=${o.pro_id}&page=${page}"><i class="far fa-heart"></i> Add to Favorite</a>
                                                 <a class="btn btn-outline-dark btn-sm" href="/clothesstore/detail?pid=${o.pro_id}"><i class="fa fa-info-circle"></i> More information</a>
                                             </div>
                                         </div>

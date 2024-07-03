@@ -1,17 +1,21 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.LinkedList"%>
-<%@ page import="model.Cart"%>
-<%@ page import="service.CartService"%>
-<%@ page import="model.Account" %>
+<%@page import="model.*" %>
+<%@page import="service.*" %>
 <% CartService cservice = new CartService();
+FavoriteService faS = new FavoriteService();
 int quantityPro = 0;
+int quantityF = 0;
 if (session.getAttribute("account") != null) {
 Account acc = (Account) session.getAttribute("account");
 for (Cart c : cservice.GetListCartByAccID(acc.getAcc_id())) {
 quantityPro++;
     }  
+     for (Favorite fa : faS.getAllFavoriteByAccID(acc.getAcc_id()) ){
+     quantityF++;
     }
+    };
 %>
 <!-- Navbar Start -->
 <div class="container-fluid bg-dark mb-30">
@@ -31,21 +35,21 @@ quantityPro++;
                         <a href="/clothesstore/shop" class="nav-item nav-link">Shop</a>
                         <a href="/clothesstore/contact" class="nav-item nav-link">Contact</a>
                         <!-- Chỉ hiển thị Lịch sử đặt hàng cho vai trò Customer -->
-                        
-                     <c:if test="${sessionScope.account.role == 'Customer'}">
-    <a href="OrderHistoryControl" class="nav-item nav-link">Order History</a>
-</c:if>
-                        
-                         <c:if test="${sessionScope.account.role == 'Staff'}">
-    <a href="OrderHistoryStaffControl" class="nav-item nav-link">Order History(Staff)</a>
-</c:if>
 
-                        
+                        <c:if test="${sessionScope.account.role == 'Customer'}">
+                            <a href="OrderHistoryControl" class="nav-item nav-link">Order History</a>
+                        </c:if>
+
+                        <c:if test="${sessionScope.account.role == 'Staff'}">
+                            <a href="OrderHistoryStaffControl" class="nav-item nav-link">Order History(Staff)</a>
+                        </c:if>
+
+
                     </div>
                     <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
                         <a href="/clothesstore/favorite" class="btn px-0">
                             <i class="fas fa-heart text-primary"></i>
-                            <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">0</span>
+                            <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;"><%=quantityF%></span>
                         </a>
                         <a href="/clothesstore/cart" class="btn px-0 ml-3">
                             <i class="fas fa-shopping-cart text-primary"></i>
