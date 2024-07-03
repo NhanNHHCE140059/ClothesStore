@@ -78,8 +78,14 @@
                               <input type="text" name="" value="<%= cateSv.getNameCateByIDCate(cate_id).getCat_name()%>" class="form-control" readonly placeholder="category"> 
                         </div>
                         <div class="form-group d-flex justify-content-center">
+<<<<<<< HEAD
                             <input type="submit" value="Delete" class="btn-delete">
                             <a href="${pageContext.request.contextPath}/manage-product" class="back-home">Cancel</a>
+=======
+                            
+                            <a href="/clothesstore/delete-product?idPro=${product.pro_id}&action=hidden" class="btn-delete">Hidden</a>
+                            <a href="${pageContext.request.contextPath}/main-manage-product" class="back-home">Cancel</a>
+>>>>>>> 438da4e (update all for managementProduct)
                         </div>
                     </form>
                 </div>
