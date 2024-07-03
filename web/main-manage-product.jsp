@@ -6,29 +6,15 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page import="service.*" %>
+<%@page import="model.*" %>
+<%@page import="java.util.*" %>
+<% CategoryService cateSv =  new CategoryService();%>
+<% Integer endPage = (Integer) request.getAttribute("endPage");%>
+<% Integer currentPage =(Integer) request.getAttribute("indexPage"); %>
 <!DOCTYPE html>
 <html lang="en">
-    <%@page import="model.Account"%>
-    <%@page import="helper.Role"%>
-    <%@page import="model.Product" %>
-    <%@page import="model.Category" %>
-    <%@page import="model.ProductsVariant"%>
-    <%@page import="service.ProductService" %>
-    <%@page import="service.CategoryService" %>
-    <%@page import="model.ProductColor"%>
-    <%@page import="service.ProductColorService"%>
-    <%@page import="service.ProductImageService"%>
-    <%@page import="java.util.*"%>
-    <%ProductColorService color = new ProductColorService(); %>
-    <%ProductImageService img = new ProductImageService(); %>
-    <%ProductService product = new ProductService(); %>
-    <%CategoryService cate = new CategoryService(); %>
-    <%Integer quantity = (Integer) session.getAttribute("quantity");%>
-    <% Account account = (Account) request.getAttribute("account"); %>
-    <% List<ProductsVariant> list = (List<ProductsVariant>) request.getAttribute("list"); %>
-    <% Integer endPage = (Integer) request.getAttribute("endPage");%>
-    <% String searchText = (String) request.getAttribute("searchText"); %>
-    <% Integer currentPage =(Integer) request.getAttribute("currentPage"); %>
     <head>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/manage-product.css"/>
         <meta charset="UTF-8">
@@ -84,33 +70,54 @@
                         <th>Product price</th>
                         <th>Description</th>
                         <th>Category name</th>
-                        <th>Sizes</th>
-                        <th>Colors</th>
+                        <th>Status(Visible/Hidden)</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="main-manage-product">
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td class="actions">
-                            <a href="/clothesstore/update-product" class="btn-update">Update</a>
-                            <a href="/clothesstore/delete-product" class="btn-delete">Delete</a>
-                        </td>
-                    </tr>
+                    <c:forEach var="product" items="${listP}"> 
+                        <%
+                      
+                          Product prod = (Product) pageContext.findAttribute("product");
+                          String description = prod.getDescription();
+                          String truncatedDescription = (description != null && description.length() > 90) 
+                                                        ? description.substring(0, 90) + "..." 
+                                                        : description;
+                         int cate_id = prod.getCat_id();
+                        %>
+
+                        <tr>
+                            <td>${product.pro_id}</td>
+                            <td>${product.imageURL}</td>
+                            <td>${product.pro_name}</td>
+                            <td>${product.pro_price}</td>
+                            <td><%= truncatedDescription %></td>
+                            <td><%= cateSv.getNameCateByIDCate(cate_id).getCat_name()%></td>
+                            <td>${product.status_product}</td>
+                            <td class="actions">
+                                <a href="/clothesstore/update-product?idPro=${product.pro_id}" class="btn-update">Update</a>
+                                <a href="/clothesstore/delete-product?idPro=${product.pro_id}" class="btn-delete">Delete</a>
+                            </td>
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
             <div class="col-12">
                 <nav>
                     <ul class="pagination justify-content-center">
-                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        <%if (currentPage > 1){%>
+                        <li class="page-item"><a class="page-link" href="main-manage-product?indexPage=${currentPage - 1}">Previous</a></li>
+                            <%}%>
+                            <%int pageRange = 5; 
+                              int startPage = Math.max(1, currentPage - pageRange);
+                              int end = Math.min(endPage, currentPage + pageRange);%>
+
+                        <%for (int i = startPage; i <= end; i++){%>
+                        <li><a class="page-link" href="main-manage-product?indexPage=<%=i%>"><%=i%></a></li>
+                            <%}%>
+                            <%if(currentPage < endPage){%>
+                        <li class="page-item"><a class="page-link" href="main-manage-product?indexPage=${currentPage + 1}">Next</a></li>
+                            <%}%>
                     </ul>
                 </nav>
             </div>

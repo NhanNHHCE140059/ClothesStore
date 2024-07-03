@@ -7,15 +7,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
-    <%@page import="model.Account"%>
-    <%@page import="helper.Role"%>
-    <%@page import="model.Order"%>
-    <%@page import="java.util.List"%>
-    <% Account account = (Account) request.getAttribute("account"); %>
-    <% List<Order> listOrderS = (List<Order>) request.getAttribute("listOrderShipped"); %>
-    <% Integer endPage = (Integer) request.getAttribute("endPage");%>
-    <% String searchText = (String) request.getAttribute("searchText"); %>
-    <% Integer indexPage =(Integer) request.getAttribute("indexPage"); %>
     <head>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/create-product.css"/>
         <meta charset="UTF-8">
