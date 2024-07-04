@@ -29,6 +29,29 @@ public class ProductVariantService {
     ResultSet rs = null;
     DBContext dbcontext = new DBContext();
 
+    public ProductsVariant getVariantByID(int variant_id) {
+        ProductsVariant productV = null;
+        String query = "Select * from ProductVariants where variant_id=?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, variant_id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                productV = new ProductsVariant(
+                        rs.getInt(1),
+                        rs.getInt(2),
+                        ProductSizeType.values()[rs.getInt(3)],
+                        rs.getInt(4),
+                        rs.getInt(5)
+                );
+            }
+        } catch (Exception e) {
+
+        }
+        return productV;
+    }
+
     public Map<String, Set<String>> getVariantsByProductId(int productId) {
         Map<String, Set<String>> variants = new HashMap<>();
         Set<String> uniqueColors = new HashSet<>();

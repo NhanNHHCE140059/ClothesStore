@@ -185,6 +185,7 @@
         }
         .color-btn {
             position: relative;
+            box-shadow: rgba(255, 255, 255, 0.2) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.9) 0px 0px 0px 1px;
         }
 
         .color-btn.active::after {
@@ -323,9 +324,10 @@
                             <% 
                             }
                             %>
-
+                          
 
                         </div>
+                            <a href="detail?pid=${pro_detail.pro_id}" style="text-decoration: none;background-color:#ffd333 ;padding:2px 4px 2px 4px;border-radius:4px;color:#3d464d;font-weight: 500;margin-top:10px;">Find size by color</a>
                         <!-- Size and Color Options End -->
                         <div class="d-flex align-items-center mb-4 pt-2">
                             <div class="input-group quantity mr-3" style="width: 130px;">
