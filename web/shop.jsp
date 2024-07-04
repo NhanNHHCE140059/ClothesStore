@@ -139,7 +139,7 @@
                                             <div class="product-action">
                                                 <c:set var="page" value="${param.page != null ? param.page : 1}" />
                                                 <a class="btn btn-outline-dark btn-sm" href="/clothesstore/favorite?pid=${o.pro_id}&page=${page}"><i class="far fa-heart"></i> Add to Favorite</a>
-                                                <a class="btn btn-outline-dark btn-sm" href="/clothesstore/detail?pid=${o.pro_id}"><i class="fa fa-info-circle"></i> More information</a>
+                                                <a class="btn btn-outline-dark btn-sm" href="/clothesstore/detail?pid=${o.pro_id}"><i class="fa fa-info-circle"></i> More information and Buy</a>
                                             </div>
                                         </div>
                                         <div class="text-center py-3">
