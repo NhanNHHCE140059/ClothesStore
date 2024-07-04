@@ -347,7 +347,7 @@
                         });
                     }
 
-                    function sendPostRequest(action, accID, indexPage, status) {
+                    function sendPostRequest(action, accID, indexPage, status, param) {
                         console.log("da vao dc sendPost");
                         $.ajax({
                             url: "ajaxForAM",
@@ -357,7 +357,12 @@
                                 accID: accID
                             },
                             success: function () {
-                                sendAjaxRequest(indexPage, status);
+                                if (param === undefined) {
+                                    sendAjaxRequest(indexPage, status);
+                                } else {
+                                    searchUsername(indexPage, param);
+                                }
+
                             },
                             error: function (xhr, status, error) {
                                 console.error("POST request failed:", status, error);
@@ -429,7 +434,7 @@
                     }
                     document.addEventListener('DOMContentLoaded', function () {
                         updateTime();
-                        setInterval(updateTime, 1000); 
+                        setInterval(updateTime, 1000);
                     });
         </script>
         <script src="dashboardStaff.js" type="text/javascript"></script>

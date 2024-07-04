@@ -47,6 +47,12 @@ public class AjaxAccountManagementController extends HttpServlet {
         int end = Math.min(start + productsPerPage, listAllAcc.size());
 
         List<Account> paginatedList = listAllAcc.subList(start, end);
+        if (paginatedList.isEmpty() && indexPage > 1) {
+            indexPage = indexPage - 1;
+            start = (indexPage - 1) * productsPerPage;
+            end = Math.min(start + productsPerPage, listAllAcc.size());
+            paginatedList = listAllAcc.subList(start, end);
+        }
         int noOfRecords = listAllAcc.size();
         int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / productsPerPage);
 
@@ -71,25 +77,45 @@ public class AjaxAccountManagementController extends HttpServlet {
         if (paginatedList != null && !paginatedList.isEmpty()) {
             for (Account acc : paginatedList) {
                 out.println("<tr>");
+                if (request.getParameter("Username") != null) {
+                    if (acc.getAcc_status() == helper.AccountStatus.ACTIVATE) {
+                        out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>");
+                        out.println("<button onclick=\"sendPostRequest('deactivate'," + acc.getAcc_id() + "," + indexPage + "," + status + " ,document.getElementById('searchUsernameInput'))\" name='action' type='submit' value='deactivate' class='deactivate-button'>DEACTIVATE</button>");
+                        out.println("</td>");
+                        out.println("<td class='status_acc' style='width: 150px;min-width:150px;max-width:150px;'>ACTIVATE</td>");
+                    } else {
+                        out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>");
+                        out.println("<button onclick=\"sendPostRequest('activate'," + acc.getAcc_id() + "," + indexPage + "," + status + " ,document.getElementById('searchUsernameInput'))\" name='action' type='submit' value='activate' class='activate-button'>ACTIVATE</button>");
+                        out.println("</td>");
+                        out.println("<td class='status_acc' style='width: 150px;min-width:150px;max-width:150px;'>DEACTIVATE</td>");
+                    }
 
-                if (acc.getAcc_status() == helper.AccountStatus.ACTIVATE) {
-                    out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>");
-                    out.println("<button onclick=\"sendPostRequest('deactivate'," + acc.getAcc_id() + "," + indexPage + "," + status + ")\" name='action' type='submit' value='deactivate' class='deactivate-button'>DEACTIVATE</button>");
-                    out.println("</td>");
-                    out.println("<td class='status_acc' style='width: 150px;min-width:150px;max-width:150px;'>ACTIVATE</td>");
+                    out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>" + acc.getName() + "</td>");
+                    out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>" + acc.getRole() + "</td>");
+                    out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>" + acc.getPhone() + "</td>");
+                    out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>" + acc.getUsername() + "</td>");
+                    out.println("<td style='width: 250px;min-width:250px;max-width:250px;'>" + acc.getEmail() + "</td>");
+                    out.println("</tr>");
                 } else {
-                    out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>");
-                    out.println("<button onclick=\"sendPostRequest('activate'," + acc.getAcc_id() + "," + indexPage + "," + status + ")\" name='action' type='submit' value='activate' class='activate-button'>ACTIVATE</button>");
-                    out.println("</td>");
-                    out.println("<td class='status_acc' style='width: 150px;min-width:150px;max-width:150px;'>DEACTIVATE</td>");
-                }
+                    if (acc.getAcc_status() == helper.AccountStatus.ACTIVATE) {
+                        out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>");
+                        out.println("<button onclick=\"sendPostRequest('deactivate'," + acc.getAcc_id() + "," + indexPage + "," + status + ")\" name='action' type='submit' value='deactivate' class='deactivate-button'>DEACTIVATE</button>");
+                        out.println("</td>");
+                        out.println("<td class='status_acc' style='width: 150px;min-width:150px;max-width:150px;'>ACTIVATE</td>");
+                    } else {
+                        out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>");
+                        out.println("<button onclick=\"sendPostRequest('activate'," + acc.getAcc_id() + "," + indexPage + "," + status + ")\" name='action' type='submit' value='activate' class='activate-button'>ACTIVATE</button>");
+                        out.println("</td>");
+                        out.println("<td class='status_acc' style='width: 150px;min-width:150px;max-width:150px;'>DEACTIVATE</td>");
+                    }
 
-                out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>" + acc.getName() + "</td>");
-                out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>" + acc.getRole() + "</td>");
-                out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>" + acc.getPhone() + "</td>");
-                out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>" + acc.getUsername() + "</td>");
-                out.println("<td style='width: 250px;min-width:250px;max-width:250px;'>" + acc.getEmail() + "</td>");
-                out.println("</tr>");
+                    out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>" + acc.getName() + "</td>");
+                    out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>" + acc.getRole() + "</td>");
+                    out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>" + acc.getPhone() + "</td>");
+                    out.println("<td style='width: 150px;min-width:150px;max-width:150px;'>" + acc.getUsername() + "</td>");
+                    out.println("<td style='width: 250px;min-width:250px;max-width:250px;'>" + acc.getEmail() + "</td>");
+                    out.println("</tr>");
+                }
             }
         } else {
             out.println("<tr>");
