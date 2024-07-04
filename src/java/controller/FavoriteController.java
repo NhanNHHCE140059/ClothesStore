@@ -34,7 +34,6 @@ public class FavoriteController extends HttpServlet {
             Product message = null;
             boolean isHave = false;
 
-            List<Product> list = p.getAllProducts(acc.getAcc_id());
             int page = 1;
             int productsPerPage = 6;
 
@@ -56,10 +55,11 @@ public class FavoriteController extends HttpServlet {
                     }
                     if (!isHave) {
                         p.insertFavorite(acc.getAcc_id(), pid);
-                        page=1;
+                        page = 1;
                     }
                 }
             }
+            List<Product> list = p.getAllProducts(acc.getAcc_id());
             int start = (page - 1) * productsPerPage;
             int end = Math.min(start + productsPerPage, list.size());
 

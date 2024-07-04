@@ -73,21 +73,12 @@
         </style>
         <!-- Breadcrumb Start -->
         <c:if test="${param.fvss ==1}">
-            <div class="box">
+            <div class="box" style="background-color: #d90c0c">
                 <div class="content">
-                    <p style="padding-left: 10px">Product is available in Favorite List!!!</p>
+                    <p style="padding-left: 10px; color: #FFD333;">Product is available in Favorite List!!!</p>
                 </div>
             </div>
-        </c:if>  
-        <c:if test="${not empty successP}">
-            <div class="box">
-                <div class="content">
-                    <p>Thank you for adding to cart!</p>
-                    <p class="product-name">${successP.pro_name}</p>
-                </div>
-                <img src="${successP.imageURL}" alt="Product Image">
-            </div>
-        </c:if>  
+        </c:if>   
         <div class="container-fluid">
             <div class="row px-xl-5">
                 <div class="col-12">

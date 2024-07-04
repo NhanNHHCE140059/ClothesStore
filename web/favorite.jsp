@@ -76,7 +76,7 @@
         <c:if test="${ not empty message}">
             <div class="box">
                 <div class="content">
-                    <p>Thank you for adding to cart!</p>
+                    <p>Product successfully added to Favorite List!</p>
                     <p class="product-name">${message.pro_name}</p>
                 </div>
                 <img src="${message.imageURL}" alt="Product Image">
