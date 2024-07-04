@@ -60,7 +60,26 @@ public class AccountService {
             e.printStackTrace();
             System.out.println("An unexpected error occurred.");
         }
+
         return topAccounts;
+    }
+
+    // Thay doi trang thai user 
+    public void updateStatusAccount(int status, int id) {
+        try {
+            String query = "UPDATE accounts SET [acc_status]= ? WHERE acc_id = ?";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, status);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL error occurred while fetching account.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("An unexpected error occurred.");
+        }
     }
 
     public List<Account> getAllAccounts(Integer status) {
@@ -98,6 +117,73 @@ public class AccountService {
             System.out.println("An unexpected error occurred.");
         }
         return accounts;
+    }
+    //SearchAccountByName
+
+    public List<Account> searchListAccountByUserName(String username) {
+        List<Account> list = new ArrayList<>();
+        try {
+            String query = "Select * from accounts where username like ? ";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setString(1, "%" + username + "%");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Account(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getString(6),
+                        rs.getString(7),
+                        rs.getString(8),
+                        Role.values()[rs.getInt(9)],
+                        AccountStatus.values()[rs.getInt(10)]
+                ));
+
+            }
+        } catch (Exception e) {
+        }
+        return list;
+    }
+
+    //ListACCOUNT 
+    public List<Account> getListAccount(int status) {
+        List<Account> list = new ArrayList<>();
+        String query = "Select * from Accounts";
+        if (status != -1) {
+            query = "Select * from Accounts where [acc_status] = ? ";
+        }
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            if (status != -1) {
+                ps.setInt(1, status);
+            }
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Account(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getString(6),
+                        rs.getString(7),
+                        rs.getString(8),
+                        Role.values()[rs.getInt(9)],
+                        AccountStatus.values()[rs.getInt(10)]));
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL error occurred while fetching account.");
+        } catch (Exception e) {
+
+        }
+        return list;
     }
 
     // Lay account ra tu Username

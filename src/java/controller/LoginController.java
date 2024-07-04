@@ -43,7 +43,10 @@ public class LoginController extends HttpServlet {
             session.setAttribute("quantitypro", quantitypro);
             session.setAttribute("account", acc);
             session.setAttribute("role", acc.getRole().name());
-            
+            if(acc.getRole() == helper.Role.Admin){
+                res.sendRedirect("DisableAccountADMIN.jsp");
+                return;
+            }
 //            Cookie u = new Cookie("uCookie", username);
 //            Cookie p = new Cookie("pwdCookie", password);
 //            u.setMaxAge(60);
