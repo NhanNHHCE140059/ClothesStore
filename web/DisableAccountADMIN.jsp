@@ -7,9 +7,11 @@
     <%Account account = (Account) session.getAttribute("account");
       if (account == null) {
         response.sendRedirect("login");
+        return;
         }else {
         if(account.getRole()!= helper.Role.Admin){
          response.sendRedirect("home");
+         return;
         }
         }
       
