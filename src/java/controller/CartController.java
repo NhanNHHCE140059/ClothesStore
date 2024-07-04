@@ -1,4 +1,4 @@
-
+package controller;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -170,7 +170,7 @@ public class CartController extends HttpServlet {
             endpage++;
         }
 
-        List<CartInfo> carttop5 = cartService.GetTop5CartByAccID(acc.getAcc_id(), indexPage);
+        LinkedList<Cart> carttop5 = cartService.GetTop5CartByAccID(acc.getAcc_id(), indexPage);
         if (carttop5.size() == 0 && indexPage != 1) {
             response.sendRedirect(request.getContextPath() + "/cart?indexPage=" + (indexPage - 1));
             return;
