@@ -284,161 +284,175 @@
         .date-time{
             font-weight: 700;
         }
+        .filter-button:disabled {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
 
-
-    </style>
-    <body onload="updateTime()">
-        <div class="sidebar">
-            <div class="sidebar-header">administrator</div>
-            <a href="#" class="menu-item">STATICAL</a>
-            <a href="#" class="menu-item">ACCOUNT MANAGEMENT</a>
-        </div>
-        <div class="content">
-            <div class="header">
-                <h2>ACCOUNT MANAGEMENT</h2>
-                <div class="header-actions">
-                    <span class="date-time"></span>
-                    <div class="user-info">
-                        <img src="https://static.vecteezy.com/system/resources/previews/000/287/517/original/administration-vector-icon.jpg" alt="User Avatar">
-                        <span style="text-transform: uppercase;font-weight: 600;"><%= account.getName() %></span>
+        </style>
+        <body onload="updateTime()">
+            <div class="sidebar">
+                <div class="sidebar-header">administrator</div>
+                <a href="#" class="menu-item">STATICAL</a>
+                <a href="#" class="menu-item">ACCOUNT MANAGEMENT</a>
+            </div>
+            <div class="content">
+                <div class="header">
+                    <h2>ACCOUNT MANAGEMENT</h2>
+                    <div class="header-actions">
+                        <span class="date-time"></span>
+                        <div class="user-info">
+                            <img src="https://static.vecteezy.com/system/resources/previews/000/287/517/original/administration-vector-icon.jpg" alt="User Avatar">
+                            <span style="text-transform: uppercase;
+                                  font-weight: 600;"><%= account.getName() %></span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
 
 
-            <div class="filters">
-                <div class="search-container">
-                    <input id="searchUsernameInput" oninput="searchUsername(1,this)" type="text" placeholder="Search...">
+                <div class="filters">
+                    <div class="search-container">
+                        <input id="searchUsernameInput" oninput="searchUsername(1,this)" type="text" placeholder="Search...">
+                    </div>
+                    <button onclick="sendAjaxRequest(1, -1);setActive(this)" class="btn filter-button showall">Show All Accounts</button>
+                    <button onclick="sendAjaxRequest(1, 0);setActive(this)" class="btn filter-button">Show Active Accounts</button>
+                    <button onclick="sendAjaxRequest(1, 1);setActive(this)"  class="btn filter-button">Show Deactivated Accounts</button>
+
+
                 </div>
-                <button onclick="sendAjaxRequest(1, -1);setActive(this)" class="btn filter-button showall">Show All Accounts</button>
-                <button onclick="sendAjaxRequest(1, 0);setActive(this)" class="btn filter-button">Show Active Accounts</button>
-                <button onclick="sendAjaxRequest(1, 1);setActive(this)"  class="btn filter-button">Show Deactivated Accounts</button>
-
+                <div id="content-table">
+                </div>  
 
             </div>
-            <div id="content-table">
-            </div>  
-
-        </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script>
-                    sendAjaxRequest(1);
-                    document.querySelectorAll('.menu-item').forEach(item => {
-                        item.addEventListener('click', () => {
-                            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-                            item.classList.add('active');
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+            <script>
+                        sendAjaxRequest(1);
+                        document.querySelectorAll('.menu-item').forEach(item => {
+                            item.addEventListener('click', () => {
+                                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                                item.classList.add('active');
+                            });
                         });
-                    });
 
-                    function sendAjaxRequest(indexPage, status) {
-                        $.ajax({
-                            url: "ajaxForAM",
-                            type: "GET",
-                            data: {
-                                indexPage: indexPage,
-                                status: status
-                            },
-                            success: function (data) {
-                                document.getElementById('content-table').innerHTML = data;
-                            },
-                            error: function (xhr, status, error) {
+                        function sendAjaxRequest(indexPage, status) {
+                            $.ajax({
+                                url: "ajaxForAM",
+                                type: "GET",
+                                data: {
+                                    indexPage: indexPage,
+                                    status: status
+                                },
+                                success: function (data) {
+                                    document.getElementById('content-table').innerHTML = data;
+                                },
+                                error: function (xhr, status, error) {
 
-                                console.error("AJAX request failed:", status, error);
-                            }
-                        });
-                    }
-
-                    function sendPostRequest(action, accID, indexPage, status, param) {
-                        console.log("da vao dc sendPost");
-                        $.ajax({
-                            url: "ajaxForAM",
-                            type: "POST",
-                            data: {
-                                action: action,
-                                accID: accID
-                            },
-                            success: function () {
-                                if (param === undefined) {
-                                    sendAjaxRequest(indexPage, status);
-                                } else {
-                                    searchUsername(indexPage, param);
+                                    console.error("AJAX request failed:", status, error);
                                 }
+                            });
+                        }
 
-                            },
-                            error: function (xhr, status, error) {
-                                console.error("POST request failed:", status, error);
+                        function sendPostRequest(action, accID, indexPage, status, param) {
+                            console.log("da vao dc sendPost");
+                            $.ajax({
+                                url: "ajaxForAM",
+                                type: "POST",
+                                data: {
+                                    action: action,
+                                    accID: accID
+                                },
+                                success: function () {
+                                    if (param === undefined) {
+                                        sendAjaxRequest(indexPage, status);
+                                    } else {
+                                        searchUsername(indexPage, param);
+                                    }
+
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("POST request failed:", status, error);
+                                }
+                            });
+                        }
+                        function setActive(button) {
+
+                            var buttons = document.querySelectorAll('.btn');
+
+
+                            buttons.forEach(function (btn) {
+                                btn.classList.remove('active');
+                            });
+
+
+                            button.classList.add('active');
+                        }
+                        document.addEventListener('DOMContentLoaded', (event) => {
+                            const buttons = document.querySelectorAll('.btn');
+                            if (buttons.length > 0) {
+                                buttons[0].classList.add('active');
                             }
                         });
-                    }
-                    function setActive(button) {
+                        function searchUsername(indexPage, param) {
+                            activateFirstButton();
+                            var Username = param.value.trim();
+                            var buttons = document.querySelectorAll('.filter-button');
 
-                        var buttons = document.querySelectorAll('.btn');
-
-
-                        buttons.forEach(function (btn) {
-                            btn.classList.remove('active');
-                        });
-
-
-                        button.classList.add('active');
-                    }
-                    document.addEventListener('DOMContentLoaded', (event) => {
-                        const buttons = document.querySelectorAll('.btn');
-                        if (buttons.length > 0) {
-                            buttons[0].classList.add('active');
-                        }
-                    });
-                    function searchUsername(indexPage, param) {
-                        activateFirstButton();
-                        var Username = param.value.trim();
-                        if (Username === "") {
-                            sendAjaxRequest(1);
-
-                            return;
-                        }
-
-                        $.ajax({
-                            url: "ajaxForAM",
-                            type: "get",
-                            data: {
-                                Username: Username,
-                                indexPage: indexPage
-                            },
-                            success: function (data) {
-                                document.getElementById('content-table').innerHTML = data;
-
-                            },
-                            error: function (xhr) {
-
+                            if (Username !== "") {
+                                buttons.forEach(function (btn) {
+                                    btn.disabled = true;
+                                });
+                            } else {
+                                buttons.forEach(function (btn) {
+                                    btn.disabled = false;
+                                });
                             }
-                        });
-                    }
-                    function activateFirstButton() {
-                        const buttons = document.querySelectorAll('.btn');
-                        buttons.forEach(button => button.classList.remove('active'));
-                        if (buttons.length > 0) {
-                            buttons[0].classList.add('active');
+                            if (Username === "") {
+                                sendAjaxRequest(1);
+                                return;
+                            }
+
+                            $.ajax({
+                                url: "ajaxForAM",
+                                type: "get",
+                                data: {
+                                    Username: Username,
+                                    indexPage: indexPage
+                                },
+                                success: function (data) {
+                                    document.getElementById('content-table').innerHTML = data;
+
+                                },
+                                error: function (xhr) {
+
+                                }
+                            });
                         }
-                    }
-                    function updateTime() {
-                        var now = new Date();
-                        var options = {
-                            weekday: 'short',
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true
-                        };
-                        document.querySelector('.date-time').innerText = now.toLocaleString('en-US', options);
-                    }
-                    document.addEventListener('DOMContentLoaded', function () {
-                        updateTime();
-                        setInterval(updateTime, 1000);
-                    });
-        </script>
-        <script src="dashboardStaff.js" type="text/javascript"></script>
-    </body>
-</html>
+                        function activateFirstButton() {
+                            const buttons = document.querySelectorAll('.btn');
+                            buttons.forEach(button => button.classList.remove('active'));
+                            if (buttons.length > 0) {
+                                buttons[0].classList.add('active');
+                            }
+                        }
+                        function updateTime() {
+                            var now = new Date();
+                            var options = {
+                                weekday: 'short',
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            };
+                            document.querySelector('.date-time').innerText = now.toLocaleString('en-US', options);
+                        }
+                        document.addEventListener('DOMContentLoaded', function () {
+                            updateTime();
+                            setInterval(updateTime, 1000);
+                        });
+            </script>
+            <script src="dashboardStaff.js" type="text/javascript"></script>
+        </body>
+    </html>
