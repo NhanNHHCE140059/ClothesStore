@@ -53,6 +53,29 @@ public class ProductService {
         return pro;
     }
 
+    public List<Product> getRandom9Product() {
+        List<Product> list9 = new ArrayList<>();
+        String query = "SELECT TOP 9 *\n"
+                + "FROM products\n"
+                + "ORDER BY NEWID();";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+             while (rs.next()) {
+                list9.add(new Product(rs.getInt("pro_id"),
+                        rs.getString("pro_name"),
+                        rs.getDouble("pro_price"),
+                        rs.getString("imageURL"),
+                        rs.getString("description"),
+                        rs.getInt("cat_id"),
+                        ProductStatus.values()[rs.getInt("status_product")]));
+            }
+        } catch (Exception e) {
+        }
+        return list9;
+    }
+
     public List<Product> getAllProducts() {
         List<Product> list = new ArrayList<>();
         String query = "SELECT * FROM Products";
@@ -133,7 +156,7 @@ public class ProductService {
         return list;
     }
 
-   public static void main(String[] args) {
-    ProductService productService = new ProductService();
-   }
+    public static void main(String[] args) {
+        ProductService productService = new ProductService();
+    }
 }
