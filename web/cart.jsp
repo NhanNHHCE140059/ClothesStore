@@ -5,14 +5,12 @@
 <html>
     <jsp:include page="/shared/_head.jsp" />
     <body>
-
         <style>
             .pagination {
                 display: flex;
                 justify-content: center;
                 margin-top: 20px;
             }
-
             .page-link {
                 margin: 0 5px;
                 padding: 8px 16px;
@@ -21,34 +19,26 @@
                 border: 1px solid #ccc;
                 border-radius: 4px;
             }
-
-            /* Styling the input field */
             .quantity-custom {
                 border: 1px solid #ccc;
                 border-radius: 4px;
                 padding: 10px;
                 font-size: 16px;
             }
-
-            /* CSS to style number input as text input */
             input[type="number"] {
-                -moz-appearance: textfield; /* Firefox */
-                -webkit-appearance: none; /* Chrome and Safari */
+                -moz-appearance: textfield;
+                -webkit-appearance: none;
                 appearance: none;
                 border: 1px solid #ccc;
                 border-radius: 4px;
                 padding: 10px;
                 font-size: 16px;
             }
-
-            /* Remove arrows in Firefox */
             input[type="number"]::-webkit-inner-spin-button,
             input[type="number"]::-webkit-outer-spin-button {
                 -webkit-appearance: none;
                 margin: 0;
             }
-
-            /* Remove arrows in Internet Explorer */
             input[type="number"]::-ms-clear {
                 display: none;
             }
@@ -57,7 +47,7 @@
                 padding-right: 100px;
             }
             th:not(:first-child) {
-                padding-left: 10px; /* Điều chỉnh giá trị này tùy ý */
+                padding-left: 10px;
             }
             table {
                 border-collapse: collapse;
@@ -65,25 +55,69 @@
             th, td {
                 border: 1px solid black;
                 padding: 8px;
-                white-space: nowrap; /* Đảm bảo không xuống dòng */
+                white-space: nowrap;
             }
             th {
-                width: auto; /* Đặt độ rộng tự động */
+                width: auto;
             }
-
             html {
                 position: relative;
             }
+            .cartmanagement {
+                position: relative;
+                height: auto;
+            }
             #cartsummary {
-                 width:93.3%;
-            height: 100px;
-            text-align: center;
-            line-height: 100px; /* Center text vertically */
-            position: fixed;
-            bottom: 120px;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 100000;
+                margin-top: 20px;
+                width: 100%;
+                height: 115px;
+                text-align: center;
+                bottom: 10px;
+                background-color: #fff;
+                border-top: 1px solid #ddd;
+                border: 1px solid #ffd333;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                z-index: 10000;
+            }
+            #cartsummary .bg-light {
+                padding: 15px 30px;
+            }
+            #cartsummary h5 {
+                margin: 0;
+                padding: 0 10px;
+                line-height: 40px;
+            }
+            #cartsummary .btn {
+                height: 55px;
+                width: 280px;
+                font-size: 18px;
+                border-radius: 4px;
+            }
+            .checkbox-wrapper input[type="checkbox"] {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                width: 20px;
+                height: 20px;
+                border: 2px solid #ccc;
+                border-radius: 3px;
+                outline: none;
+                cursor: pointer;
+                position: relative;
+                margin-right: 10px;
+            }
+            .checkbox-wrapper input[type="checkbox"]:checked {
+                background-color: yellow;
+                border-color: yellow;
+            }
+            .checkbox-wrapper input[type="checkbox"]:checked::before {
+                content: '✔';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 14px;
+                color: #3D464D;
             }
         </style>
 
@@ -104,22 +138,19 @@
         </div>
         <!-- Breadcrumb End -->
 
-
         <!-- Cart Start -->
-        <div class="container-fluid">
-            <div class="row px-xl-5">
-                <div class="col-lg-12 table-responsive mb-5">
+        <div class="container-fluid" style="margin-bottom:-95px;">
+            <div class="row px-xl-5" style="max-height: 980px;">
+                <div class="col-lg-12 table-responsive mb-5 cartmanagement">
                     <table class="table table-light table-borderless table-hover text-center mb-0">
                         <thead class="thead-dark">
-
                             <c:if test="${not empty sessionScope.message}">
-                                <c:set var="message" value="${sessionScope.message}"/>
+                                <c:set var="message" value="${sessionScope.message}" />
                             <div id="message" style="display: none;">
                                 <h1 class="btn btn-block btn-primary font-weight-bold my-3 py-3">${sessionScope.message}</h1>
                             </div>
-                            <c:remove var="message" scope="session"/>
+                            <c:remove var="message" scope="session" />
                         </c:if>
-
                         <tr>
                             <th>Products</th>
                             <th></th>
@@ -130,81 +161,92 @@
                         </tr>
                         </thead>
                         <tbody class="align-middle">
-                            <c:set var="totalQuantity" value="0" />
-                            <c:set var="totalPrice" value="0" />
+                            <c:forEach var="cart" items="${carttop5}">
+                                <tr>
+                                    <td class="align-middle" style="display: flex; align-items: center;">
+                                        <div class="checkbox-wrapper">
+                                            <input type="checkbox" id="tick-checkbox">
+                                        </div>
+                                        <img src="${cart.imageURL}" alt="imgProduct" style="width: 100px; height: 100px; margin-right: 20px;">
+                                        <div>
+                                            <span style="display: block; font-size: 18px; font-weight: bold;">${cart.pro_name}</span>
+                                            <span style="display: inline-block; padding: 2px 5px; border: 1px solid red; color: red; margin-top: 5px;">Change your mind for free for 15 days</span>
+                                            <div style="margin-top: 10px;">
+                                                <span style="background-color: orange; color: white; padding: 2px 5px; margin-right: 5px;">QUALITY</span>
+                                                <span style="background-color: green; color: white; padding: 2px 5px; margin-right: 5px;">TREND</span>
+                                                <span style="background-color: yellow; color: black; padding: 2px 5px;">SPECTACULAR</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">Product Classification <br>Color: ${cart.color_name}, Size: ${cart.size_id}</td>
+                                    <td class="align-middle">
+                                        <fmt:formatNumber value="${cart.pro_price}" type="number" pattern="#,##0" /> VND
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="input-group quantity mx-auto" style="width: 120px;">
 
-                            <c:choose>
-                                <c:when test= "${not empty cp_list}">
-                                    <c:forEach var="map" items="${cp_list}">
-                                        <c:forEach var="entry" items="${map}">
-                                            <c:set var="c" value="${entry.key}" />
-                                            <c:set var="product" value="${entry.value}" />
-                                            <tr>                                       
-                                                <td class="align-middle"> <div style="width: 150px;
-                                                                               display: inline-block;" >${c.pro_name}</div><img src="${product.imageURL}" alt="" style="width: 100px;
-                                                                               height: 100px;
-                                                                               margin-left: 35px"></td>
-                                                <td class="align-middle">Phan loai hang</td>
-                                                <td class="align-middle"><fmt:formatNumber value="${c.pro_price}" type="number" pattern="#,##0" /> VND</td>
-                                                <td class="align-middle">
-                                                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                                                        <div class="input-group-btn">
-                                                            <a href="${pageContext.request.contextPath}/cart?action=decQuan&pro_id=${c.pro_id}&indexpage=${indexpage}"><button class="btn btn-sm btn-primary btn-minus">
-                                                                    <i class="fa fa-minus"></i>
-                                                                </button> 
-                                                            </a>
-                                                        </div>                                                         
-                                                        <input class="form-control form-control-sm bg-secondary border-0 text-center quantity-custom" id="quantityCustom_${c.pro_id}" type="number" value="${c.pro_quantity}" onblur="handleBlur(${c.pro_id})" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                                                        <div class="input-group-btn">
-                                                            <a href="${pageContext.request.contextPath}/cart?action=incQuan&pro_id=${c.pro_id}&indexpage=${indexpage}"><button class="btn btn-sm btn-primary btn-plus">
-                                                                    <i class="fa fa-plus"></i>
-                                                                </button>
-                                                            </a>
-                                                        </div>
+
+
+                                            <a href="${pageContext.request.contextPath}/cart?action=decQuan&proV_id=${cart.variant_id}&indexPage=${indexPage}">  <div class="input-group-btn">
+                                                    <button class="btn btn-sm btn-primary btn-plus" style="height: 34px;">
+                                                        <i class="fa fa-minus"></i>
+                                                    </button>
+                                                </div></a>
+
+
+
+                                            <input id="quantityCustom_${cart.variant_id}" class="form-control form-control-sm bg-secondary border-0 text-center quantity-custom" style="width: 60px;" type="number" value="${cart.pro_quantity}" name="quantityC" onblur="handleBlur(${cart.variant_id})" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <a href="${pageContext.request.contextPath}/cart?action=incQuan&proV_id=${cart.variant_id}&indexPage=${indexPage}">  <div class="input-group-btn">
+                                                    <div class="input-group-btn">
+
+                                                        <button class="btn btn-sm btn-primary btn-plus" style="height: 34px;">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
                                                     </div>
-                                                </td>
-                                                <td class="align-middle"><fmt:formatNumber value="${c.total_price}" type="number" pattern="#,##0" /> VND</td>                                            
-                                                <td class="align-middle"><a onclick="return confirm('Do you want to delete this cart?')" href="${pageContext.request.contextPath}/cart?action=deletePro&card_id=${c.cart_id}&indexpage=${indexpage}" class="btn btn-sm btn-danger" style="margin-left: 2px"><i class="fa fa-times"></i> Remove</a></td>
-                                            </tr>                                            
-                                        </c:forEach>
-                                    </c:forEach>
-                                </c:when>                     
-                                <c:otherwise>
-                                <h2 style="color: #ffd333;
-                                    margin-left: 60px;">There are currently no products in your shopping cart &#9888;</h2>
-                            </c:otherwise>
-                        </c:choose>
-
-
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">
+                                        <fmt:formatNumber value="${cart.total_price}" type="number" pattern="#,##0" /> VND
+                                    </td>
+                                    <td class="align-middle">
+                                        <form action="cart" method="get">
+                                            <input type="hidden" name="cart_id" value="${cart.cart_id}">
+                                            <input type="hidden" name="indexPage" value="${indexPage}">
+                                            <button type="submit" name="action" value="delete" onclick="return confirm('Do you want to delete this cart?')" class="btn btn-sm btn-danger" style="margin-left: 2px">
+                                                <i class="fa fa-times"></i>
+                                                Remove
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </c:forEach>
                         </tbody>
                     </table>
                     <div class="pagination" id="pagination">
                         <c:if test="${endpage != 0}">
                             <c:forEach var="i" begin="1" end="${endpage}">
-                                <a href="cart?indexpage=${i}" class="page-link">${i}</a>
+                                <a href="cart?indexPage=${i}" class="page-link">${i}</a>
                             </c:forEach>
                         </c:if>
-                    </div>     
-                </div>
-                <div class="text-center mb-0" id="cartsummary">
-                    <!--                    <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>-->
-                    <div class="bg-light p-30 mb-5">
-                        <div class="border-bottom pb-2">
-                            <div class="d-flex justify-content-between mb-3">
-                                <h5>Products in the cart:</h5>
-                                <h5><%=(Integer) request.getAttribute("totalQuantity")%></h5>
+                    </div>
+                    <div class="text-center mb-0" id="cartsummary">
+                        <div class="bg-light p-30 mb-5">
+                            <div class="pt-2">
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="checkbox-wrapper">
+                                            <input type="checkbox" id="tick-checkbox">
+                                        </div>
+                                        <h5 class="m-0 ml-2">Select All (${quantityCart})</h5>
+                                    </div>
+                                    <h5 class="m-0 text-danger">Save to Loved</h5>
+                                    <h5 class="m-0">Total Price (${quantityProduct}): <fmt:formatNumber value="${totalPrice}" type="number" pattern="#,##0" /> VND</h5>
+                                    <div class="d-flex flex-column align-items-end">
+                                        <a href="/clothesstore/checkout" class="btn btn-primary font-weight-bold py-3 px-4">Proceed To Checkout</a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="d-flex justify-content-between">
-<!--                                // <h5 class="font-weight-medium">Promotion:</h5>
-                                <h5 class="font-weight-medium">0%</h5>-->
-                            </div>
-                        </div>
-                        <div class="pt-2">
-                            <div class="d-flex justify-content-between mt-2">
-                                <h3>Total</h3>
-                                <h3><%=request.getAttribute("totalPrice")%></h3>
-                            </div>
-                            <a href="/clothesstore/checkout" class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</a>
                         </div>
                     </div>
                 </div>
@@ -224,28 +266,24 @@
             div.style.display = "block";
             setTimeout(function () {
                 div.style.display = "none";
-            }, 3000); // Ẩn sau 3 giây
+            }, 3000);
         }
 
         async function sendGetRequest(proId) {
+            var inputElement = document.getElementById('quantityCustom_' + proId);
+            var newQuantity = inputElement.value;
 
-            try {
-                const quantityCustom = document.getElementById('quantityCustom_' + proId);
 
-                const quantityCustomValue = quantityCustom.value;
-                if (!quantityCustomValue) {
-                    window.location.href = 'cart';
-                    return;
-                }
-                const idValue = proId;
-                window.location.href = 'cart?action=quantityCustom&quantity=' + quantityCustomValue + '&pro_id=' + proId + '&indexpage=' +${indexpage};
-            } catch (error) {
-                console.error('Lỗi:', error);
-            }
+
+            var url = '/clothesstore/cart?action=quantityCustom&proV_id=' + proId + '&quantityC=' + newQuantity + '&indexPage=' + document.querySelector('input[name="indexPage"]').value;
+
+            window.location.href = url;
         }
 
         function handleBlur(proId) {
             sendGetRequest(proId);
         }
+
+
     </script>
 </html>
