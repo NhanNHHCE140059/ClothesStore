@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import model.Product;
+import model.WarehouseProduct;
 import service.ProductService;
 import service.WarehouseService;
 
@@ -77,12 +78,30 @@ public class SearchProductWarehouse extends HttpServlet {
             throws ServletException, IOException {
         try {
             String content = request.getParameter("searchName");
-//            WarehouseService ws = new WarehouseService();
-//            List<Product> list = ws.searchProduct(content);
             WarehouseService ws = new WarehouseService();
-            List wl = ws.search(content);
-            request.setAttribute("listWarehouse", wl);
-        request.getRequestDispatcher("view-warehouse.jsp").forward(request, response);
+            
+            int pageSize = 15; // Số sản phẩm trên mỗi trang
+            int pageIndex = 1; // Trang mặc định là trang 1
+
+            // Lấy trang từ tham số request
+            if (request.getParameter("page") != null) {
+                pageIndex = Integer.parseInt(request.getParameter("page"));
+            }
+
+            int startIndex = (pageIndex - 1) * pageSize;
+            List<WarehouseProduct> list = ws.search(content);
+
+            // Tính toán số trang và các tham số cho phân trang
+            int endIndex = Math.min(startIndex + pageSize, list.size());
+            int endPage = (int) Math.ceil(list.size() / (double) pageSize);
+
+            request.setAttribute("listWarehouse", list.subList(startIndex, endIndex));
+            request.setAttribute("startIndex", startIndex);
+            request.setAttribute("endIndex", endIndex - 1); // endIndex - 1 vì subList không bao gồm endIndex
+            request.setAttribute("endPage", endPage);
+            request.setAttribute("pageIndex", pageIndex);
+
+            request.getRequestDispatcher("view-warehouse.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace(); // In lỗi ra console để dễ dàng kiểm tra lỗi
         }

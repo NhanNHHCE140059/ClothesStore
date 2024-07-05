@@ -1,57 +1,56 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <jsp:include page="/shared/_head.jsp" />
-        <link rel="stylesheet" type="text/css" href="assets/css/orderhistory.css" />
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/feedbackManagement.css"/>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Warehouse Management</title>
         <style>
             /* CSS để căn giữa bảng order */
             .section-padding-100 {
-                padding: 100px 0;
-                text-align: center; /* căn giữa nội dung */
+                padding: 0; /* Loại bỏ padding để giảm khoảng trống phía trên */
+                text-align: center; /* Căn giữa nội dung */
+                margin-left: 250px; /* Thêm khoảng cách để tránh bị che bởi sidebar */
+                margin-top: 0; /* Loại bỏ khoảng trắng phía trên */
             }
+
+            .back-home {
+                position: absolute; /* Đặt vị trí tuyệt đối */
+                top: 15px; /* Cách phía trên */
+                left: 260px; /* Cách phía bên trái sidebar */
+                padding: 10px 10px;
+                text-decoration: none;
+                color: #fff;
+                background-color: #4CAF50;
+                border-radius: 5px;
+                font-size: 15px;
+                font-weight: bold;
+                transition: background-color 0.3s ease;
+            }
+
+            .back-home:hover {
+                background-color: #45a049;
+            }
+
             table {
                 margin: 0 auto; /* căn giữa bảng */
                 width: 100%; /* chiều rộng tối đa */
                 max-width: 1100px; /* giới hạn chiều rộng */
                 border-collapse: collapse; /* hợp nhất viền bảng */
             }
+
             table th, table td {
                 border: 1px solid #ddd; /* đường viền các ô */
                 padding: 8px; /* lề bên trong */
                 text-align: center; /* căn giữa nội dung trong ô */
             }
+
             table th {
                 background-color: #f5f7fa; /* màu nền của tiêu đề */
-            }
-            .actions {
-                text-align: center; /* căn giữa các hành động */
-            }
-            .actions a {
-                display: inline-block;
-                margin: 5px;
-                padding: 8px 12px;
-                text-decoration: none;
-                color: #000;
-                background-color: #f0f0f0;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-            }
-            .actions a:hover {
-                background-color: #e0e0e0;
-            }
-            /* Màu sắc cho các nút */
-            .actions a.cancel {
-                background-color: #ff6b6b; /* Màu đỏ */
-                color: #fff;
-            }
-            .actions a.confirm {
-                background-color: #6ab04c; /* Màu xanh dương */
-                color: #fff;
             }
 
             .pagination {
@@ -78,74 +77,140 @@
                 color: white;
                 border: 1px solid #4CAF50;
             }
+
+            /* Thêm CSS cho form tìm kiếm */
+            .search-form {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+
+            .search-form input[type="text"] {
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                margin-right: 10px;
+                width: 200px; /* Điều chỉnh chiều rộng của ô nhập liệu */
+            }
+
+            .search-form button {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                background-color: #4CAF50;
+                color: white;
+                font-size: 16px;
+                cursor: pointer;
+            }
+
+            .search-form button:hover {
+                background-color: #45a049;
+            }
+            .sidebar {
+                position: fixed; /* Đảm bảo sidebar luôn cố định */
+                top: 0; /* Đặt ở trên cùng của trang */
+                left: 0; /* Đặt ở bên trái của trang */
+                height: 100vh; /* Chiều cao của sidebar bằng toàn bộ chiều cao của cửa sổ */
+                width: 250px; /* Chiều rộng của sidebar */
+                border-right: 1px solid #ddd; /* Đường viền bên phải của sidebar */
+                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Thêm bóng cho sidebar */
+                padding: 20px; /* Thêm khoảng cách bên trong của sidebar */
+                box-sizing: border-box; /* Đảm bảo padding và border được tính trong tổng chiều rộng và chiều cao */
+            }
         </style>
     </head>
     <body>
 
-        <jsp:include page="/shared/_header.jsp" />
-        <jsp:include page="/shared/_nav.jsp" />
+        <div class="sidebar">
+            <div class="sidebar-header">Dashboard For Staff</div>
+            <a href="#" class="menu-item">Product Management</a>
+            <div class="separator"></div>
+            <div class="submenu">
+                <a href="#">Create Product</a>
+                <a href="#">Update Product</a>
+                <a href="#">Delete Product</a>
+            </div>
+            <a href="#" class="menu-item">Category Management</a>
+            <div class="separator"></div>
+            <div class="submenu">
+                <a href="#">Create Category</a>
+                <a href="#">Update Category</a>
+                <a href="#">Delete Category</a>
+            </div>
+            <a href="#" class="menu-item">Feedback Management</a>
+            <div class="separator"></div>
+            <div class="submenu">
+                <a href="#">View Feedback</a>
+            </div>
+            <a href="#" class="menu-item">Orders Management</a>
+            <div class="separator"></div>
+            <div class="submenu">
+                <a href="#">Confirm Orders</a>
+                <a href="#">Cancel Orders</a>
+                <a href="#">Change Ship Status</a>
+            </div>
+            <a href="#" class="menu-item">Warehouse Management</a>
+            <div class="separator"></div>
+            <div class="submenu">
+                <a href="${pageContext.request.contextPath}/ViewWarehouse">Manage Warehouse </a>
+            </div>
+        </div>
 
         <!-- Header Area -->
         <div class="section-padding-100">
+            <!-- Đưa nút "Back to Home" vào đúng vị trí -->
+            <a href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
             <div class="cart-title mt-50">
                 <h2>Warehouse Manage</h2>
             </div>
 
             <div>
                 <!-- Form tìm kiếm -->
-                <form action="SearchProduct" method="post">
+                <form action="${pageContext.request.contextPath}/SearchProduct" method="post" class="search-form">
                     <input type="text" name="searchName" placeholder="Search by product name" />
                     <button type="submit">Search</button>
                 </form>
 
-                <table>
+                <table id="warehouseTable">
                     <thead>
                         <tr>
-                            <%-- <th>Ware ID</th>
-                            <th>Bill Id</th>
-                            <th>Variant Id</th> --%>                           
-                            <th>product Id</th>
-                            <th>product name</th>
-                            <th>product price</th>
+                            <th>Product ID</th>
+                            <th>Product Name</th>
+                            <th>Product Price </th>
                             <th>Inventory Number</th>
-                            <th>Import Date</th>                          
+                            <th>Import Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach items="${listWarehouse}" var="o">
+                        <c:forEach items="${listWarehouse}" var="o" begin="${startIndex}" end="${endIndex}">
                             <tr>
-                                <%-- <td>${o.ware_id}</td>
-                                 <td>${o.bill_id}</td>
-                                 <td>${o.variant_id}</td> --%>
                                 <td>${o.pro_id}</td>
                                 <td>${o.pro_name}</td>
-                                <td>${o.pro_price}</td>
+                                <td><fmt:formatNumber value="${o.pro_price}" type="currency" currencySymbol="" minFractionDigits="0" maxFractionDigits="0" />
+                                    VND</td>
                                 <td>${o.inventory_number}</td>
                                 <td>${o.import_date}</td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
+
+                <!-- Pagination -->
                 <div class="pagination" id="pagination">
                     <c:if test="${endPage != 0}">
                         <c:forEach var="i" begin="1" end="${endPage}">
-                            <a href="OrderHistoryStaffControl?indexPage=${i}" class="page-link">${i}</a>
+                            <a href="${pageContext.request.contextPath}/ViewWarehouse?page=${i}" 
+                               class="page-link ${i == pageIndex ? 'active' : ''}">${i}</a>
                         </c:forEach>
                     </c:if>
                 </div>
             </div>
         </div>
 
-        <!-- Footer Area -->
-        <jsp:include page="/shared/_footer.jsp" />
-        <!-- End of Footer Area -->
         <script>
-            function getQueryParameter(name) {
+            document.addEventListener('DOMContentLoaded', function () {
                 var urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get(name);
-            }
-
-            function setActivePage(pageIndex) {
+                var pageIndex = urlParams.get('page');
                 var links = document.querySelectorAll('.page-link');
                 links.forEach(function (link) {
                     link.classList.remove('active');
@@ -153,17 +218,8 @@
                         link.classList.add('active');
                     }
                 });
-            }
-
-            document.addEventListener('DOMContentLoaded', function () {
-                var pageIndex = getQueryParameter('indexPage');
-                if (pageIndex) {
-                    setActivePage(pageIndex);
-                } else {
-                    var links = document.querySelectorAll('.page-link');
-                    if (links.length > 0) {
-                        links[0].classList.add('active'); // Set the first page link as active initially
-                    }
+                if (!pageIndex && links.length > 0) {
+                    links[0].classList.add('active');
                 }
             });
 

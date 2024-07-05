@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import model.Warehouse;
+import model.WarehouseProduct;
 import service.WarehouseService;
 
 /**
@@ -57,10 +58,20 @@ public class ViewWarehouseController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         WarehouseService ws = new WarehouseService();
-        List wl = ws.getAllWarehouse();
-        request.setAttribute("listWarehouse", wl);
-        request.getRequestDispatcher("view-warehouse.jsp").forward(request, response);
-        //response.sendRedirect("view-warehouse.jsp");
+    int pageSize = 15; // number of products per page
+    int pageIndex = 1; // default page index
+    if (request.getParameter("page")!= null) {
+        pageIndex = Integer.parseInt(request.getParameter("page"));
+    }
+    int startIndex = (pageIndex - 1) * pageSize;
+    int endIndex = startIndex + pageSize - 1;
+    List<WarehouseProduct> list = ws.getAllWarehouse();
+    request.setAttribute("listWarehouse", list);
+    request.setAttribute("startIndex", startIndex);
+    request.setAttribute("endIndex", endIndex);
+    request.setAttribute("endPage", (int) Math.ceil(list.size() / (double) pageSize));
+    request.setAttribute("pageIndex", pageIndex); // add this line
+    request.getRequestDispatcher("/view-warehouse.jsp").forward(request, response);
     } 
 
     /** 
