@@ -91,7 +91,7 @@
                             <td>${product.pro_id}</td>
                             <td>${product.imageURL}</td>
                             <td>${product.pro_name}</td>
-                            <td>${product.pro_price}</td>
+                            <td><fmt:formatNumber value="${product.pro_price}" type="number" pattern="#,##0"/> VND</td>
                             <td><%= truncatedDescription %></td>
                             <td><%= cateSv.getNameCateByIDCate(cate_id).getCat_name()%></td>
                             <td>${product.status_product}</td>

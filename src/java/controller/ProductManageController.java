@@ -1,5 +1,6 @@
 package controller;
 
+import helper.Role;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,17 +24,17 @@ public class ProductManageController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        HttpSession session = req.getSession();
-//                
-//        if(session.getAttribute("account")!=null){
-//            resp.sendRedirect(req.getContextPath()+"/login");
-//            return;
-//        }
-//        Account acc = (Account) session.getAttribute("account");
-//        if(acc.getRole()!= helper.Role.Staff || acc.getRole()!= helper.Role.Admin ){
-//               resp.sendRedirect(req.getContextPath()+"/home");
-//            return;
-//        }
+        HttpSession session = req.getSession();
+                
+        if(session.getAttribute("account")==null){
+            resp.sendRedirect(req.getContextPath()+"/login");
+            return;
+        }
+        Account acc = (Account) session.getAttribute("account");
+        if(acc.getRole() == Role.Customer ) {
+                  resp.sendRedirect(req.getContextPath() + "/home");
+            return;
+        }
         int indexPage;
                 if (req.getParameter("indexPage") != null) {
                     indexPage = Integer.parseInt(req.getParameter("indexPage"));

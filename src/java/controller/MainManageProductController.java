@@ -26,16 +26,16 @@ public class MainManageProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-//        
-//        if(session.getAttribute("account")!=null) {
-//            response.sendRedirect(request.getContextPath() + "/login");
-//            return;
-//        }
-//        Account acc = (Account) session.getAttribute("account");
-//        if(acc.getRole() == Role.Customer ) {
-//                  response.sendRedirect(request.getContextPath() + "/home");
-//            return;
-//        }
+        
+        if(session.getAttribute("account")==null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        Account acc = (Account) session.getAttribute("account");
+        if(acc.getRole() == Role.Customer ) {
+                  response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
         ProductService productService = new ProductService();
         int indexPage = 1;
         int productsPerPage = 5;

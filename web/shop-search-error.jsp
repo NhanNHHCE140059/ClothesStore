@@ -31,10 +31,6 @@
                     <div class="bg-light p-4 mb-30">
                         <form>
                             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                                <input type="checkbox" class="custom-control-input" id="price-2">
-                                <label class="custom-control-label" for="price-2">HAT</label>
-                            </div>
-                            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                                 <input type="checkbox" class="custom-control-input" id="price-3">
                                 <label class="custom-control-label" for="price-3">SHORTS AND TROUSERS</label>
                             </div>
