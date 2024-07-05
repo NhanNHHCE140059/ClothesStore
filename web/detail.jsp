@@ -25,6 +25,7 @@
     NumberFormat currencyVN = NumberFormat.getCurrencyInstance(localeVN);
 %>
 
+
 <!DOCTYPE html>
 <html>
     <jsp:include page="/shared/_head.jsp" />
@@ -233,17 +234,38 @@
                 <img src="${successP.imageURL}" alt="Product Image">
             </div>
         </c:if>   
-        <c:if test="${param.fail == 1}">
+        <c:if test="${param.error == 1}">
             <div class="box faillength">
                 <div class="content">
                     <p style="padding-left:20px">You entered too many quantities!!!</p>                    
                 </div>               
             </div>
         </c:if>
-        <c:if test="${param.fail == 3}">
+        <c:if test="${param.error == 2}">
             <div class="box faillength">
                 <div class="content">
-                    <p style="padding-left:40px">This product is out of stock!!!</p>                    
+                    <p style="padding-left:40px">This product is error re-enter please!!!</p>                    
+                </div>               
+            </div>
+        </c:if>
+        <c:if test="${param.error == 3}">
+            <div class="box faillength">
+                <div class="content">
+                    <p style="padding-left:40px">This product is out stock please!!!</p>                    
+                </div>               
+            </div>
+        </c:if>
+        <c:if test="${param.error == 6}">
+            <div class="box faillength">
+                <div class="content">
+                    <p style="padding-left:40px">Khong du so luong trong kho!!!</p>                    
+                </div>               
+            </div>
+        </c:if>
+        <c:if test="${not empty param.succes}">
+            <div class="box faillength">
+                <div class="content">
+                    <p style="padding-left:40px">Ban da them san pham vao gio hang</p>                    
                 </div>               
             </div>
         </c:if>
@@ -324,10 +346,10 @@
                             <% 
                             }
                             %>
-                          
+
 
                         </div>
-                            <a href="detail?pid=${pro_detail.pro_id}" style="text-decoration: none;background-color:#ffd333 ;padding:2px 4px 2px 4px;border-radius:4px;color:#3d464d;font-weight: 500;margin-top:10px;">Find size by color</a>
+                        <a href="detail?pid=${pro_detail.pro_id}" style="text-decoration: none;background-color:#ffd333 ;padding:2px 4px 2px 4px;border-radius:4px;color:#3d464d;font-weight: 500;margin-top:10px;">Click to find size by color</a>
                         <!-- Size and Color Options End -->
                         <div class="d-flex align-items-center mb-4 pt-2">
                             <div class="input-group quantity mr-3" style="width: 130px;">
@@ -336,23 +358,18 @@
                                         <i class="fa fa-minus"></i>
                                     </button>
                                 </div>
-                                <c:choose>
-                                    <c:when test= "${param.fail == 3}">
-                                        <input id="quantityInput" type="text" class="form-control bg-secondary border-0 text-center" value="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                                    </c:when>
-                                    <c:otherwise>
-                                        <input id="quantityInput" type="text" class="form-control bg-secondary border-0 text-center" value="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                                    </c:otherwise> 
-                                </c:choose>                                
+
+                                <input id="quantityInput" type="text" class="form-control bg-secondary border-0 text-center" value="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+
                                 <div class="input-group-append">
                                     <button class="btn btn-primary btn-plus">
                                         <i class="fa fa-plus"></i>
                                     </button>
                                 </div>
                             </div>
-                            <a id="addToCartBtn" class="btn btn-primary px-3" href="${pageContext.request.contextPath}/cart?action=addToCart&pro_id=${pro_detail.pro_id}&">
+                            <button onclick="getValuesToAdd()">
                                 <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
-                            </a>
+                            </button>
                             <div id="quantity">
                                 <p style="padding-left: 50px; margin-top: 22px;"><%= request.getAttribute("totalP")%> Product availability</p>
                             </div>
@@ -572,10 +589,10 @@
                                 function attachClickEvents() {
                                     document.querySelectorAll('.size-btn').forEach(button => {
                                         button.addEventListener('click', function () {
-                                            console.log("Nút kích thước được nhấn");
+
                                             document.querySelectorAll('.size-btn').forEach(btn => {
                                                 btn.classList.remove('active');
-                                                console.log("Loại bỏ lớp active từ nút: ", btn);
+
                                             });
                                             this.classList.add('active');
                                             checkAndFetchTotalPrice();
@@ -654,6 +671,29 @@
                                         }
                                     });
                                 }
+                                ///func for add to cart ( Check size, color, quantity )
+                                function getValuesToAdd() {
+
+                                    var buttonSize = document.querySelector('.size-btn.active');
+                                    var buttonColor = document.querySelector('.color-btn.active');
+
+
+                                    var size = buttonSize.getAttribute('data-size');
+                                    var color = buttonColor.getAttribute('data-color');
+
+
+                                    var quantity = document.getElementById('quantityInput').value;
+                                    if (size && color && quantity) {
+                                        var url = '${pageContext.request.contextPath}/cart?action=addToCart&size=' + encodeURIComponent(size) + '&color=' + encodeURIComponent(color) + '&quantity=' + encodeURIComponent(quantity) + "&pro_id=${param.pid}";
+                                        window.location.href = url;
+                                    } else {
+                                        alert("Vui lòng chọn kích thước, màu và nhập số lượng.");
+                                    }
+
+                                    console.log("Size: " + size + ", Color: " + color + ", Quantity: " + quantity);
+                                }
+
+
 
     </script>
 </html>

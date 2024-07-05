@@ -283,7 +283,10 @@
         function handleBlur(proId) {
             sendGetRequest(proId);
         }
+        
 
+        
+        
 
     </script>
 </html>

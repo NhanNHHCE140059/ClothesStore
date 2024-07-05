@@ -1,5 +1,6 @@
 package controller;
 
+import helper.ProductSizeType;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,11 +12,12 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import model.Account;
-import model.Cart;
+import model.*;
 import model.CartInfo;
 import service.CartService;
 import service.ProductVariantService;
 import service.WarehouseService;
+import service.*;
 
 @WebServlet(value = "/cart")
 public class CartController extends HttpServlet {
@@ -55,10 +57,91 @@ public class CartController extends HttpServlet {
         if (action != null) {
             ProductVariantService pVservice = new ProductVariantService();
             WarehouseService wservice = new WarehouseService();
+            ProductColorService colorService = new ProductColorService();
+            ProductService productService = new ProductService();
             List<Cart> list_cart = cartService.GetListCartByAccID(acc.getAcc_id());
-
             switch (action) {
                 case "addToCart":
+                    if (request.getParameter("size") != null && request.getParameter("color") != null) {
+                        int noti = -1;
+                        int proID = -1;
+                        int quantity = -1;
+                        String color = request.getParameter("color");
+                        String size = request.getParameter("size");
+                        String pro_id = request.getParameter("pro_id");
+                        String quantityString = request.getParameter("quantity");
+                        try {
+                            proID = Integer.parseInt(pro_id);
+                            quantity = Integer.parseInt(quantityString);
+                        } catch (NumberFormatException e) {
+                            response.sendRedirect("detail?error=1&pid=" + proID);
+                            //// loi khong the chuyen doi quantity va id 
+                            System.out.println("Loi dong 78");
+                            return;
+                        }
+                        ProductsVariant productVariant = pVservice.getPVbyColorAndSize(proID, size, color);
+                        if (productVariant == null) {
+                            response.sendRedirect("detail?error=2&pid=" + proID);
+                            /// loi khong tim thay product Variant ( it xay ra )
+                            System.out.println("Loi dong 84");
+                            return;
+                        }
+                        Product product = productService.GetProById(productVariant.getPro_id());
+
+                        if ((wservice.GetProByIdInWareHouse(productVariant.getVariant_id())).getInventory_number() < quantity) {
+                            System.out.println(productVariant.getVariant_id());
+                            System.out.println(wservice.countTotalProductInWareHouseByID(productVariant.getVariant_id()));
+                            System.out.println(quantity);
+                            response.sendRedirect("detail?error=3&pid=" + proID);
+                            //// loi khong du so luong trong wareshouses 
+                            System.out.println("Loi dong 89");
+                            return;
+                        } else {
+                            boolean isHave = false;
+                            for (Cart c : list_cart) {
+                                if (c.getVariant_id() == productVariant.getVariant_id()) {
+                                    int provisinal = (wservice.GetProByIdInWareHouse(productVariant.getVariant_id())).getInventory_number() - c.getPro_quantity();
+                                    if (quantity > provisinal) {
+                                        response.sendRedirect("detail?error=6&pid=" + proID);
+                                        return;
+                                    }
+                                    isHave = true;
+                                    int newQuantity = quantity + c.getPro_quantity();
+                                    noti = cartService.UpdateQuan(newQuantity, (double) newQuantity * c.getPro_price(), c.getCart_id(), productVariant.getVariant_id());
+                                                                 
+                                    if (noti != 1) {
+                                        response.sendRedirect("detail?error=4&pid=" + proID);
+                                        System.out.println("Loi dong 100");
+                                        return;
+                                    }
+                                     response.sendRedirect("detail?succes=" + productVariant.getVariant_id()+"&pid=" + proID);  
+                                     return;
+
+                                }
+                            }
+                            if (!isHave) {
+                                if ((wservice.GetProByIdInWareHouse(productVariant.getVariant_id())).getInventory_number() < quantity) {
+                                    response.sendRedirect("detail?error=3&pid=" + proID);
+                                    return;
+                                }
+                                noti = cartService.AddCart(acc.getAcc_id(), productVariant.getVariant_id(), quantity, product.getPro_price(), (double) product.getPro_price() * quantity);
+                               
+                                if (noti != 1) {
+                                    response.sendRedirect("detail?error=4&pid=" + proID);
+                                    System.out.println("Loi dong 111");
+                                    return;
+                                }
+                                 response.sendRedirect("detail?succes=" + productVariant.getVariant_id()+"&pid=" + proID);
+                                return;
+                            }
+                        }
+                        response.sendRedirect("detail?pid=" + proID);
+                        System.out.println("Loi dong 117");
+                        return;
+                    } else {
+                        response.sendRedirect("home?error=5");
+                        return;
+                    }
 
                 case "decQuan":
                     for (Cart c : list_cart) {

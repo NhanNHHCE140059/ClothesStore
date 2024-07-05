@@ -61,11 +61,6 @@ public class CartService {
             ps.setDouble(4, pro_price);
             ps.setDouble(5, Total_price);
             count = ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
-            if ("52000".equals(ex.getSQLState())) {
-                count = -1;
-            }
         } catch (Exception ex) {
             Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -99,11 +94,7 @@ public class CartService {
             ps.setInt(3, cart_id);
             ps.setInt(4, variant_id);
             count = ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
-            if ("52000".equals(ex.getSQLState())) {
-                count = -1;
-            }
+
         } catch (Exception ex) {
             Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -210,6 +201,6 @@ public class CartService {
 
     public static void main(String[] args) {
         CartService dao = new CartService();
-        
+
     }
 }

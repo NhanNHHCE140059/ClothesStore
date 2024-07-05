@@ -43,11 +43,11 @@ public class getSizeByColor extends HttpServlet {
             @Override
             public void run() {
                 Collections.sort(sizesList, (o1, o2) -> Integer.compare(sizeOrder.indexOf(o1), sizeOrder.indexOf(o2)));
-                System.out.println("Danh sách đã sắp xếp: " + sizesList);
+            
             }
         }.run();
         Set<String> sizes = pvService.getSizesByProIDAndColorName(pro_id, color_name);
-        System.out.println(size_color.keySet());
+   
         if (sizes != null && !sizes.isEmpty()) {
             out.print("<label for=\"size\" style=\"margin:6px 12px 0 0;\" >Size:</label>");
             for (String size : sizesList) {
