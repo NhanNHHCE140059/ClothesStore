@@ -23,8 +23,7 @@ import java.util.*;
 @WebServlet(value = "/main-manage-product")
 public class MainManageProductController extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         
         if(session.getAttribute("account")==null) {
@@ -40,19 +39,53 @@ public class MainManageProductController extends HttpServlet {
         int indexPage = 1;
         int productsPerPage = 5;
         List<Product> listAllProduct = productService.getAllProducts();
-        if (request.getParameter("indexPage") != null) {
-            indexPage = Integer.parseInt(request.getParameter("indexPage"));
+        
+        if (request.getParameter("page") != null) {
+            indexPage = Integer.parseInt(request.getParameter("page"));
         }
         int start = (indexPage - 1) * productsPerPage;
         int end = Math.min(start + productsPerPage, listAllProduct.size());
 
         List<Product> paginatedList = listAllProduct.subList(start, end);
         int noOfRecords = listAllProduct.size();
-        int endPage = (int) Math.ceil(noOfRecords * 1.0 / productsPerPage);
-        request.setAttribute("endPage", endPage);
-        request.setAttribute("indexPage", indexPage);
+        int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / productsPerPage);
+        
+        request.setAttribute("noOfPages", noOfPages);
+        request.setAttribute("currentPage", indexPage);
         request.setAttribute("listP", paginatedList);
         request.getRequestDispatcher("main-manage-product.jsp").forward(request, response);
     }
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        processRequest(request, response);
+    }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (req.getParameter("idPro") != null) {
+            int idPro = Integer.parseInt(req.getParameter("idPro"));
+            ProductService productService = new ProductService();
+            Product product = productService.GetProById(idPro);
+            req.setAttribute("product", product);
+            
+            if (req.getParameter("action") != null) {
+
+                String action = req.getParameter("action");
+                if (action.equals("hidden")) {
+                    productService.hiddenProduct(idPro, 1);
+                }
+                if (action.equals("visible")) {
+                    productService.hiddenProduct(idPro, 0);
+                }
+            }
+
+            if (req.getParameter("page") != null) {
+                String page = req.getParameter("page");
+                req.setAttribute("currentPage", page);
+            }
+        }
+        
+        processRequest(req, resp);
+    }
 }

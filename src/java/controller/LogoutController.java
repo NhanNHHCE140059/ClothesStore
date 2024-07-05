@@ -21,6 +21,7 @@ public class LogoutController extends HttpServlet {
         session.removeAttribute("role");
         session.removeAttribute("account");
         session.removeAttribute("quantitypro");
+        session.removeAttribute("manageIndexPage");
         res.sendRedirect("home");
     } 
 }
