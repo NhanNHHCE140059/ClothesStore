@@ -23,7 +23,6 @@ public class ProductManageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-
         if (session.getAttribute("account") == null) {
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
@@ -33,7 +32,6 @@ public class ProductManageController extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
-
         int indexPage;
         if (req.getParameter("indexPage") != null) {
             indexPage = Integer.parseInt(req.getParameter("indexPage"));
