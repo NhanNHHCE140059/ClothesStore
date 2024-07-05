@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -208,8 +207,8 @@ public class ProductService {
         String query = "UPDATE Products SET status_product = ? WHERE pro_id = ?";
 
         try {
-            Connection connection = dbcontext.getConnection();
-            PreparedStatement ps = connection.prepareStatement(query);
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
             ps.setInt(1, status);
             ps.setInt(2, pro_id);
             ps.executeUpdate();
@@ -226,8 +225,8 @@ public class ProductService {
                 + "VALUES (?, ?, ?, ?, ?, ?)";
 
         try {
-            Connection connection = dbcontext.getConnection();
-            PreparedStatement ps = connection.prepareStatement(query);
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
             ps.setString(1, pro_name);
             ps.setDouble(2, pro_price);
             ps.setString(3, description);
@@ -265,5 +264,4 @@ public class ProductService {
         }
         return list;
     }
-
 }
