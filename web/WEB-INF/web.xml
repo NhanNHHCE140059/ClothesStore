@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <servlet>
+        <servlet-name>ViewWarehouseController</servlet-name>
+        <servlet-class>controller.ViewWarehouseController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchProductWarehouse</servlet-name>
+        <servlet-class>controller.SearchProductWarehouse</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ViewWarehouseController</servlet-name>
+        <url-pattern>/ViewWarehouse</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchProductWarehouse</servlet-name>
+        <url-pattern>/SearchProduct</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
