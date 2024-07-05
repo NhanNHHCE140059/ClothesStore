@@ -150,7 +150,7 @@ public class ProductService {
 
     public List<Product> searchByName(String txtSearch) {
         List<Product> list = new ArrayList<>();
-        String query = "SELECT * FROM Products WHERE pro_name LIKE ?";
+        String query = "SELECT * FROM Products WHERE pro_name LIKE ? AND status_product = 0";
 
         try {
             connection = dbcontext.getConnection();
@@ -215,5 +215,26 @@ public class ProductService {
         }
     }
 
- 
+    public List<Product> getAllProductsShop() {
+        List<Product> list = new ArrayList<>();
+        String query = "SELECT * FROM Products where status_product = 0";
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Product(rs.getInt("pro_id"),
+                        rs.getString("pro_name"),
+                        rs.getDouble("pro_price"),
+                        rs.getString("imageURL"),
+                        rs.getString("description"),
+                        rs.getInt("cat_id"),
+                        ProductStatus.values()[rs.getInt("status_product")]));
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred while fetching products: " + e.getMessage());
+        }
+        return list;
+    }
 }
