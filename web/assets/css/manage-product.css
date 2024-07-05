@@ -230,6 +230,7 @@ body {
     color: white;
     border: 1px solid #4CAF50;
 }
+
 .modal {
     display: block;
     position: fixed;
@@ -320,26 +321,6 @@ input[type="number"] {
     text-decoration: none;
 }
 
-.btn-update {
-    background-color: #00c40d;
-    color: white;
-    text-align: center;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 0.9em;
-    text-decoration: none;
-}
-
-.btn-delete {
-    background-color: #f50202;
-    color: white;
-    text-align: center;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 0.9em;
-    text-decoration: none;
-}
-
 .imgPro{
     height: 60%;
     width: 60%;
@@ -402,3 +383,43 @@ input[type="number"] {
 .modal-button.cancel:hover {
     background-color: #333333;
 }
+
+/* Định nghĩa các thuộc tính CSS chung cho cả thẻ <a> và <button> */
+.btn {
+    display: inline-block;
+    padding: 10px 20px; /* Tăng padding để đảm bảo kích thước */
+    border-radius: 5px;
+    font-size: 0.9em;
+    text-decoration: none;
+    color: white;
+    margin-top: 5px;
+    cursor: pointer;
+    text-align: center;
+    box-sizing: border-box; /* Đảm bảo padding và border được tính trong kích thước */
+    width: 100%; /* Đảm bảo nút chiếm toàn bộ chiều rộng của ô chứa */
+}
+
+/* Cụ thể hóa các thuộc tính riêng biệt cho từng nút */
+.btn-update {
+    background-color: #00c40d;
+}
+
+.btn-delete {
+    background-color: #f50202;
+}
+
+/* Đảm bảo rằng thẻ <a> và <button> có cùng thuộc tính */
+a.btn, button.btn {
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+    width: 100%;
+}
+
+/* Đảm bảo form không có padding hoặc margin gây ảnh hưởng */
+.actions form {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
