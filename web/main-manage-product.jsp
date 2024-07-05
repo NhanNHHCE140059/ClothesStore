@@ -96,12 +96,16 @@
                             <td><%= cateSv.getNameCateByIDCate(cate_id).getCat_name()%></td>
                             <td>${product.status_product}</td>
                             <td class="actions">
-                                <a href="/clothesstore/update-product?idPro=${product.pro_id}" class="btn-update">Update</a>
-                                <% if(prod.getStatus_product() == ProductStatus.HIDDEN){ %>
-                                <a href="/clothesstore/delete-product?idPro=${product.pro_id}&action=visible" class="btn-delete">Visible</a>
-                                <%}else {%>
-                                <a href="/clothesstore/delete-product?idPro=${product.pro_id}&action=hidden" class="btn-delete">Hidden</a>
-                                <%}%>
+                                <a href="/clothesstore/update-product?idPro=${product.pro_id}" class="btn btn-update">Update</a>
+                                
+                                <form action="/clothesstore/main-manage-product" method="POST">
+                                    <input type="hidden" name="idPro" value="${product.pro_id}">
+                                    <input type="hidden" name="page" value="${currentPage}">
+                                    <input type="hidden" name="action" value="<%= prod.getStatus_product() == ProductStatus.HIDDEN ? "visible" : "hidden" %>">
+                                    <button type="submit" class="btn btn-delete">
+                                        <%= prod.getStatus_product() == ProductStatus.HIDDEN ? "Visible" : "Hidden" %>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     </c:forEach>
@@ -110,19 +114,15 @@
             <div class="col-12">
                 <nav>
                     <ul class="pagination justify-content-center">
-                        <%if (currentPage > 1){%>
-                        <li class="page-item"><a class="page-link" href="main-manage-product?indexPage=${currentPage - 1}">Previous</a></li>
-                            <%}%>
-                            <%int pageRange = 5; 
-                              int startPage = Math.max(1, currentPage - pageRange);
-                              int end = Math.min(endPage, currentPage + pageRange);%>
-
-                        <%for (int i = startPage; i <= end; i++){%>
-                        <li><a class="page-link" href="main-manage-product?indexPage=<%=i%>"><%=i%></a></li>
-                            <%}%>
-                            <%if(currentPage < endPage){%>
-                        <li class="page-item"><a class="page-link" href="main-manage-product?indexPage=${currentPage + 1}">Next</a></li>
-                            <%}%>
+                        <c:if test="${currentPage > 1}">
+                            <li class="page-item"><a class="page-link" href="main-manage-product?page=${currentPage - 1}">Previous</a></li>
+                        </c:if>
+                        <c:forEach var="i" begin="1" end="${noOfPages}">
+                            <li class="page-item"><a class="page-link ${i == currentPage ? 'active' : ''}" href="main-manage-product?page=${i}">${i}</a></li>
+                        </c:forEach>
+                        <c:if test="${currentPage < noOfPages}">
+                            <li class="page-item"><a class="page-link active" href="main-manage-product?page=${currentPage + 1}">Next</a></li>
+                        </c:if>
                     </ul>
                 </nav>
             </div>
