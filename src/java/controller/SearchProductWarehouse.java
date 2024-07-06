@@ -10,8 +10,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import model.Account;
 import model.Product;
 import model.WarehouseProduct;
 import service.ProductService;
@@ -61,8 +63,55 @@ public class SearchProductWarehouse extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // request dispacher sang trang warehoust manage
+        HttpSession session = request.getSession();
+        if (session.getAttribute("account") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
 
+        Account account = (Account) session.getAttribute("account");
+        if (account.getRole() == (helper.Role.Customer)) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+
+        try {
+            String content = request.getParameter("searchName");
+            WarehouseService ws = new WarehouseService();
+            int pageSize = 15; // Số sản phẩm trên mỗi trang
+            int pageIndex = 1; // Trang mặc định là trang 1
+
+            // Lấy trang từ tham số request
+            if (request.getParameter("page") != null) {
+                pageIndex = Integer.parseInt(request.getParameter("page"));
+            }
+
+            int startIndex = (pageIndex - 1) * pageSize;
+            List<WarehouseProduct> list = ws.search(content);
+
+            // Tính toán số trang và các tham số cho phân trang
+            int endPage = (int) Math.ceil(list.size() / (double) pageSize);
+            int maxPages = 5; // Số trang tối đa hiển thị
+            int startPage = Math.max(1, pageIndex - (maxPages - 1) / 2);
+            int endPageDisplay = Math.min(endPage, startPage + maxPages - 1);
+
+            List<WarehouseProduct> paginatedList;
+            if (list.isEmpty()) {
+                paginatedList = new ArrayList<>(); // Đặt danh sách trống nếu không có sản phẩm nào
+            } else {
+                paginatedList = list.subList(startIndex, Math.min(startIndex + pageSize, list.size()));
+            }
+            request.setAttribute("listWarehouse", paginatedList);
+            request.setAttribute("endPage", endPage);
+            request.setAttribute("pageIndex", pageIndex);
+            request.setAttribute("startPage", startPage);
+            request.setAttribute("endPageDisplay", endPageDisplay);
+            request.setAttribute("searchName", content); // Chuyển từ khóa tìm kiếm sang trang JSP
+
+            request.getRequestDispatcher("view-warehouse.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace(); // In lỗi ra console để dễ dàng kiểm tra lỗi
+        }
     }
 
     /**
@@ -75,6 +124,23 @@ public class SearchProductWarehouse extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("account") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        Account account = (Account) session.getAttribute("account");
+        if (account.getRole() == (helper.Role.Customer)) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+
+        processSearch(request, response);
+    }
+
+    private void processSearch(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             String content = request.getParameter("searchName");
@@ -91,19 +157,23 @@ public class SearchProductWarehouse extends HttpServlet {
             List<WarehouseProduct> list = ws.search(content);
 
             // Tính toán số trang và các tham số cho phân trang
-            int endIndex = Math.min(startIndex + pageSize, list.size());
             int endPage = (int) Math.ceil(list.size() / (double) pageSize);
-            int maxPages = 5; // maximum number of pages to display
+            int maxPages = 5; // Số trang tối đa hiển thị
             int startPage = Math.max(1, pageIndex - (maxPages - 1) / 2);
             int endPageDisplay = Math.min(endPage, startPage + maxPages - 1);
 
-            request.setAttribute("listWarehouse", list.subList(startIndex, endIndex));
-            request.setAttribute("startIndex", startIndex);
-            request.setAttribute("endIndex", endIndex - 1); // endIndex - 1 vì subList không bao gồm endIndex
+            List<WarehouseProduct> paginatedList;
+            if (list.isEmpty()) {
+                paginatedList = new ArrayList<>(); // Đặt danh sách trống nếu không có sản phẩm nào
+            } else {
+                paginatedList = list.subList(startIndex, Math.min(startIndex + pageSize, list.size()));
+            }
+            request.setAttribute("listWarehouse", paginatedList);
             request.setAttribute("endPage", endPage);
             request.setAttribute("pageIndex", pageIndex);
             request.setAttribute("startPage", startPage);
             request.setAttribute("endPageDisplay", endPageDisplay);
+            request.setAttribute("searchName", content); // Chuyển từ khóa tìm kiếm sang trang JSP
 
             request.getRequestDispatcher("view-warehouse.jsp").forward(request, response);
         } catch (Exception e) {

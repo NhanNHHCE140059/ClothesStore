@@ -2,6 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -190,7 +191,7 @@
             <div>
                 <!-- Form tìm kiếm -->
                 <form action="${pageContext.request.contextPath}/SearchProduct" method="post" class="search-form">
-                    <input type="text" name="searchName" placeholder="Search by product name" />
+                    <input type="text" name="searchName" placeholder="Search by product name" value="${searchName}" />
                     <button type="submit">Search</button>
                 </form>
 
@@ -209,20 +210,29 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach items="${listWarehouse}" var="o" begin="${startIndex}" end="${endIndex}">
-                            <tr>
-                                <td>${o.pro_id}</td>
-                                <td>${o.bill_id}</td>
-                                <td>${o.pro_name}</td>
-                                <td><fmt:formatNumber value="${o.pro_price}" type="currency" currencySymbol="" minFractionDigits="0" maxFractionDigits="0" />
-                                    VND</td>
-                                <td>${o.color_name}</td>
-                                <td>${o.size_name}</td>
-                                <td><img src="${o.imageURL}" alt="${o.pro_name}" width="100" /></td>
-                                <td>${o.inventory_number}</td>
-                                <td>${o.import_date}</td>
-                            </tr>
-                        </c:forEach>
+                        <c:choose>
+                            <c:when test="${empty listWarehouse}">
+                                <tr>
+                                    <td colspan="9" style="text-align: center;">Product not found</td>
+                                </tr>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach items="${listWarehouse}" var="o">
+                                    <tr>
+                                        <td>${o.pro_id}</td>
+                                        <td>${o.bill_id}</td>
+                                        <td>${o.pro_name}</td>
+                                        <td><fmt:formatNumber value="${o.pro_price}" type="currency" currencySymbol="" minFractionDigits="0" maxFractionDigits="0" />
+                                            VND</td>
+                                        <td>${o.color_name}</td>
+                                        <td>${o.size_name}</td>
+                                        <td><img src="${o.imageURL}" alt="${o.pro_name}" width="100" /></td>
+                                        <td>${o.inventory_number}</td>
+                                        <td>${o.import_date}</td>
+                                    </tr>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
                     </tbody>
                 </table>
 
@@ -230,21 +240,34 @@
                 <div class="pagination" id="pagination">
                     <c:if test="${endPage != 0}">
                         <!-- Add links to jump to first and last page -->
-                        <a href="${pageContext.request.contextPath}/ViewWarehouse?page=1" class="page-link">First</a>
-                        <c:forEach var="i" begin="${startPage}" end="${endPageDisplay}">
-                            <a href="${pageContext.request.contextPath}/ViewWarehouse?page=${i}" 
-                               class="page-link ${i == pageIndex ? 'active' : ''}">${i}</a>
-                        </c:forEach>
-                        <a href="${pageContext.request.contextPath}/ViewWarehouse?page=${endPage}" class="page-link">Last</a>
+                        <c:choose>
+                            <c:when test="${not empty searchName}">
+                                <a href="${pageContext.request.contextPath}/SearchProduct?page=1&searchName=${searchName}" class="page-link">First</a>
+                                <c:forEach var="i" begin="${startPage}" end="${endPageDisplay}">
+                                    <a href="${pageContext.request.contextPath}/SearchProduct?page=${i}&searchName=${searchName}" 
+                                       class="page-link ${i == pageIndex ? 'active' : ''}">${i}</a>
+                                </c:forEach>
+                                <a href="${pageContext.request.contextPath}/SearchProduct?page=${endPage}&searchName=${searchName}" class="page-link">Last</a>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="${pageContext.request.contextPath}/ViewWarehouse?page=1" class="page-link">First</a>
+                                <c:forEach var="i" begin="${startPage}" end="${endPageDisplay}">
+                                    <a href="${pageContext.request.contextPath}/ViewWarehouse?page=${i}" 
+                                       class="page-link ${i == pageIndex ? 'active' : ''}">${i}</a>
+                                </c:forEach>
+                                <a href="${pageContext.request.contextPath}/ViewWarehouse?page=${endPage}" class="page-link">Last</a>
+                            </c:otherwise>
+                        </c:choose>
                     </c:if>
                 </div>
+
             </div>
         </div>
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 var urlParams = new URLSearchParams(window.location.search);
-                var pageIndex = urlParams.get('page');
+                var pageIndex = urlParams.get('page') || '1';
                 var links = document.querySelectorAll('.page-link');
                 links.forEach(function (link) {
                     link.classList.remove('active');
