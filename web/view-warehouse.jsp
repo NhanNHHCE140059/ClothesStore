@@ -110,7 +110,35 @@
                 position: fixed; /* Đảm bảo sidebar luôn cố định */
                 top: 0; /* Đặt ở trên cùng của trang */
                 left: 0; /* Đặt ở bên trái của trang */
-                height: 100vh; /* Chiều cao của sidebar bằng toàn bộ chiều cao của cửa sổ */              
+                height: 100vh; /* Chiều cao của sidebar bằng toàn bộ chiều cao của cửa sổ */
+            }
+            .pagination a.page-link {
+                margin: 0 5px;
+                padding: 8px 16px;
+                text-decoration: none;
+                color: #000;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            .pagination a.page-link:hover {
+                background-color: #f0f0f0;
+            }
+
+            .pagination a.page-link.active {
+                background-color: #4CAF50;
+                color: white;
+                border: 1px solid #4CAF50;
+            }
+
+            .pagination a.page-link.first, .pagination a.page-link.last {
+                margin: 0 10px;
+                padding: 8px 16px;
+                font-weight: bold;
+            }
+
+            .pagination a.page-link.first:hover, .pagination a.page-link.last:hover {
+                background-color: #ccc;
             }
         </style>
     </head>
@@ -167,44 +195,47 @@
                 </form>
 
                 <table id="warehouseTable">
-    <thead>
-        <tr>
-            <th>Product ID</th>
-            <th>Bill ID</th>
-            <th>Product Name</th>
-            <th>Product Price </th>
-            <th>Color</th>
-            <th>Size</th>
-            <th>Image</th>
-            <th>Inventory Number</th>
-            <th>Import Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        <c:forEach items="${listWarehouse}" var="o" begin="${startIndex}" end="${endIndex}">
-            <tr>
-                <td>${o.pro_id}</td>
-                <td>${o.bill_id}</td>
-                <td>${o.pro_name}</td>
-                <td><fmt:formatNumber value="${o.pro_price}" type="currency" currencySymbol="" minFractionDigits="0" maxFractionDigits="0" />
-                    VND</td>
-                <td>${o.color_name}</td>
-                <td>${o.size_name}</td>
-                <td><img src="${o.imageURL}" alt="${o.pro_name}" width="100" /></td>
-                <td>${o.inventory_number}</td>
-                <td>${o.import_date}</td>
-            </tr>
-        </c:forEach>
-    </tbody>
-</table>
+                    <thead>
+                        <tr>
+                            <th>Product ID</th>
+                            <th>Bill ID</th>
+                            <th>Product Name</th>
+                            <th>Product Price </th>
+                            <th>Color</th>
+                            <th>Size</th>
+                            <th>Image</th>
+                            <th>Inventory Number</th>
+                            <th>Import Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${listWarehouse}" var="o" begin="${startIndex}" end="${endIndex}">
+                            <tr>
+                                <td>${o.pro_id}</td>
+                                <td>${o.bill_id}</td>
+                                <td>${o.pro_name}</td>
+                                <td><fmt:formatNumber value="${o.pro_price}" type="currency" currencySymbol="" minFractionDigits="0" maxFractionDigits="0" />
+                                    VND</td>
+                                <td>${o.color_name}</td>
+                                <td>${o.size_name}</td>
+                                <td><img src="${o.imageURL}" alt="${o.pro_name}" width="100" /></td>
+                                <td>${o.inventory_number}</td>
+                                <td>${o.import_date}</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
 
                 <!-- Pagination -->
                 <div class="pagination" id="pagination">
                     <c:if test="${endPage != 0}">
-                        <c:forEach var="i" begin="1" end="${endPage}">
+                        <!-- Add links to jump to first and last page -->
+                        <a href="${pageContext.request.contextPath}/ViewWarehouse?page=1" class="page-link">First</a>
+                        <c:forEach var="i" begin="${startPage}" end="${endPageDisplay}">
                             <a href="${pageContext.request.contextPath}/ViewWarehouse?page=${i}" 
                                class="page-link ${i == pageIndex ? 'active' : ''}">${i}</a>
                         </c:forEach>
+                        <a href="${pageContext.request.contextPath}/ViewWarehouse?page=${endPage}" class="page-link">Last</a>
                     </c:if>
                 </div>
             </div>

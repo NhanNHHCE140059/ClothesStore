@@ -79,7 +79,6 @@ public class SearchProductWarehouse extends HttpServlet {
         try {
             String content = request.getParameter("searchName");
             WarehouseService ws = new WarehouseService();
-            
             int pageSize = 15; // Số sản phẩm trên mỗi trang
             int pageIndex = 1; // Trang mặc định là trang 1
 
@@ -94,12 +93,17 @@ public class SearchProductWarehouse extends HttpServlet {
             // Tính toán số trang và các tham số cho phân trang
             int endIndex = Math.min(startIndex + pageSize, list.size());
             int endPage = (int) Math.ceil(list.size() / (double) pageSize);
+            int maxPages = 5; // maximum number of pages to display
+            int startPage = Math.max(1, pageIndex - (maxPages - 1) / 2);
+            int endPageDisplay = Math.min(endPage, startPage + maxPages - 1);
 
             request.setAttribute("listWarehouse", list.subList(startIndex, endIndex));
             request.setAttribute("startIndex", startIndex);
             request.setAttribute("endIndex", endIndex - 1); // endIndex - 1 vì subList không bao gồm endIndex
             request.setAttribute("endPage", endPage);
             request.setAttribute("pageIndex", pageIndex);
+            request.setAttribute("startPage", startPage);
+            request.setAttribute("endPageDisplay", endPageDisplay);
 
             request.getRequestDispatcher("view-warehouse.jsp").forward(request, response);
         } catch (Exception e) {
