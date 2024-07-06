@@ -167,30 +167,36 @@
                 </form>
 
                 <table id="warehouseTable">
-                    <thead>
-                        <tr>
-                            <th>Product ID</th>
-                            <th>Bill ID</th>
-                            <th>Product Name</th>
-                            <th>Product Price </th>
-                            <th>Inventory Number</th>
-                            <th>Import Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach items="${listWarehouse}" var="o" begin="${startIndex}" end="${endIndex}">
-                            <tr>
-                                <td>${o.pro_id}</td>
-                                <td>${o.bill_id}</td>
-                                <td>${o.pro_name}</td>
-                                <td><fmt:formatNumber value="${o.pro_price}" type="currency" currencySymbol="" minFractionDigits="0" maxFractionDigits="0" />
-                                    VND</td>
-                                <td>${o.inventory_number}</td>
-                                <td>${o.import_date}</td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
+    <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Bill ID</th>
+            <th>Product Name</th>
+            <th>Product Price </th>
+            <th>Color</th>
+            <th>Size</th>
+            <th>Image</th>
+            <th>Inventory Number</th>
+            <th>Import Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <c:forEach items="${listWarehouse}" var="o" begin="${startIndex}" end="${endIndex}">
+            <tr>
+                <td>${o.pro_id}</td>
+                <td>${o.bill_id}</td>
+                <td>${o.pro_name}</td>
+                <td><fmt:formatNumber value="${o.pro_price}" type="currency" currencySymbol="" minFractionDigits="0" maxFractionDigits="0" />
+                    VND</td>
+                <td>${o.color_name}</td>
+                <td>${o.size_name}</td>
+                <td><img src="${o.imageURL}" alt="${o.pro_name}" width="100" /></td>
+                <td>${o.inventory_number}</td>
+                <td>${o.import_date}</td>
+            </tr>
+        </c:forEach>
+    </tbody>
+</table>
 
                 <!-- Pagination -->
                 <div class="pagination" id="pagination">

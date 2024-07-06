@@ -75,14 +75,15 @@ public class WarehouseService {
         return ware;
     }
 
-    
-
     public List<WarehouseProduct> getAllWarehouse() {
         List<WarehouseProduct> wh = new ArrayList<>();
-        String sql = "SELECT w.*, pv.pro_id, p.pro_name, p.pro_price\n"
+        String sql = "SELECT w.*, pv.pro_id, p.pro_name, p.pro_price, c.color_name, s.size_name, pi.imageURL\n"
                 + "FROM Warehouses w\n"
                 + "JOIN ProductVariants pv ON w.variant_id = pv.variant_id\n"
-                + "JOIN Products p ON pv.pro_id = p.pro_id";
+                + "JOIN Products p ON pv.pro_id = p.pro_id\n"
+                + "JOIN ProductColors c ON pv.color_id = c.color_id\n"
+                + "JOIN ProductSizes s ON pv.size_id = s.size_id\n"
+                + "JOIN ProductImages pi ON pv.image_id = pi.image_id";
         try {
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(sql);
@@ -96,7 +97,10 @@ public class WarehouseService {
                         rs.getString("pro_name"),
                         rs.getDouble("pro_price"),
                         rs.getDate("import_date"),
-                        rs.getInt("inventory_number")
+                        rs.getInt("inventory_number"),
+                        rs.getString("color_name"),
+                        rs.getString("size_name"),
+                        rs.getString("imageURL")
                 ));
             }
         } catch (SQLException e) {
@@ -106,17 +110,20 @@ public class WarehouseService {
         }
         return wh;
     }
-    
-    public List search(String text){
+
+    public List search(String text) {
         List<WarehouseProduct> wplist = new ArrayList<>();
-        String query = "SELECT w.*, pv.pro_id, p.pro_name, p.pro_price\n" +
-"                 FROM Warehouses w\n" +
-"                 JOIN ProductVariants pv ON w.variant_id = pv.variant_id\n" +
-"                 JOIN Products p ON pv.pro_id = p.pro_id where p.pro_name like ?";
+        String query = "SELECT w.*, pv.pro_id, p.pro_name, p.pro_price, c.color_name, s.size_name, pi.imageURL\n"
+                + "FROM Warehouses w\n"
+                + "JOIN ProductVariants pv ON w.variant_id = pv.variant_id\n"
+                + "JOIN Products p ON pv.pro_id = p.pro_id\n"
+                + "JOIN ProductColors c ON pv.color_id = c.color_id\n"
+                + "JOIN ProductSizes s ON pv.size_id = s.size_id\n"
+                + "JOIN ProductImages pi ON pv.image_id = pi.image_id where p.pro_name like ?";
         try {
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
-            ps.setString(1, "%"+text+"%");
+            ps.setString(1, "%" + text + "%");
             rs = ps.executeQuery();
             while (rs.next()) {
                 wplist.add(new WarehouseProduct(
@@ -127,14 +134,17 @@ public class WarehouseService {
                         rs.getString("pro_name"),
                         rs.getDouble("pro_price"),
                         rs.getDate("import_date"),
-                        rs.getInt("inventory_number")
+                        rs.getInt("inventory_number"),
+                        rs.getString("color_name"),
+                        rs.getString("size_name"),
+                        rs.getString("imageURL")
                 ));
             }
-            
+
         } catch (Exception ex) {
             Logger.getLogger(WarehouseService.class.getName()).log(Level.SEVERE, null, ex);
         }
-            
+
         return wplist;
     }
 

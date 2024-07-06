@@ -28,4 +28,7 @@ public class WarehouseProduct {
     private double pro_price;
     private Date import_date;
     private int inventory_number;
+    private String color_name;
+    private String size_name;
+    private String imageURL;
 }
