@@ -2,6 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
+<%@page import="model.*" %>
+<%@page import="helper.*" %>
 <html>
     <jsp:include page="/shared/_head.jsp" />
     <body>
@@ -93,32 +95,6 @@
                 font-size: 18px;
                 border-radius: 4px;
             }
-            .checkbox-wrapper input[type="checkbox"] {
-                -webkit-appearance: none;
-                -moz-appearance: none;
-                appearance: none;
-                width: 20px;
-                height: 20px;
-                border: 2px solid #ccc;
-                border-radius: 3px;
-                outline: none;
-                cursor: pointer;
-                position: relative;
-                margin-right: 10px;
-            }
-            .checkbox-wrapper input[type="checkbox"]:checked {
-                background-color: yellow;
-                border-color: yellow;
-            }
-            .checkbox-wrapper input[type="checkbox"]:checked::before {
-                content: '✔';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                font-size: 14px;
-                color: #3D464D;
-            }
         </style>
 
         <jsp:include page="/shared/_header.jsp" />
@@ -144,12 +120,18 @@
                 <div class="col-lg-12 table-responsive mb-5 cartmanagement">
                     <table class="table table-light table-borderless table-hover text-center mb-0">
                         <thead class="thead-dark">
-                            <c:if test="${not empty sessionScope.message}">
-                                <c:set var="message" value="${sessionScope.message}" />
+                            <c:if test="${empty carttop5}">
+                            <div id="message1" style="display: block;">
+                                <h1 class="btn btn-block btn-primary font-weight-bold my-3 py-3">There are currently no products in your shopping cart ☺</h1>
+                            </div>
+                        </c:if>
+
+                        <c:if test="${not empty sessionScope.message}">
+                            <c:set var="message" value="${sessionScope.message}" />
                             <div id="message" style="display: none;">
                                 <h1 class="btn btn-block btn-primary font-weight-bold my-3 py-3">${sessionScope.message}</h1>
                             </div>
-                            <c:remove var="message" scope="session" />
+                            <c:remove var="message" scope="session"/>
                         </c:if>
                         <tr>
                             <th>Products</th>
@@ -164,9 +146,6 @@
                             <c:forEach var="cart" items="${carttop5}">
                                 <tr>
                                     <td class="align-middle" style="display: flex; align-items: center;">
-                                        <div class="checkbox-wrapper">
-                                            <input type="checkbox" id="tick-checkbox">
-                                        </div>
                                         <img src="${cart.imageURL}" alt="imgProduct" style="width: 100px; height: 100px; margin-right: 20px;">
                                         <div>
                                             <span style="display: block; font-size: 18px; font-weight: bold;">${cart.pro_name}</span>
@@ -178,22 +157,19 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="align-middle">Product Classification <br>Color: ${cart.color_name}, Size: ${cart.size_id}</td>
+                                    <% CartInfo cartInfo = (CartInfo) pageContext.findAttribute("cart"); %>
+                                    <td class="align-middle">Product Classification <br>Color: ${cart.color_name}, Size: <%= ProductSizeType.values()[cartInfo.getSize_id()] %></td>
                                     <td class="align-middle">
                                         <fmt:formatNumber value="${cart.pro_price}" type="number" pattern="#,##0" /> VND
                                     </td>
                                     <td class="align-middle">
                                         <div class="input-group quantity mx-auto" style="width: 120px;">
 
-
-
                                             <a href="${pageContext.request.contextPath}/cart?action=decQuan&proV_id=${cart.variant_id}&indexPage=${indexPage}">  <div class="input-group-btn">
                                                     <button class="btn btn-sm btn-primary btn-plus" style="height: 34px;">
                                                         <i class="fa fa-minus"></i>
                                                     </button>
                                                 </div></a>
-
-
 
                                             <input id="quantityCustom_${cart.variant_id}" class="form-control form-control-sm bg-secondary border-0 text-center quantity-custom" style="width: 60px;" type="number" value="${cart.pro_quantity}" name="quantityC" onblur="handleBlur(${cart.variant_id})" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                             <a href="${pageContext.request.contextPath}/cart?action=incQuan&proV_id=${cart.variant_id}&indexPage=${indexPage}">  <div class="input-group-btn">
@@ -234,14 +210,15 @@
                         <div class="bg-light p-30 mb-5">
                             <div class="pt-2">
                                 <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <div class="d-flex align-items-center">
-                                        <div class="checkbox-wrapper">
-                                            <input type="checkbox" id="tick-checkbox">
-                                        </div>
-                                        <h5 class="m-0 ml-2">Select All (${quantityCart})</h5>
+                                    <div>
+                                        <span class="h1 text-uppercase text-primary bg-dark px-2">Clothes</span>
+                                        <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Store</span>
                                     </div>
-                                    <h5 class="m-0 text-danger">Save to Loved</h5>
-                                    <h5 class="m-0">Total Price (${quantityProduct}): <fmt:formatNumber value="${totalPrice}" type="number" pattern="#,##0" /> VND</h5>
+                                    
+                                    <div class="d-flex">
+                                    <h5 class="m-0">Total Price (${quantityProduct}):</h5> 
+                                    <h5 style="font-size: 28px"><fmt:formatNumber value="${totalPrice}" type="number" pattern="#,##0" /> VND</h5>
+                                    </div>
                                     <div class="d-flex flex-column align-items-end">
                                         <a href="/clothesstore/checkout" class="btn btn-primary font-weight-bold py-3 px-4">Proceed To Checkout</a>
                                     </div>
@@ -283,10 +260,5 @@
         function handleBlur(proId) {
             sendGetRequest(proId);
         }
-        
-
-        
-        
-
     </script>
 </html>

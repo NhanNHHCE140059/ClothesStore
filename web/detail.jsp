@@ -225,47 +225,55 @@
         <jsp:include page="/shared/_nav.jsp" />
 
         <!-- Breadcrumb Start -->
-        <c:if test="${not empty successP}">
-            <div class="box">
-                <div class="content">
-                    <p>Thank you for adding to cart!</p>
-                    <p class="product-name">${successP.pro_name}</p>
-                </div>
-                <img src="${successP.imageURL}" alt="Product Image">
-            </div>
-        </c:if>   
         <c:if test="${param.error == 1}">
             <div class="box faillength">
                 <div class="content">
-                    <p style="padding-left:20px">You entered too many quantities!!!</p>                    
+                    <p style="padding-left:20px; color: #FFD333">You entered too many quantities!!!</p>                    
                 </div>               
             </div>
         </c:if>
+        
         <c:if test="${param.error == 2}">
             <div class="box faillength">
                 <div class="content">
-                    <p style="padding-left:40px">This product is error re-enter please!!!</p>                    
+                    <p style="padding-left:40px; color: #FFD333">This product is error re-enter please!!!</p>                    
                 </div>               
             </div>
         </c:if>
+        
         <c:if test="${param.error == 3}">
             <div class="box faillength">
                 <div class="content">
-                    <p style="padding-left:40px">This product is out stock please!!!</p>                    
+                    <p style="padding-left:40px; color: #FFD333">The number of products in the Warehouse is not enough!!!</p>                    
+                </div>               
+            </div>
+        </c:if>  
+        
+        <c:if test="${param.error == 4}">
+            <div class="box faillength">
+                <div class="content">
+                    <p style="padding-left:40px; color: #FFD333">Unknown error!!!</p>                    
                 </div>               
             </div>
         </c:if>
         <c:if test="${param.error == 6}">
             <div class="box faillength">
                 <div class="content">
-                    <p style="padding-left:40px">Khong du so luong trong kho!!!</p>                    
+                    <p style="padding-left:40px; color: #FFD333">The number of products in the Warehouse is not enough!!!</p>                    
+                </div>               
+            </div>
+        </c:if>
+                <c:if test="${param.error == 7}">
+            <div class="box faillength">
+                <div class="content">
+                    <p style="padding-left:40px; color: #FFD333">Adding a failed product, the number of products added is at least 1</p>                    
                 </div>               
             </div>
         </c:if>
         <c:if test="${not empty param.succes}">
-            <div class="box faillength">
+            <div class="box faillength" style="background-color: #FFD333">
                 <div class="content">
-                    <p style="padding-left:40px">Ban da them san pham vao gio hang</p>                    
+                    <p style="padding-left:40px">Thank you for adding to cart!</p>                    
                 </div>               
             </div>
         </c:if>

@@ -50,7 +50,6 @@ public class CartController extends HttpServlet {
             try {
                 proV_id = Integer.parseInt(request.getParameter("proV_id"));
             } catch (NumberFormatException e) {
-                System.out.println("WTFFFFF");
             }
         }
 
@@ -76,14 +75,16 @@ public class CartController extends HttpServlet {
                         } catch (NumberFormatException e) {
                             response.sendRedirect("detail?error=1&pid=" + proID);
                             //// loi khong the chuyen doi quantity va id 
-                            System.out.println("Loi dong 78");
+                            return;
+                        }
+                        if (quantity <= 0) {
+                            response.sendRedirect("detail?error=7&pid=" + proID);
                             return;
                         }
                         ProductsVariant productVariant = pVservice.getPVbyColorAndSize(proID, size, color);
                         if (productVariant == null) {
                             response.sendRedirect("detail?error=2&pid=" + proID);
                             /// loi khong tim thay product Variant ( it xay ra )
-                            System.out.println("Loi dong 84");
                             return;
                         }
                         Product product = productService.GetProById(productVariant.getPro_id());
@@ -93,8 +94,7 @@ public class CartController extends HttpServlet {
                             System.out.println(wservice.countTotalProductInWareHouseByID(productVariant.getVariant_id()));
                             System.out.println(quantity);
                             response.sendRedirect("detail?error=3&pid=" + proID);
-                            //// loi khong du so luong trong wareshouses 
-                            System.out.println("Loi dong 89");
+                            //// So luong san pham trong Warehouse khong du
                             return;
                         } else {
                             boolean isHave = false;
@@ -108,14 +108,13 @@ public class CartController extends HttpServlet {
                                     isHave = true;
                                     int newQuantity = quantity + c.getPro_quantity();
                                     noti = cartService.UpdateQuan(newQuantity, (double) newQuantity * c.getPro_price(), c.getCart_id(), productVariant.getVariant_id());
-                                                                 
+
                                     if (noti != 1) {
                                         response.sendRedirect("detail?error=4&pid=" + proID);
-                                        System.out.println("Loi dong 100");
                                         return;
                                     }
-                                     response.sendRedirect("detail?succes=" + productVariant.getVariant_id()+"&pid=" + proID);  
-                                     return;
+                                    response.sendRedirect("detail?succes=" + productVariant.getVariant_id() + "&pid=" + proID);
+                                    return;
 
                                 }
                             }
@@ -125,18 +124,16 @@ public class CartController extends HttpServlet {
                                     return;
                                 }
                                 noti = cartService.AddCart(acc.getAcc_id(), productVariant.getVariant_id(), quantity, product.getPro_price(), (double) product.getPro_price() * quantity);
-                               
+
                                 if (noti != 1) {
                                     response.sendRedirect("detail?error=4&pid=" + proID);
-                                    System.out.println("Loi dong 111");
                                     return;
                                 }
-                                 response.sendRedirect("detail?succes=" + productVariant.getVariant_id()+"&pid=" + proID);
+                                response.sendRedirect("detail?succes=" + productVariant.getVariant_id() + "&pid=" + proID);
                                 return;
                             }
                         }
                         response.sendRedirect("detail?pid=" + proID);
-                        System.out.println("Loi dong 117");
                         return;
                     } else {
                         response.sendRedirect("home?error=5");
@@ -168,8 +165,12 @@ public class CartController extends HttpServlet {
                         if (c.getVariant_id() == proV_id) {
                             int newquantity = c.getPro_quantity() + 1;
                             if (wservice.GetProByIdInWareHouse(proV_id).getInventory_number() == 0) {
-                                message = "The number of products in the Warehouse is no longer available!!";
+                                message = "The number of products in the Warehouse is no longer available!!!";
                             } else if (wservice.GetProByIdInWareHouse(proV_id).getInventory_number() > 0) {
+                                if (newquantity > wservice.GetProByIdInWareHouse(proV_id).getInventory_number()) {
+                                    message = "Increase the number of failed products ☺<br> Number of products in Warehouse: " + wservice.GetProByIdInWareHouse(proV_id).getInventory_number();
+                                    break;
+                                }
                                 int updateQuan = cartService.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getVariant_id());
                                 if (updateQuan == 0) {
                                     message = "Error";
@@ -194,13 +195,17 @@ public class CartController extends HttpServlet {
                     }
                     break;
                 case "quantityCustom":
+                    if (request.getParameter("quantityC").isEmpty()) {
+                        message = "Product quantity cannot be left blank ✘";
+                        break;
+                    }
                     if (request.getParameter("quantityC").length() > 8) {
-                        message = "Quantity input to long please re-enter!";
+                        message = "Quantity input to long please re-enter!!!";
                         break;
                     }
                     int quantityC = Integer.parseInt(request.getParameter("quantityC"));
                     if (quantityC <= 0) {
-                        message = "Quantity must be greater than 0.";
+                        message = "Update product quantity failed ☺ <br> Default product quantity is 1";
                         break;
                     }
                     for (Cart c : list_cart) {
@@ -235,7 +240,7 @@ public class CartController extends HttpServlet {
                                         break;
                                     }
                                 } else {
-                                    message = "The number of products in the Warehouse is no longer available!!";
+                                    message = "The quantity of the product you want to buy is currently insufficient ☺<br> Number of products in Warehouse: " + wservice.GetProByIdInWareHouse(proV_id).getInventory_number();
                                     break;
                                 }
                             }
