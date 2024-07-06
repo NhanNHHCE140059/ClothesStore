@@ -82,7 +82,7 @@ public class UpdateProductController extends HttpServlet {
         // Gọi phương thức updateProduct từ ProductService
 
         // Chuyển hướng hoặc chuyển tiếp đến trang phù hợp
-        response.sendRedirect("main-manage-product"); // Thay "somewhere.jsp" bằng trang thực tế
+        response.sendRedirect("main-manage-product");
     }
 
 }
