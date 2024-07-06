@@ -66,7 +66,7 @@
                         </div>
                         <div class="input-group form-group">
                             <label>Image URL:</label>
-                            <input type="file" name="img_product" value="" class="form-control" required placeholder="Image URL">
+                            <input type="file" name="img_product" value="" class="form-control" placeholder="Image URL">
                         </div>
                         <div class="input-group form-group">
                             <label>Price:</label>
