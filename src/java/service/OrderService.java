@@ -191,6 +191,43 @@ public class OrderService {
         return null;
     }
 
+    public List<Order> getTop50OrderHistoryByAccountID(String username, int indexPage) {
+        String query = "with x as (select ROW_NUMBER() over (order by order_id desc) as r \n"
+                + "                                     ,* from [dbo].[Orders] where username = ?)\n"
+                + "                                    select * from x where r between ?*5-4 and ?*5";
+        try {
+            List<Order> ls = new ArrayList<>();
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setString(1, username);
+            ps.setInt(2, indexPage);
+            ps.setInt(3, indexPage);
+
+            rs = ps.executeQuery();//chay cau lenh query, nhan ket qua tra ve
+
+            while (rs.next()) {
+                ls.add(new Order(
+                        rs.getInt(2),
+                        rs.getString(3),
+                        rs.getDate(4),
+                        rs.getString(5),
+                        rs.getString(6),
+                        rs.getInt(7),
+                        rs.getString(8),
+                        rs.getDouble(9),
+                        OrderStatus.values()[rs.getInt(10)],
+                        PayStatus.values()[rs.getInt(11)],
+                        ShipStatus.values()[rs.getInt(12)]
+                ));
+            }
+            return ls;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public List<Order> getTop5OrderHistory(int indexPage) {
         String query = "with x as (select ROW_NUMBER() over (order by order_id desc) as r \n"
                 + "                      ,* from [dbo].[Orders] )\n"
@@ -252,7 +289,6 @@ public class OrderService {
             connection = dbcontext.getConnection();
             connection.setAutoCommit(false);
 
-          
             ps = connection.prepareStatement(getCartItemsQuery);
             ps.setInt(1, account.getAcc_id());
             rs = ps.executeQuery();
@@ -270,7 +306,6 @@ public class OrderService {
                 orderDetails.add(new OrderDetail(0, 0, variantId, price, quantity, null));
             }
 
-     
             Order order = new Order(
                     0,
                     null,
@@ -334,5 +369,560 @@ public class OrderService {
 
     public static void main(String[] args) {
         OrderService orderService = new OrderService();
+    }
+
+    public int countPageOrderCustomer(String username) {
+        String query = "  select count(*) from orders where [username] = ?";
+        int count = 0;
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setString(1, username);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.out.println("Loi");
+        }
+        return count;
+    }
+
+    public void updateFbCustomer(String feedback, int orderid) {
+        String query = "   update [Orders] set [feedback_order] = ? where [order_id] = ? ";
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setString(1, feedback);
+            ps.setInt(2, orderid);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println("Loi");
+        }
+
+    }
+    ///// Xu li search tich hop phan trang 
+
+    public List<Order> getAllOrdersSearch(String username) {
+        List<Order> listTop5 = new ArrayList<>();
+        try {
+            String query = " select * from Orders where username like ?";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setString(1, "%" + username + "%");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                listTop5.add(new Order(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getDate(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getInt(6),
+                        rs.getString(7),
+                        rs.getDouble(8),
+                        OrderStatus.values()[rs.getInt(9)],
+                        PayStatus.values()[rs.getInt(10)],
+                        ShipStatus.values()[rs.getInt(11)]
+                ));
+            }
+            return listTop5;
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    public List<Order> searchOrders(String orderId, String username, String orderDateFrom, String orderDateTo,
+            String orderStatus, String shippingStatus, String payStatus) {
+        String query = "SELECT * FROM [ClothesStore].[dbo].[Orders] WHERE 1=1";
+        int paramIndex = 1;
+
+        if (orderId != null && !orderId.isEmpty()) {
+            query += " AND order_id LIKE ?";
+        }
+        if (username != null && !username.isEmpty()) {
+            query += " AND username LIKE ?";
+        }
+        if (orderDateFrom != null && !orderDateFrom.isEmpty()) {
+            query += " AND orderDate >= ?";
+        }
+        if (orderDateTo != null && !orderDateTo.isEmpty()) {
+            query += " AND orderDate <= ?";
+        }
+        if (orderStatus != null && !orderStatus.isEmpty()) {
+            query += " AND order_status = ?";
+        }
+        if (shippingStatus != null && !shippingStatus.isEmpty()) {
+            query += " AND shipping_status = ?";
+        }
+        if (payStatus != null && !payStatus.isEmpty()) {
+            query += " AND pay_status = ?";
+        }
+
+        try {
+            List<Order> ls = new ArrayList<>();
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+
+            if (orderId != null && !orderId.isEmpty()) {
+                ps.setString(paramIndex++, "%" + orderId + "%");
+            }
+            if (username != null && !username.isEmpty()) {
+                ps.setString(paramIndex++, "%" + username + "%");
+            }
+            if (orderDateFrom != null && !orderDateFrom.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(orderDateFrom));
+            }
+            if (orderDateTo != null && !orderDateTo.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(orderDateTo));
+            }
+            if (orderStatus != null && !orderStatus.isEmpty()) {
+                ps.setInt(paramIndex++, OrderStatus.valueOf(orderStatus).ordinal());
+            }
+            if (shippingStatus != null && !shippingStatus.isEmpty()) {
+                ps.setInt(paramIndex++, ShipStatus.valueOf(shippingStatus).ordinal());
+            }
+            if (payStatus != null && !payStatus.isEmpty()) {
+                ps.setInt(paramIndex++, PayStatus.valueOf(payStatus).ordinal());
+            }
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                ls.add(new Order(
+                        rs.getInt(1), // order_id
+                        rs.getString(2), // feedback_order
+                        rs.getDate(3), // orderDate
+                        rs.getString(4), // addressReceive
+                        rs.getString(5), // phone
+                        rs.getInt(6), // acc_id
+                        rs.getString(7), // username
+                        rs.getDouble(8), // totalPrice
+                        OrderStatus.values()[rs.getInt(9)], // order_status
+                        PayStatus.values()[rs.getInt(10)], // pay_status
+                        ShipStatus.values()[rs.getInt(11)] // shipping_status
+                ));
+            }
+            return ls;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public int countPageOrderSearchCustomer(String orderId, String username, String orderDateFrom, String orderDateTo,
+            String orderStatus, String shippingStatus, String payStatus) {
+        String query = "SELECT COUNT(*) FROM [ClothesStore].[dbo].[Orders] WHERE 1=1";
+        int paramIndex = 1;
+
+        if (orderId != null && !orderId.isEmpty()) {
+            query += " AND order_id LIKE ?";
+        }
+        if (username != null && !username.isEmpty()) {
+            query += " AND username LIKE ?";
+        }
+        if (orderDateFrom != null && !orderDateFrom.isEmpty()) {
+            query += " AND orderDate >= ?";
+        }
+        if (orderDateTo != null && !orderDateTo.isEmpty()) {
+            query += " AND orderDate <= ?";
+        }
+        if (orderStatus != null && !orderStatus.isEmpty()) {
+            query += " AND order_status = ?";
+        }
+        if (shippingStatus != null && !shippingStatus.isEmpty()) {
+            query += " AND shipping_status = ?";
+        }
+        if (payStatus != null && !payStatus.isEmpty()) {
+            query += " AND pay_status = ?";
+        }
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+
+            if (orderId != null && !orderId.isEmpty()) {
+                ps.setString(paramIndex++, "%" + orderId + "%");
+            }
+            if (username != null && !username.isEmpty()) {
+                ps.setString(paramIndex++, "%" + username + "%");
+            }
+            if (orderDateFrom != null && !orderDateFrom.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(orderDateFrom));
+            }
+            if (orderDateTo != null && !orderDateTo.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(orderDateTo));
+            }
+            if (orderStatus != null && !orderStatus.isEmpty()) {
+                ps.setInt(paramIndex++, OrderStatus.valueOf(orderStatus).ordinal());
+            }
+            if (shippingStatus != null && !shippingStatus.isEmpty()) {
+                ps.setInt(paramIndex++, ShipStatus.valueOf(shippingStatus).ordinal());
+            }
+            if (payStatus != null && !payStatus.isEmpty()) {
+                ps.setInt(paramIndex++, PayStatus.valueOf(payStatus).ordinal());
+            }
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    public List<Order> searchTop5Orders(String orderId, String username, String orderDateFrom, String orderDateTo,
+            String orderStatus, String shippingStatus, String payStatus, int indexPage) {
+        String baseQuery = "WITH OrderCTE AS ( "
+                + "SELECT ROW_NUMBER() OVER (ORDER BY order_id DESC) AS rownum, * "
+                + "FROM [ClothesStore].[dbo].[Orders] WHERE 1=1 ";
+
+        if (orderId != null && !orderId.isEmpty()) {
+            baseQuery += " AND order_id LIKE ?";
+        }
+        if (username != null && !username.isEmpty()) {
+            baseQuery += " AND username LIKE ?";
+        }
+        if (orderDateFrom != null && !orderDateFrom.isEmpty()) {
+            baseQuery += " AND orderDate >= ?";
+        }
+        if (orderDateTo != null && !orderDateTo.isEmpty()) {
+            baseQuery += " AND orderDate <= ?";
+        }
+        if (orderStatus != null && !orderStatus.isEmpty()) {
+            baseQuery += " AND order_status = ?";
+        }
+        if (shippingStatus != null && !shippingStatus.isEmpty()) {
+            baseQuery += " AND shipping_status = ?";
+        }
+        if (payStatus != null && !payStatus.isEmpty()) {
+            baseQuery += " AND pay_status = ?";
+        }
+
+        String query = baseQuery
+                + ") SELECT * FROM OrderCTE WHERE rownum BETWEEN ?*5-4 AND ?*5";
+
+        try {
+            List<Order> ls = new ArrayList<>();
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+
+            int paramIndex = 1;
+
+            if (orderId != null && !orderId.isEmpty()) {
+                ps.setString(paramIndex++, "%" + orderId + "%");
+            }
+            if (username != null && !username.isEmpty()) {
+                ps.setString(paramIndex++, "%" + username + "%");
+            }
+            if (orderDateFrom != null && !orderDateFrom.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(orderDateFrom));
+            }
+            if (orderDateTo != null && !orderDateTo.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(orderDateTo));
+            }
+            if (orderStatus != null && !orderStatus.isEmpty()) {
+                ps.setInt(paramIndex++, OrderStatus.valueOf(orderStatus).ordinal());
+            }
+            if (shippingStatus != null && !shippingStatus.isEmpty()) {
+                ps.setInt(paramIndex++, ShipStatus.valueOf(shippingStatus).ordinal());
+            }
+            if (payStatus != null && !payStatus.isEmpty()) {
+                ps.setInt(paramIndex++, PayStatus.valueOf(payStatus).ordinal());
+            }
+            ps.setInt(paramIndex++, indexPage);
+            ps.setInt(paramIndex++, indexPage);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                ls.add(new Order(
+                        rs.getInt(2), // order_id
+                        rs.getString(3), // feedback_order
+                        rs.getDate(4), // orderDate
+                        rs.getString(5), // addressReceive
+                        rs.getString(6), // phone
+                        rs.getInt(7), // acc_id
+                        rs.getString(8), // username
+                        rs.getDouble(9), // totalPrice
+                        OrderStatus.values()[rs.getInt(10)], // order_status
+                        PayStatus.values()[rs.getInt(11)], // pay_status
+                        ShipStatus.values()[rs.getInt(12)] // shipping_status
+                ));
+            }
+            return ls;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+//    public static void main(String[] args) {
+//        OrderService orderService = new OrderService();
+//        System.out.println(orderService.getAllOrdersSearch("nyo").size());
+//    }
+    public List<Order> searchOrdersStaff(String orderId, String username, String orderDateFrom, String orderDateTo,
+            String orderStatus, String shippingStatus, String payStatus, Double totalPriceFrom, Double totalPriceTo) {
+        String baseQuery = "SELECT * "
+                + "FROM [ClothesStore].[dbo].[Orders] WHERE 1=1 ";
+
+        if (orderId != null && !orderId.isEmpty()) {
+            baseQuery += " AND order_id LIKE ?";
+        }
+        if (username != null && !username.isEmpty()) {
+            baseQuery += " AND username LIKE ?";
+        }
+        if (orderDateFrom != null && !orderDateFrom.isEmpty()) {
+            baseQuery += " AND orderDate >= ?";
+        }
+        if (orderDateTo != null && !orderDateTo.isEmpty()) {
+            baseQuery += " AND orderDate <= ?";
+        }
+        if (orderStatus != null && !orderStatus.isEmpty()) {
+            baseQuery += " AND order_status = ?";
+        }
+        if (shippingStatus != null && !shippingStatus.isEmpty()) {
+            baseQuery += " AND shipping_status = ?";
+        }
+        if (payStatus != null && !payStatus.isEmpty()) {
+            baseQuery += " AND pay_status = ?";
+        }
+        if (totalPriceFrom != null) {
+            baseQuery += " AND totalPrice >= ?";
+        }
+        if (totalPriceTo != null) {
+            baseQuery += " AND totalPrice <= ?";
+        }
+
+        try {
+            List<Order> ls = new ArrayList<>();
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(baseQuery);
+
+            int paramIndex = 1;
+
+            if (orderId != null && !orderId.isEmpty()) {
+                ps.setString(paramIndex++, "%" + orderId + "%");
+            }
+            if (username != null && !username.isEmpty()) {
+                ps.setString(paramIndex++, "%" + username + "%");
+            }
+            if (orderDateFrom != null && !orderDateFrom.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(orderDateFrom));
+            }
+            if (orderDateTo != null && !orderDateTo.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(orderDateTo));
+            }
+            if (orderStatus != null && !orderStatus.isEmpty()) {
+                ps.setInt(paramIndex++, OrderStatus.valueOf(orderStatus).ordinal());
+            }
+            if (shippingStatus != null && !shippingStatus.isEmpty()) {
+                ps.setInt(paramIndex++, ShipStatus.valueOf(shippingStatus).ordinal());
+            }
+            if (payStatus != null && !payStatus.isEmpty()) {
+                ps.setInt(paramIndex++, PayStatus.valueOf(payStatus).ordinal());
+            }
+            if (totalPriceFrom != null) {
+                ps.setDouble(paramIndex++, totalPriceFrom);
+            }
+            if (totalPriceTo != null) {
+                ps.setDouble(paramIndex++, totalPriceTo);
+            }
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                ls.add(new Order(
+                        rs.getInt(1), // order_id
+                        rs.getString(2), // feedback_order
+                        rs.getDate(3), // orderDate
+                        rs.getString(4), // addressReceive
+                        rs.getString(5), // phone
+                        rs.getInt(6), // acc_id
+                        rs.getString(7), // username
+                        rs.getDouble(8), // totalPrice
+                        OrderStatus.values()[rs.getInt(9)], // order_status
+                        PayStatus.values()[rs.getInt(10)], // pay_status
+                        ShipStatus.values()[rs.getInt(11)] // shipping_status
+                ));
+            }
+            return ls;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public int countPageOrderSearchStaff(String orderId, String username, String orderDateFrom, String orderDateTo,
+            String orderStatus, String shippingStatus, String payStatus, Double totalPriceFrom, Double totalPriceTo) {
+        String query = "SELECT COUNT(*) FROM [ClothesStore].[dbo].[Orders] WHERE 1=1";
+        int paramIndex = 1;
+
+        if (orderId != null && !orderId.isEmpty()) {
+            query += " AND order_id LIKE ?";
+        }
+        if (username != null && !username.isEmpty()) {
+            query += " AND username LIKE ?";
+        }
+        if (orderDateFrom != null && !orderDateFrom.isEmpty()) {
+            query += " AND orderDate >= ?";
+        }
+        if (orderDateTo != null && !orderDateTo.isEmpty()) {
+            query += " AND orderDate <= ?";
+        }
+        if (orderStatus != null && !orderStatus.isEmpty()) {
+            query += " AND order_status = ?";
+        }
+        if (shippingStatus != null && !shippingStatus.isEmpty()) {
+            query += " AND shipping_status = ?";
+        }
+        if (payStatus != null && !payStatus.isEmpty()) {
+            query += " AND pay_status = ?";
+        }
+        if (totalPriceFrom != null) {
+            query += " AND totalPrice >= ?";
+        }
+        if (totalPriceTo != null) {
+            query += " AND totalPrice <= ?";
+        }
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+
+            if (orderId != null && !orderId.isEmpty()) {
+                ps.setString(paramIndex++, "%" + orderId + "%");
+            }
+            if (username != null && !username.isEmpty()) {
+                ps.setString(paramIndex++, "%" + username + "%");
+            }
+            if (orderDateFrom != null && !orderDateFrom.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(orderDateFrom));
+            }
+            if (orderDateTo != null && !orderDateTo.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(orderDateTo));
+            }
+            if (orderStatus != null && !orderStatus.isEmpty()) {
+                ps.setInt(paramIndex++, OrderStatus.valueOf(orderStatus).ordinal());
+            }
+            if (shippingStatus != null && !shippingStatus.isEmpty()) {
+                ps.setInt(paramIndex++, ShipStatus.valueOf(shippingStatus).ordinal());
+            }
+            if (payStatus != null && !payStatus.isEmpty()) {
+                ps.setInt(paramIndex++, PayStatus.valueOf(payStatus).ordinal());
+            }
+            if (totalPriceFrom != null) {
+                ps.setDouble(paramIndex++, totalPriceFrom);
+            }
+            if (totalPriceTo != null) {
+                ps.setDouble(paramIndex++, totalPriceTo);
+            }
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        OrderService orderDAO = new OrderService();
+
+        // Test searchOrdersStaff method with various search parameters
+        List<Order> orders = orderDAO.searchOrdersStaff(
+                "", // orderId
+                "", // username
+                "2024-07-03", // orderDateFrom
+                "", // orderDateTo
+                "", // orderStatus
+                "", // shippingStatus
+                "", // payStatus
+                0.0, // totalPriceFrom
+                1.0 // totalPriceTo
+        );
+
+        // Print out the orders to verify the results
+        for (Order order : orders) {
+            System.out.println(order);
+        }
     }
 }
