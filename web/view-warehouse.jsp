@@ -110,12 +110,7 @@
                 position: fixed; /* Đảm bảo sidebar luôn cố định */
                 top: 0; /* Đặt ở trên cùng của trang */
                 left: 0; /* Đặt ở bên trái của trang */
-                height: 100vh; /* Chiều cao của sidebar bằng toàn bộ chiều cao của cửa sổ */
-                width: 250px; /* Chiều rộng của sidebar */
-                border-right: 1px solid #ddd; /* Đường viền bên phải của sidebar */
-                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Thêm bóng cho sidebar */
-                padding: 20px; /* Thêm khoảng cách bên trong của sidebar */
-                box-sizing: border-box; /* Đảm bảo padding và border được tính trong tổng chiều rộng và chiều cao */
+                height: 100vh; /* Chiều cao của sidebar bằng toàn bộ chiều cao của cửa sổ */              
             }
         </style>
     </head>
@@ -175,6 +170,7 @@
                     <thead>
                         <tr>
                             <th>Product ID</th>
+                            <th>Bill ID</th>
                             <th>Product Name</th>
                             <th>Product Price </th>
                             <th>Inventory Number</th>
@@ -185,6 +181,7 @@
                         <c:forEach items="${listWarehouse}" var="o" begin="${startIndex}" end="${endIndex}">
                             <tr>
                                 <td>${o.pro_id}</td>
+                                <td>${o.bill_id}</td>
                                 <td>${o.pro_name}</td>
                                 <td><fmt:formatNumber value="${o.pro_price}" type="currency" currencySymbol="" minFractionDigits="0" maxFractionDigits="0" />
                                     VND</td>
