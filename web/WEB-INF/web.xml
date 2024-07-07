@@ -8,14 +8,6 @@
         <servlet-name>SearchProductWarehouse</servlet-name>
         <servlet-class>controller.SearchProductWarehouse</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>ViewWarehouseController</servlet-name>
-        <url-pattern>/ViewWarehouse</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>SearchProductWarehouse</servlet-name>
-        <url-pattern>/SearchProduct</url-pattern>
-    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
