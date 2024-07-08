@@ -1,9 +1,3 @@
-<%-- 
-    Document   : main-create-product
-    Created on : Jul 2, 2024, 8:09:18 PM
-    Author     : Huenh
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -69,13 +63,14 @@
                             <label>Product name:</label>
                             <input type="text" name="name_product" value="" class="form-control" required placeholder="Product name">
                         </div>
-                      <div class="input-group form-group">
+                        <div class="input-group form-group">
                             <label>Image URL:</label>
-                            <input type="file" name="img_product" value="" class="form-control" required placeholder="Image URL">
+                            <input type="file" name="img_product" id="img_product" value="" class="form-control" required placeholder="Image URL">
+                            <img id="previewImage" style="display: none; width: 200px; margin-top: 10px;" />
                         </div>
                         <div class="input-group form-group">
                             <label>Price:</label>
-                            <input type="text" name="pro_price" value="" class="form-control" required placeholder="Price">
+                            <input type="text" name="pro_price" id="amount" value="" class="form-control" required placeholder="Price">
                         </div>
                         <div class="input-group form-group">
                             <label>Description:</label>
@@ -98,7 +93,7 @@
                         </div>
                         <div class="form-group d-flex justify-content-center">
                             <input type="submit" value="Create" class="btn-create">
-                            <a href="${pageContext.request.contextPath}/main-manage-product" class="back-home">Cancel</a>
+                            <a href="${pageContext.request.contextPath}/main-manage-product" style="display: inline-block; margin-top: 0px; background-color: #939aa3; color: white; padding: 0 14px; padding-top: 5px; padding-bottom: 9px; text-align: center; border-radius: 5px; text-decoration: none;">Cancel</a>
                         </div>
                     </form>
                 </div>
@@ -106,6 +101,41 @@
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById('img_product').addEventListener('change', function (event) {
+                    var input = event.target;
+                    if (input.files && input.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            var previewImage = document.getElementById('previewImage');
+                            previewImage.src = e.target.result;
+                            previewImage.style.display = 'block';
+                        };
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                });
+
+
+                var amountInput = document.getElementById("amount");
+                amountInput.addEventListener("input", function (e) {
+                    var value = e.target.value.replace(/\D/g, "");
+                    var formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    if (value) {
+                        e.target.value = formattedValue + " VND";
+                    } else {
+                        e.target.value = "";
+                    }
+                    setTimeout(function () {
+                        var position = e.target.selectionStart;
+                        var length = e.target.value.length;
+                        if (position > length - 4) {
+                            e.target.selectionStart = e.target.selectionEnd = length - 4;
+                        }
+                    }, 0);
+                });
+            });
+
+        </script>
     </body>
 </html>
