@@ -113,7 +113,7 @@ public class CartController extends HttpServlet {
                                         response.sendRedirect("detail?error=4&pid=" + proID);
                                         return;
                                     }
-                                    response.sendRedirect("detail?succes=" + productVariant.getVariant_id() + "&pid=" + proID);
+                                    response.sendRedirect("detail?succes=" + productVariant.getVariant_id() + "&pid=" + proID + "&size=" + size+ "&color=" +color);
                                     return;
 
                                 }
@@ -129,7 +129,7 @@ public class CartController extends HttpServlet {
                                     response.sendRedirect("detail?error=4&pid=" + proID);
                                     return;
                                 }
-                                response.sendRedirect("detail?succes=" + productVariant.getVariant_id() + "&pid=" + proID);
+                                response.sendRedirect("detail?succes=" + productVariant.getVariant_id() + "&pid=" + proID +"&size=" + size+ "&color=" +color);
                                 return;
                             }
                         }
