@@ -362,7 +362,19 @@ input[type="text"] {
     border-collapse: collapse;
     margin: 0 auto;
 }
+            /* CSS for Not Found Row */
+            .not-found-row {
+                height: 200px; /* Tùy chỉnh chiều cao theo ý muốn */
+            }
 
+            .not-found-cell {
+                text-align: center;
+                vertical-align: middle;
+                font-size: 18px;
+                color: #333;
+                font-weight: bold;
+                border: 1px solid #ddd; /* Giữ đường viền cho ô */
+            }
         </style>
     </head>
     <body>
@@ -377,6 +389,7 @@ input[type="text"] {
 
 <div class="order-management-container">
     <div class="search-form-container">
+        <h2>Search Orders</h2>
         <form action="OrderSearchStaffController" method="get" id="searchForm">
             <label for="orderId">Order ID:</label>
             <input type="text" id="orderId" name="orderId" pattern="\d+" title="Order ID must be a positive number" value="${param.orderId}">
@@ -456,18 +469,24 @@ input[type="text"] {
                                     <i class="material-icons">visibility</i>
                                 </a>
                             </c:if>
-                            <a href="CancelOrderControl?orderId=${o.order_id}" class="cancel" title="Cancel Order ${o.order_id}">
+<!--                            <a href="CancelOrderControl?orderId=${o.order_id}" class="cancel" title="Cancel Order ${o.order_id}">
                                 <i class="material-icons">cancel</i>
                             </a>
                             <a href="ConfirmOrderControl?orderId=${o.order_id}" class="confirm" title="Confirm Order ${o.order_id}">
                                 <i class="material-icons">check_circle</i>
-                            </a>
+                            </a>-->
                         </td>
                     </tr>
                 </c:forEach>
+                            <c:if test="${empty lstOrder}">
+                            <tr class="not-found-row">
+                                <td class="not-found-cell" colspan="11">Not Found</td>
+                            </tr>
+                        </c:if>
             </tbody>
         </table>
     </div>
+              
 </div>
 
                 <c:if  test ="${not empty aaa}">
