@@ -92,7 +92,7 @@
 
         <div class="content">
             <a href="${pageContext.request.contextPath}/home" class=" back-home">Back to Home</a>
-            <a href="/clothesstore/create-product" class="btn-create">Add new product</a>
+            <a href="/clothesstore/createVariants" class="btn-create">Add new product</a>
             <table class="table">
                 <thead>
                     <tr>
