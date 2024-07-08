@@ -5,7 +5,7 @@
 package controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -95,22 +95,22 @@ public class OrderSearchStaffController extends HttpServlet {
             }
 // Calculate count after initializing variables
             List<Order> count = ordersv.searchOrdersStaff(orderId, username, orderDateFrom, orderDateTo, orderStatus, shippingStatus, payStatus, totalPriceFrom, totalPriceTo);
-      int orderPerPage = 5;
-      int starCountList = (indexPage - 1 ) * orderPerPage;
-      int endCountList = Math.min(starCountList + orderPerPage, count.size());
-              //trang1 0_ 5
+            int orderPerPage = 5;
+            int starCountList = (indexPage - 1) * orderPerPage;
+            int endCountList = Math.min(starCountList + orderPerPage, count.size());
+            //trang1 0_ 5
             // trang 2 5  10
 //            /trang 3 10  11
 
-List <Order> count1 = count.subList(starCountList, endCountList);
-int endPage = (int)Math.ceil((double)count.size()/orderPerPage);
+            List<Order> count1 = count.subList(starCountList, endCountList);
+            int endPage = (int) Math.ceil((double) count.size() / orderPerPage);
 
-            if (endPage != 1) {
+            if (count1.size() != 0) {
                 int aaa = 1;
                 request.setAttribute("aaa", aaa);
 
             }
-        
+
 //            List<Order> orders = ordersv.searchOrders(orderId, a.getUsername(), orderDateFrom, orderDateTo, orderStatus, shippingStatus, payStatus);
             request.setAttribute("lstOrder", count1);
 
