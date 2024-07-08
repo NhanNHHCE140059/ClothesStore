@@ -28,9 +28,17 @@ public class ProductService {
                 + "SET pro_name = ?, "
                 + "    pro_price = ?, "
                 + "    description = ?, "
-                + "    imageURL = ?, "
                 + "    cat_id = ? "
                 + "WHERE pro_id = ?;";
+        if (image != null) {
+            updateProductQuery = "UPDATE Products "
+                    + "SET pro_name = ?, "
+                    + "    pro_price = ?, "
+                    + "    description = ?, "
+                    + "    imageURL = ?, "
+                    + "    cat_id = ? "
+                    + "WHERE pro_id = ?;";
+        }
 
         String updateCartQuery = "UPDATE c "
                 + "SET c.pro_price = p.pro_price, "
@@ -48,9 +56,15 @@ public class ProductService {
             ps.setString(1, pro_name);
             ps.setDouble(2, pro_price);
             ps.setString(3, des);
-            ps.setString(4, image);
-            ps.setInt(5, cat_id);
-            ps.setInt(6, pro_id);
+            if (image != null) {
+                ps.setString(4, image);
+                ps.setInt(5, cat_id);
+                ps.setInt(6, pro_id);
+            } else {
+                ps.setInt(4, cat_id);
+                ps.setInt(5, pro_id);
+            }
+
             ps.executeUpdate();
             ps.close();
 

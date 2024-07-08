@@ -44,11 +44,14 @@ public class MainCreateProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String nameProduct = request.getParameter("name_product");
-        String proPrice = request.getParameter("pro_price");
+
         String description = request.getParameter("description");
         String categoryID = request.getParameter("category");
         String status = request.getParameter("status");
         Part part = request.getPart("img_product");
+        String proPrice = request.getParameter("pro_price");
+        System.out.println(proPrice);
+        proPrice = proPrice.replace(" VND", "").replace(".", "");
 
         String filename = null;
         String relativeFilePath = null;
@@ -71,8 +74,8 @@ public class MainCreateProductController extends HttpServlet {
 
         if (nameProduct != null && proPrice != null && description != null && categoryID != null) {
             int statusNUM = 1;
-            if(status.equals("VISIBLE")){
-                statusNUM =0;
+            if (status.equals("VISIBLE")) {
+                statusNUM = 0;
             }
             ProductService prdS = new ProductService();
             prdS.createProduct(nameProduct, Double.parseDouble(proPrice), description, relativeFilePath, Integer.parseInt(categoryID), statusNUM);
