@@ -56,6 +56,11 @@ public class UpdateProductController extends HttpServlet {
         String categoryID = request.getParameter("category");
         String productID = request.getParameter("product_id");
         Part part = request.getPart("img_product");
+        if (!request.getParameter("newPrice").isEmpty()) {
+            proPrice = request.getParameter("newPrice");
+
+        }
+        proPrice = proPrice.replace(" VND", "").replace(".", "");
 
         String filename = null;
         String relativeFilePath = null;
