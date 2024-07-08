@@ -70,7 +70,7 @@
                         </div>
                         <div class="input-group form-group">
                             <label>Price:</label>
-                            <input type="text" name="pro_price" value="<fmt:formatNumber value="${product.pro_price}" type="number" pattern="#,##0"/> VND" class="form-control" required placeholder="Price">
+                            <input type="hidden" name="pro_price" value="${product.pro_price}"><fmt:formatNumber value="${product.pro_price}" type="number" pattern="#,##0"/> VND</input>
                         </div>
                         <div class="input-group form-group">
                             <label>Description:</label>
