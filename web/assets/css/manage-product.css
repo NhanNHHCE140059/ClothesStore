@@ -349,7 +349,7 @@ input[type="number"] {
     list-style: none;
 }
 
- .modal {
+.modal {
     display: block;
     position: fixed;
     z-index: 1;
@@ -401,7 +401,6 @@ input[type="number"] {
 
 .modal-button.cancel:hover {
     background-color: #333333;
-<<<<<<< HEAD
 }
 
 /* Định nghĩa các thuộc tính CSS chung cho cả thẻ <a> và <button> */
@@ -442,6 +441,126 @@ a.btn, button.btn {
     padding: 0;
     width: 100%;
 }
-=======
+
+.table-container {
+    position: relative;
+   
+    padding: 20px;
+    margin: 0 auto;
+    max-height: 760px;
+    min-height: 760px;
+    height: 760px;
+      max-width: 1400px;
+    max-width: 1400px;
+    width: 1400px;
+    height: 760px;
+    max-width: 90%; /* Giới hạn chiều rộng tối đa của bảng */
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
->>>>>>> f927cfe (feat: Product management)
+
+.table {
+      max-height: 670px;
+    min-height: 670px;
+    height: 670px;
+      max-width: 1400px;
+    max-width: 1400px;
+    width: 1400px;
+    height: 670px;
+    border-collapse: collapse;
+
+}
+
+.table th,
+.table td {
+    border: 1px solid #dee2e6;
+    padding: 15px;
+    text-align: center;
+    word-wrap: break-word; /* Đảm bảo văn bản dài sẽ tự động xuống dòng */
+}
+
+.table th {
+    background-color: #f1f1f1;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-align: center; /* Căn giữa tiêu đề cột */
+}
+
+.table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.table .action-button {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.table .action-button:hover {
+    background-color: #c0392b;
+}
+
+.priority-low {
+    background-color: #27ae60;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.priority-medium {
+    background-color: #f39c12;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.priority-high {
+    background-color: #e74c3c;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-align: center;
+}
+.add-new {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #28a745; /* Màu nền nổi bật */
+    color: white; /* Màu chữ trắng */
+    text-align: center;
+    text-decoration: none; /* Xóa gạch chân */
+    border-radius: 4px; /* Bo tròn góc */
+    font-weight: bold; /* Chữ đậm */
+    font-size: 16px; /* Kích thước chữ */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng chuyển màu và đổ bóng */
+    margin: 20px 0; /* Khoảng cách trên */
+}
+
+.add-new:hover {
+    background-color: #218838; /* Màu nền khi di chuột qua */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Tăng đổ bóng khi di chuột qua */
+}
+
+.btn-edit {
+    padding: 5px 23px;
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 750;
+}
+
+.btn-edit:hover {
+    background-color: #005f7a;
+}
