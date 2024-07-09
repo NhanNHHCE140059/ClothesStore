@@ -264,4 +264,49 @@ public class ProductService {
         }
         return list;
     }
+
+    public List<Product> filterCategory(int c1, int c2, int c3) {
+        List<Product> list = new ArrayList<>();
+        String query = "SELECT * FROM Products WHERE cat_id IN (?, ?, ?)";
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+
+            // Use only non-zero category IDs
+            int index = 1;
+            if (c1 != 0) {
+                ps.setInt(index++, c1);
+            }
+            if (c2 != 0) {
+                ps.setInt(index++, c2);
+            }
+            if (c3 != 0) {
+                ps.setInt(index++, c3);
+            }
+
+            while (index <= 3) {
+                ps.setInt(index++, -1); // Set invalid category ID to ignore in query
+            }
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Product(
+                        rs.getInt("pro_id"),
+                        rs.getString("pro_name"),
+                        rs.getDouble("pro_price"),
+                        rs.getString("imageURL"),
+                        rs.getString("description"),
+                        rs.getInt("cat_id"),
+                        ProductStatus.values()[rs.getInt("status_product")]
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("An error occurred while filtering products: " + e.getMessage());
+        } catch (Exception e) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return list;
+    }
+
 }

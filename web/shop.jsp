@@ -101,16 +101,22 @@
                     <!-- Category Start -->
                     <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by Category</span></h5>
                     <div class="bg-light p-4 mb-30">
-                        <form>
+                        <form action="${pageContext.request.contextPath}/CategoryFilterController" method="POST">
                             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                                <input type="checkbox" class="custom-control-input" id="price-3">
-                                <label class="custom-control-label" for="price-3">SHORTS AND TROUSERS</label>
+                                <input type="checkbox" class="custom-control-input" id="category-1" name="c3" value="3">
+                                <label class="custom-control-label" for="category-1">HAT</label>
                             </div>
                             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                                <input type="checkbox" class="custom-control-input" id="price-4">
-                                <label class="custom-control-label" for="price-4">T-SHIRT</label>
+                                <input type="checkbox" class="custom-control-input" id="category-2" name="c1" value="1">
+                                <label class="custom-control-label" for="category-2">SHORTS AND TROUSERS</label>
                             </div>
+                            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                                <input type="checkbox" class="custom-control-input" id="category-3" name="c2" value="2">
+                                <label class="custom-control-label" for="category-3">T-SHIRT</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Filter</button>
                         </form>
+
                     </div>
                     <!-- Category End -->
                 </div>
@@ -173,16 +179,16 @@
                                         </c:forEach>
                                         <c:if test="${currentPage < noOfPages}">
                                         <li class="page-item"><a class="page-link" href="shop?page=${currentPage + 1}">Next</a></li>
-                                        </c:if>
-                                </ul>
-                            </nav>
+                                        x`              </c:if>
+                                    </ul>
+                                </nav>
+                            </div>
                         </div>
                     </div>
+                    <!-- Shop Product End -->
                 </div>
-                <!-- Shop Product End -->
             </div>
-        </div>
-        <!-- Shop End -->
+            <!-- Shop End -->
 
         <jsp:include page="/shared/_footer.jsp" />
     </body>
