@@ -179,7 +179,7 @@
                                         </c:forEach>
                                         <c:if test="${currentPage < noOfPages}">
                                         <li class="page-item"><a class="page-link" href="shop?page=${currentPage + 1}">Next</a></li>
-                                        x`              </c:if>
+                                    </c:if>
                                     </ul>
                                 </nav>
                             </div>
