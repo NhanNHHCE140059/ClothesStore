@@ -239,23 +239,41 @@
                 <!-- Pagination -->
                 <div class="pagination" id="pagination">
                     <c:if test="${endPage != 0}">
-                        <!-- Add links to jump to first and last page -->
+                        <!-- Add links for Previous and Next pages -->
                         <c:choose>
                             <c:when test="${not empty searchName}">
-                                <a href="${pageContext.request.contextPath}/SearchProduct?page=1&searchName=${searchName}" class="page-link">First</a>
+                                <!-- Link to Previous Page -->
+                                <c:if test="${pageIndex > 1}">
+                                    <a href="${pageContext.request.contextPath}/SearchProduct?page=${pageIndex - 1}&searchName=${searchName}" class="page-link">Previous</a>
+                                </c:if>
+
+                                <!-- Pagination Number Links -->
                                 <c:forEach var="i" begin="${startPage}" end="${endPageDisplay}">
                                     <a href="${pageContext.request.contextPath}/SearchProduct?page=${i}&searchName=${searchName}" 
                                        class="page-link ${i == pageIndex ? 'active' : ''}">${i}</a>
                                 </c:forEach>
-                                <a href="${pageContext.request.contextPath}/SearchProduct?page=${endPage}&searchName=${searchName}" class="page-link">Last</a>
+
+                                <!-- Link to Next Page -->
+                                <c:if test="${pageIndex < endPage}">
+                                    <a href="${pageContext.request.contextPath}/SearchProduct?page=${pageIndex + 1}&searchName=${searchName}" class="page-link">Next</a>
+                                </c:if>
                             </c:when>
                             <c:otherwise>
-                                <a href="${pageContext.request.contextPath}/ViewWarehouse?page=1" class="page-link">First</a>
+                                <!-- Link to Previous Page -->
+                                <c:if test="${pageIndex > 1}">
+                                    <a href="${pageContext.request.contextPath}/ViewWarehouse?page=${pageIndex - 1}" class="page-link">Previous</a>
+                                </c:if>
+
+                                <!-- Pagination Number Links -->
                                 <c:forEach var="i" begin="${startPage}" end="${endPageDisplay}">
                                     <a href="${pageContext.request.contextPath}/ViewWarehouse?page=${i}" 
                                        class="page-link ${i == pageIndex ? 'active' : ''}">${i}</a>
                                 </c:forEach>
-                                <a href="${pageContext.request.contextPath}/ViewWarehouse?page=${endPage}" class="page-link">Last</a>
+
+                                <!-- Link to Next Page -->
+                                <c:if test="${pageIndex < endPage}">
+                                    <a href="${pageContext.request.contextPath}/ViewWarehouse?page=${pageIndex + 1}" class="page-link">Next</a>
+                                </c:if>
                             </c:otherwise>
                         </c:choose>
                     </c:if>
