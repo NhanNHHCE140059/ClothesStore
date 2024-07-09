@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import model.Category;
+import model.Product;
 import model.ProductColor;
 import service.CategoryService;
 import service.ProductColorService;
@@ -44,7 +45,13 @@ public class MainCreateProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String nameProduct = request.getParameter("name_product");
-
+        ProductService productService = new ProductService();
+        for(Product product : productService.getAllProducts()){
+            if(product.getPro_name().toUpperCase().trim().equals(nameProduct.toUpperCase().trim())){
+                        response.sendRedirect("main-create-product?error=duplicateName");
+                        return;
+            }
+        }
         String description = request.getParameter("description");
         String categoryID = request.getParameter("category");
         String status = request.getParameter("status");

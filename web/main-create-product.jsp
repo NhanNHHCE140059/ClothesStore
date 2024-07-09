@@ -62,6 +62,9 @@
                         <div class="input-group form-group">
                             <label>Product name:</label>
                             <input type="text" name="name_product" value="" class="form-control" required placeholder="Product name">
+                            <c:if test="${param.error!=null && param.error.equals('duplicateName')}">
+                                <p>Loi trung ten ban oi</p>
+                            </c:if>
                         </div>
                         <div class="input-group form-group">
                             <label>Image URL:</label>
@@ -135,7 +138,12 @@
                     }, 0);
                 });
             });
+            document.addEventListener("DOMContentLoaded", function () {
+           
+                var pathname = window.location.pathname;
 
+                window.history.pushState({}, "", pathname);
+            });
         </script>
     </body>
 </html>
