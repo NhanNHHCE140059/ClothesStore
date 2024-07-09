@@ -15,9 +15,13 @@ import java.util.List;
 import model.*;
 import service.*;
 import helper.*;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.Part;
+import java.io.File;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 import service.ProductService;
 
@@ -26,6 +30,7 @@ import service.ProductService;
  * @author My Computer
  */
 @WebServlet(value = {"/Create_Product_Variant_Controller", "/createVariants"})
+@MultipartConfig
 public class Create_Product_Variant_Controller extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -50,7 +55,12 @@ public class Create_Product_Variant_Controller extends HttpServlet {
                 json += "}";
                 out.print(json);
             } else {
-                out.print("{}");
+                String json = "{";
+                json += "\"price\": \"Not Found\",";
+                json += "\"description\": \"Not Found\",";
+                json += "\"categoryName\": \"Not Found\"";
+                json += "}";
+                out.print(json);
             }
             out.flush();
         }
@@ -76,7 +86,70 @@ public class Create_Product_Variant_Controller extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        if (request.getParameter("action") != null) {
+            String action = request.getParameter("action");
+            ProductService productService = new ProductService();
+            ProductVariantService productVaService = new ProductVariantService();
+            switch (action) {
+                case "create-new-variant":
+                    String UPLOAD_DIR = "uploads";
+                    String proName = request.getParameter("pro_Name");
+                    Product product = productService.GetProByName(proName);
+                    String colorID = request.getParameter("color");
+                    String size_Name = request.getParameter("size");
 
+                    if (colorID == null || colorID.isEmpty()) {
+                        response.sendRedirect("createVariants?error=ColorError");
+                        return;
+                    }
+                    if (size_Name == null || size_Name.isEmpty()) {
+                        response.sendRedirect("createVariants?error=SizeError");
+                        return;
+                    }
+
+                    if (product == null) {
+                        response.sendRedirect("createVariants?error=notFoundProduct");
+                        return;
+                    }
+                    ProductSizeType size = ProductSizeType.valueOf(size_Name);
+                    int sizeID = size.ordinal();
+                    
+                    String applicationPath = request.getServletContext().getRealPath("");
+                    String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR;
+                    File uploadDir = new File(uploadFilePath);
+                    if (!uploadDir.exists()) {
+                        uploadDir.mkdirs();
+                    }
+
+                    List<Part> fileParts = new ArrayList<>();
+                    for (Part part : request.getParts()) {
+                        if ("imageURL[]".equals(part.getName()) && part.getSize() > 0) {
+                            fileParts.add(part);
+                        }
+                    }
+                    int image_ID = -1;
+                    for (Part filePart : fileParts) {
+                        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                        System.out.println("assets/img/" + fileName);
+                        image_ID = productVaService.addProductImage(product.getPro_id(), fileName);
+                        filePart.write(uploadFilePath + File.separator + fileName);
+                    }
+                    if (image_ID == -1) {
+                        response.sendRedirect("createVariants?Error=cantAddImg");
+                        return;
+                    } else {
+                        boolean idAdded = productVaService.addNewVariant(product.getPro_id(), sizeID, Integer.parseInt(colorID), image_ID);
+                        if (idAdded == false) {
+                            response.sendRedirect("createVariants?Error=canAddProduct");
+                            return;
+                        }
+                    }
+                    response.sendRedirect("createVariants?Success=added");
+                    return;
+            }
+        } else {
+            response.sendRedirect("createVariants");
+        }
     }
 
 }

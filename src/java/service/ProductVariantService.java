@@ -9,6 +9,8 @@ import helper.ProductSizeType;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -193,7 +195,52 @@ public class ProductVariantService {
         variants.put("ALL_COLORS", uniqueColors);
         return variants;
     }
-    
+
+    public int addProductImage(int proId, String imageUrl) {
+        String query = "INSERT INTO ProductImages (pro_id, imageURL) VALUES (?, ?)";
+        int imageId = -1;
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, proId);
+            ps.setString(2, imageUrl);
+
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    imageId = rs.getInt(1); // Giả sử khóa chính là kiểu int
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred while adding new product image: " + e.getMessage());
+        }
+        return imageId;
+    }
+
+    public boolean addNewVariant(int proId, int sizeId, int colorId, int imageId) {
+        String query = "INSERT INTO ProductVariants (pro_id, size_id, color_id,image_id) VALUES (?, ?, ?,?)";
+        boolean isAdded = false;
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, proId);
+            ps.setInt(2, sizeId);
+            ps.setInt(3, colorId);
+            ps.setInt(4, imageId);
+
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                isAdded = true;
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred while adding new product variant: " + e.getMessage());
+        }
+        return isAdded;
+    }
+
     public List<ProductsVariant> getAllProducts() {
         List<ProductsVariant> list = new ArrayList<>();
         String query = "SELECT * FROM ProductVariants";
@@ -215,7 +262,7 @@ public class ProductVariantService {
         }
         return list;
     }
-    
+
     // Xu li phan trang cho order da ship ( for feedbackManager) 
     // Dem so luong trang can xu li 
     public int countPageforProduct() {
@@ -233,7 +280,7 @@ public class ProductVariantService {
         }
         return countPage;
     }
-    
+
     public List<ProductsVariant> getTop5Pro(int indexPage) {
         List<ProductsVariant> listTop5ProVar = new ArrayList<>();
         try {

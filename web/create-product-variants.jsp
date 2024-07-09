@@ -6,7 +6,10 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Create New Product</title>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/create-product.css"/>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/create-product.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+
 
         <style>
             body {
@@ -106,7 +109,10 @@
                 margin-top: 5px;
             }
 
-            .select, .choose-size, .choose-color, fieldset {
+            .select,
+            .choose-size,
+            .choose-color,
+            fieldset {
                 border: 1px solid #ccc;
                 padding: 10px;
                 border-radius: 5px;
@@ -148,7 +154,8 @@
                 background-color: #7a828c;
             }
 
-            .btn-add, .btn-remove {
+            .btn-add,
+            .btn-remove {
                 margin-top: 10px;
                 padding: 10px 20px;
                 background-color: #007bff;
@@ -158,7 +165,8 @@
                 cursor: pointer;
             }
 
-            .btn-add:hover, .btn-remove:hover {
+            .btn-add:hover,
+            .btn-remove:hover {
                 background-color: #0056b3;
             }
 
@@ -179,22 +187,216 @@
                 border: 1px solid #ddd;
                 border-radius: 5px;
             }
-            .input-group input[type="file"]{
 
+            .input-group input[type="file"] {
                 width: 40%;
             }
-              .color-box {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        margin-right: 10px;
-        border: 1px solid #ccc;
-        vertical-align: middle;
-        border-radius:50%;
-    }
+
+            .color-box {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                border: 1px solid #ccc;
+                vertical-align: middle;
+                border-radius: 50%;
+            }
+
+
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Poppins', sans-serif;
+            }
+
+            .toast {
+                position: fixed;
+                top: 25px;
+                right: 30px;
+                border-radius: 12px;
+                background: #fff;
+                padding: 20px 35px 20px 25px;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                border-left: 6px solid #4070f4;
+                overflow: hidden;
+                transform: translateX(calc(100% + 30px));
+                transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+                z-index: 1000;
+            }
+
+            .toast.active {
+                transform: translateX(0%);
+            }
+
+            .toast .toast-content {
+                display: flex;
+                align-items: center;
+            }
+
+            .toast-content .check {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 35px;
+                width: 35px;
+                background-color: #4070f4;
+                color: #fff;
+                font-size: 20px;
+                border-radius: 50%;
+            }
+
+            .toast-content .message {
+                display: flex;
+                flex-direction: column;
+                margin: 0 20px;
+            }
+
+            .message .text {
+                font-size: 20px;
+                font-weight: 400;
+                color: #666666;
+            }
+
+            .message .text.text-1 {
+                font-weight: 600;
+                color: #333;
+            }
+
+            .toast .close {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                padding: 5px;
+                cursor: pointer;
+                opacity: 0.7;
+            }
+
+            .toast .close:hover {
+                opacity: 1;
+            }
+
+            .toast .progress {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: 3px;
+                width: 100%;
+                background: #ddd;
+            }
+
+            .toast .progress:before {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                height: 100%;
+                width: 100%;
+                background-color: #4070f4;
+            }
+
+            .progress.active:before {
+                animation: progress 4s linear forwards;
+            }
+
+            @keyframes progress {
+                100% {
+                    right: 100%;
+                }
+            }
+
+            /* Style cho toast v?i class error */
+            .toast.error {
+                border-left-color: #f44336;
+            }
+
+            .toast.error .toast-content .check {
+                background-color: #f44336;
+            }
+
+            .toast.error .progress:before {
+                background-color: #f44336;
+            }
+
         </style>
     </head>
+
     <body>
+        <!--Noti-->
+        <c:if test="${param.error != null && param.error == 'ColorError'}">
+            <div class="toast error" id='message-noti'>
+                <div class="toast-content">
+                    <i class="fas fa-solid fa-check check"></i>
+
+                    <div class="message">
+                        <span class="text text-1">Error</span>
+                        <span class="text text-2">Color error, please try again!!!</span>
+                    </div>
+                </div>
+            </div>
+        </c:if>
+        <c:if test="${param.error != null && param.error == 'SizeError'}">
+            <div class="toast error" id='message-noti'>
+                <div class="toast-content">
+                    <i class="fas fa-solid fa-check check"></i>
+
+                    <div class="message">
+                        <span class="text text-1">Error</span>
+                        <span class="text text-2">Size error, please try again!!!</span>
+                    </div>
+                </div>
+            </div>
+        </c:if>
+        <c:if test="${param.error != null && param.error == 'notFoundProduct'}">
+            <div class="toast error" id='message-noti'>
+                <div class="toast-content">
+                    <i class="fas fa-solid fa-check check"></i>
+
+                    <div class="message">
+                        <span class="text text-1">Error</span>
+                        <span class="text text-2">Product not Found, please try again!!!</span>
+                    </div>
+                </div>
+            </div>
+        </c:if>
+        <c:if test="${param.error != null && param.error == 'cantAddImg'}">
+            <div class="toast error" id='message-noti'>
+                <div class="toast-content">
+                    <i class="fas fa-solid fa-check check"></i>
+
+                    <div class="message">
+                        <span class="text text-1">Error</span>
+                        <span class="text text-2">Image Error, please try again!!!</span>
+                    </div>
+                </div>
+            </div>
+        </c:if>
+        <c:if test="${param.error != null && param.error == 'canAddProduct'}">
+            <div class="toast error" id='message-noti'>
+                <div class="toast-content">
+                    <i class="fas fa-solid fa-check check"></i>
+
+                    <div class="message">
+                        <span class="text text-1">Error</span>
+                        <span class="text text-2">Can't add new Variant, please try again!!!</span>
+                    </div>
+                </div>
+            </div>
+        </c:if>
+        <c:if test="${param.Success != null && param.Success == 'added'}">
+            <div class="toast" id='message-noti'>
+                <div class="toast-content">
+                    <i class="fas fa-solid fa-check check"></i>
+
+                    <div class="message">
+                        <span class="text text-1">Success</span>
+                        <span class="text text-2">Add product variant successfully !!!</span>
+                    </div>
+                </div>
+            </div>
+        </c:if>
+        <!--endNoti-->
         <div class="sidebar">
             <div class="sidebar-header">Dashboard For Staff</div>
             <a href="#" class="menu-item">Product Management</a>
@@ -235,10 +437,10 @@
             <div class="card">
                 <div class="card-header">Create New Product</div>
                 <div class="card-body">
-                    <form action="create-product" method="post" enctype="multipart/form-data">
+                    <form action="createVariants" method="post" enctype="multipart/form-data">
                         <div class="input-group form-group">
                             <label>Product name:</label>
-                            <input list="nameProduct" id="productInput"   onchange="onInputChange(this.value)" style="padding:5px;border-radius:6px; border: 0.5px solid;overflow: hidden"placeholder="Please choose Product">
+                            <input required list="nameProduct" id="productInput" name="pro_Name" onchange="onInputChange(this.value)" style="padding:5px;border-radius:6px; border: 0.5px solid;overflow: hidden" placeholder="Please choose Product">
                             <datalist id="nameProduct">
                                 <c:forEach var="product" items="${listAllProduct}">
                                     <option value="${product.pro_name}"></option>
@@ -248,12 +450,14 @@
                         </div>
                         <div class="form-group" id="image-group">
                             <label>Image:</label>
-                            <div class="input-group" >
-                                <input type="file" name="imageURL[]" class="form-control"  multiple require onchange="previewImage(this)">
-                                <img class="image-preview" style="display:none;" />
+                            <div class="input-group">
+                                <input type="file" name="imageURL[]" class="form-control" multiple require onchange="previewImage(this)" required>
+                                <a href="imageURL[]" data-lightbox="image" data-title="image">
+                                    <img class="image-preview" style="display:none;" />
+                                </a>
                             </div>
                         </div>
-                        <button type="button" class="btn-add" onclick="addImageField()">Add more image</button>
+
                         <div>
                             <div class="input-group form-group">
                                 <label>Price:</label>
@@ -265,14 +469,14 @@
                             </div>
                             <div class="select">
                                 <label>Category name:</label>
-                                <input type="text" id="categoryName" name="categoryName" class="form-control" placeholder="Category Name" style="width:90%"readonly>                     
+                                <input type="text" id="categoryName" name="categoryName" class="form-control" placeholder="Category Name" style="width:90%" readonly>
                             </div>
                         </div>
                         <div class="choose-size">
                             <fieldset>
                                 <legend>Choose Sizes</legend>
-                                <c:forEach var="size" items="${allSize}" begin="1">
-                                <input type="radio" name="size" value="${size}">${size}<br>
+                                <c:forEach var="size" items="${allSize}" begin="1" >
+                                    <input type="radio" name="size" value="${size}" required>${size}<br >
                                 </c:forEach>
                             </fieldset>
                         </div>
@@ -281,18 +485,16 @@
                                 <legend>Choose Colors</legend>
                                 <c:forEach var="color" items="${listAllColor}">
                                     <label>
-                                        <input type="radio" name="color" value="${color.color_id}">
+                                        <input type="radio" name="color" value="${color.color_id}" required>
                                         <span class="color-box" style="background-color: ${color.color_name};"></span> ${color.color_name}
                                     </label>
                                     <br>
                                 </c:forEach>
-
-
                                 <button type="button" onclick="addColor()">New Color</button>
                             </fieldset>
                         </div>
                         <div class="form-group d-flex justify-content-center">
-                            <input type="submit" value="Create" class="btn-create">
+                            <input type="submit" name="action" value="create-new-variant" value="Create" class="btn-create">
                             <a href="${pageContext.request.contextPath}/manage-product" class="back-home">Cancel</a>
                         </div>
                     </form>
@@ -301,46 +503,11 @@
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 
 
         <script>
-
-                                    function addImageField() {
-                                        var imageGroup = document.getElementById('image-group');
-                                        var newImageDiv = document.createElement('div');
-                                        newImageDiv.classList.add('input-group');
-                                        newImageDiv.style.marginTop = '10px';
-                                        var newImageField = document.createElement('input');
-                                        newImageField.type = 'file';
-                                        newImageField.multiple = true;
-                                        newImageField.name = 'imageURL[]';
-                                        newImageField.classList.add('form-control');
-                                        newImageField.setAttribute("onchange", "previewImage(this)");
-                                        var removeButton = document.createElement('button');
-                                        removeButton.type = 'button';
-                                        removeButton.classList.add('btn-remove');
-                                        removeButton.textContent = 'Remove';
-                                        removeButton.onclick = function () {
-                                            removeImageField(this);
-                                        };
-                                        var previewImage = document.createElement('img');
-                                        previewImage.classList.add('image-preview');
-                                        previewImage.style.display = 'none';
-                                        newImageDiv.appendChild(newImageField);
-                                        newImageDiv.appendChild(removeButton);
-                                        newImageDiv.appendChild(previewImage);
-                                        imageGroup.appendChild(newImageDiv);
-                                    }
-
-                                    function removeImageField(button) {
-                                        var imageGroup = document.getElementById('image-group');
-                                        var inputGroup = button.parentNode;
-                                        if (imageGroup.childElementCount > 1) {
-                                            imageGroup.removeChild(inputGroup);
-                                        }
-                                    }
-
                                     function previewImage(input) {
                                         if (input.files && input.files[0]) {
                                             var reader = new FileReader();
@@ -354,14 +521,7 @@
                                     }
 
                                     document.addEventListener("DOMContentLoaded", function () {
-                                        var firstRemoveButton = document.querySelector('.input-group .btn-remove');
-                                        if (firstRemoveButton) {
-                                            firstRemoveButton.disabled = true;
-                                            firstRemoveButton.style.backgroundColor = '#ccc';
-                                            firstRemoveButton.style.cursor = 'not-allowed';
-                                        }
-                                    });
-                                    document.addEventListener("DOMContentLoaded", function () {
+
                                         var firstFileInput = document.querySelector('.input-group input[type="file"]');
                                         var firstPreviewImage = document.querySelector('.input-group .image-preview');
                                         if (firstFileInput && firstPreviewImage) {
@@ -377,13 +537,13 @@
                                             });
                                         }
                                     });
+
                                     function onInputChange(value) {
                                         console.log("imhere");
                                         console.log(value);
                                         if (value === "") {
 
                                         } else {
-
                                             $.ajax({
                                                 url: "/clothesstore/createVariants",
                                                 type: "get",
@@ -402,6 +562,71 @@
                                         }
                                     }
 
+                                    document.addEventListener("DOMContentLoaded", () => {
+                                        const toast = document.querySelector(".toast"),
+                                                closeIcon = document.querySelector(".close"),
+                                                progress = document.querySelector(".progress");
+
+                                        let timer1, timer2;
+
+                                        // Thêm các l?p active
+                                        toast.classList.add("active");
+                                        progress.classList.add("active");
+
+                                        // Hi?n th? toast và progress
+                                        toast.style.visibility = "visible";
+                                        toast.style.opacity = "1";
+                                        progress.style.visibility = "visible";
+                                        progress.style.opacity = "1";
+
+                                        // ??t th?i gian ?n toast và progress
+                                        timer1 = setTimeout(() => {
+                                            toast.style.visibility = "hidden";
+                                            toast.style.opacity = "0";
+                                        }, 4000); // 1s = 1000 milliseconds
+
+                                        timer2 = setTimeout(() => {
+                                            progress.style.visibility = "hidden";
+                                            progress.style.opacity = "0";
+                                        }, 4300);
+
+                                        // X? lý s? ki?n click vào closeIcon
+                                        closeIcon.addEventListener("click", () => {
+                                            toast.style.visibility = "hidden";
+                                            toast.style.opacity = "0";
+
+                                            setTimeout(() => {
+                                                progress.style.visibility = "hidden";
+                                                progress.style.opacity = "0";
+                                            }, 300);
+
+                                            clearTimeout(timer1);
+                                            clearTimeout(timer2);
+                                        });
+                                    });
+
+
+
+                                    document.addEventListener("DOMContentLoaded", function () {
+
+                                        function removeQueryString() {
+                                            var currentURL = window.location.href;
+                                            var baseURL = currentURL.split("?")[0];
+                                            return baseURL;
+                                        }
+
+
+                                        var newURL = removeQueryString();
+                                        window.history.pushState({}, "", newURL);
+                                    });
+
+                                    function hideDiv() {
+                                        document.getElementById('message-noti').style.display = 'none';
+                                    }
+
+
+                                    setTimeout(hideDiv, 4000);
         </script>
     </body>
+
 </html>
