@@ -264,11 +264,9 @@ public class ProductService {
         }
         return list;
     }
-
-    public List<Product> filterCategory(int c1, int c2, int c3) {
+    public List<Product> filterCategory(int c1, int c2) {
         List<Product> list = new ArrayList<>();
-        String query = "SELECT * FROM Products WHERE cat_id IN (?, ?, ?)";
-
+        String query = "SELECT * FROM Products WHERE cat_id IN (?, ?)";
         try {
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
@@ -281,11 +279,8 @@ public class ProductService {
             if (c2 != 0) {
                 ps.setInt(index++, c2);
             }
-            if (c3 != 0) {
-                ps.setInt(index++, c3);
-            }
 
-            while (index <= 3) {
+            while (index <= 2) {
                 ps.setInt(index++, -1); // Set invalid category ID to ignore in query
             }
 
@@ -307,6 +302,10 @@ public class ProductService {
             Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
         }
         return list;
+    }
+
+    public static void main(String[] args) {
+        ProductService productService = new ProductService();
     }
 
 }

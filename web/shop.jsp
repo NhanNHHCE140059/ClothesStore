@@ -96,27 +96,24 @@
         <!-- Shop Start -->
         <div class="container-fluid">
             <div class="row px-xl-5">
+
                 <!-- Shop Sidebar Start -->
                 <div class="col-lg-3 col-md-4">
                     <!-- Category Start -->
                     <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by Category</span></h5>
                     <div class="bg-light p-4 mb-30">
                         <form action="${pageContext.request.contextPath}/CategoryFilterController" method="POST">
+
                             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                                <input type="checkbox" class="custom-control-input" id="category-1" name="c3" value="3">
-                                <label class="custom-control-label" for="category-1">HAT</label>
-                            </div>
-                            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                                <input type="checkbox" class="custom-control-input" id="category-2" name="c1" value="1">
+                                <input type="checkbox" class="custom-control-input" id="category-2" name="c1" value="1" ${c1 == 1 ? 'checked' : ''}>
                                 <label class="custom-control-label" for="category-2">SHORTS AND TROUSERS</label>
                             </div>
                             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                                <input type="checkbox" class="custom-control-input" id="category-3" name="c2" value="2">
+                                <input type="checkbox" class="custom-control-input" id="category-3" name="c2" value="2" ${c2 == 2 ? 'checked' : ''}>
                                 <label class="custom-control-label" for="category-3">T-SHIRT</label>
                             </div>
                             <button type="submit" class="btn btn-primary">Filter</button>
                         </form>
-
                     </div>
                     <!-- Category End -->
                 </div>
@@ -171,24 +168,40 @@
                         <div class="col-12">
                             <nav>
                                 <ul class="pagination justify-content-center">
-                                    <c:if test="${currentPage > 1}">
-                                        <li class="page-item"><a class="page-link" href="shop?page=${currentPage - 1}">Previous</a></li>
+                                    <!-- Pagination for ShopController -->
+                                    <c:if test="${not empty requestScope.listP && requestScope.c1 == null}">
+                                        <c:if test="${currentPage > 1}">
+                                            <li class="page-item"><a class="page-link" href="shop?page=${currentPage - 1}">Previous</a></li>
+                                            </c:if>
+                                            <c:forEach var="i" begin="1" end="${noOfPages}">
+                                            <li class="page-item ${i == currentPage ? 'active' : ''}"><a class="page-link" href="shop?page=${i}">${i}</a></li>
+                                            </c:forEach>
+                                            <c:if test="${currentPage < noOfPages}">
+                                            <li class="page-item"><a class="page-link" href="shop?page=${currentPage + 1}">Next</a></li>
+                                            </c:if>
                                         </c:if>
-                                        <c:forEach var="i" begin="1" end="${noOfPages}">
-                                        <li class="page-item ${i == currentPage ? 'active' : ''}"><a class="page-link" href="shop?page=${i}">${i}</a></li>
-                                        </c:forEach>
-                                        <c:if test="${currentPage < noOfPages}">
-                                        <li class="page-item"><a class="page-link" href="shop?page=${currentPage + 1}">Next</a></li>
-                                    </c:if>
-                                    </ul>
-                                </nav>
-                            </div>
+
+                                    <!-- Pagination for CategoryFilterController -->
+                                    <c:if test="${not empty requestScope.listP && requestScope.c1 != null}">
+                                        <c:if test="${currentPage > 1}">
+                                            <li class="page-item"><a class="page-link" href="CategoryFilterController?page=${currentPage - 1}&c1=${c1}&c2=${c2}&c3=${c3}">Previous</a></li>
+                                            </c:if>
+                                            <c:forEach var="i" begin="1" end="${noOfPages}">
+                                            <li class="page-item ${i == currentPage ? 'active' : ''}"><a class="page-link" href="CategoryFilterController?page=${i}&c1=${c1}&c2=${c2}&c3=${c3}">${i}</a></li>
+                                            </c:forEach>
+                                            <c:if test="${currentPage < noOfPages}">
+                                            <li class="page-item"><a class="page-link" href="CategoryFilterController?page=${currentPage + 1}&c1=${c1}&c2=${c2}&c3=${c3}">Next</a></li>
+                                            </c:if>
+                                        </c:if>
+                                </ul>
+                            </nav>
                         </div>
                     </div>
-                    <!-- Shop Product End -->
                 </div>
+                <!-- Shop Product End -->
             </div>
-            <!-- Shop End -->
+        </div>
+        <!-- Shop End -->
 
         <jsp:include page="/shared/_footer.jsp" />
     </body>

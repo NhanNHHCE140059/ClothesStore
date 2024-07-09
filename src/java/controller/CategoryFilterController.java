@@ -60,6 +60,32 @@ public class CategoryFilterController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        int c1 = request.getParameter("c1") != null ? Integer.parseInt(request.getParameter("c1")) : 0;
+        int c2 = request.getParameter("c2") != null ? Integer.parseInt(request.getParameter("c2")) : 0;
+
+        ProductService ps = new ProductService();
+        List<Product> filteredProducts = ps.filterCategory(c1, c2);
+
+        int page = 1;
+        int productsPerPage = 6;
+
+        if (request.getParameter("page") != null) {
+            page = Integer.parseInt(request.getParameter("page"));
+        }
+
+        int start = (page - 1) * productsPerPage;
+        int end = Math.min(start + productsPerPage, filteredProducts.size());
+
+        List<Product> paginatedList = filteredProducts.subList(start, end);
+        int noOfRecords = filteredProducts.size();
+        int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / productsPerPage);
+
+        request.setAttribute("noOfPages", noOfPages);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("listP", paginatedList);
+        request.setAttribute("c1", c1);
+        request.setAttribute("c2", c2);
+        request.getRequestDispatcher("/shop.jsp").forward(request, response);
 
     }
 
@@ -76,14 +102,8 @@ public class CategoryFilterController extends HttpServlet {
             throws ServletException, IOException {
         int c1 = request.getParameter("c1") != null ? Integer.parseInt(request.getParameter("c1")) : 0;
         int c2 = request.getParameter("c2") != null ? Integer.parseInt(request.getParameter("c2")) : 0;
-        int c3 = request.getParameter("c3") != null ? Integer.parseInt(request.getParameter("c3")) : 0;
 
-        ProductService ps = new ProductService();
-        List<Product> filteredProducts = ps.filterCategory(c1, c2, c3);
-
-        request.setAttribute("listP", filteredProducts);
-        request.getRequestDispatcher("/shop.jsp").forward(request, response);
-
+        response.sendRedirect("CategoryFilterController?c1=" + c1 + "&c2=" + c2);
     }
 
     /**
