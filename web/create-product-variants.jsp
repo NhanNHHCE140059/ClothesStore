@@ -318,7 +318,22 @@
             .toast.error .progress:before {
                 background-color: #f44336;
             }
-
+            .disabled-text{
+                font-size: 12px;
+                color: red;
+                font-weight: 100;
+                margin-left: 30px;
+                border-radius: 2px;
+                background-color: yellow;
+                padding: 2px;
+            }
+            .color-name {
+                display: inline-block;
+                min-width: 60px;
+                width: 60px;
+                max-width: 60px;
+            
+            }
         </style>
     </head>
 
@@ -476,7 +491,7 @@
                             <fieldset>
                                 <legend>Choose Sizes</legend>
                                 <c:forEach var="size" items="${allSize}" begin="1" >
-                                    <input type="radio" name="size" value="${size}" required>${size}<br >
+                                    <input type="radio" name="size" value="${size}" style="margin-bottom:10px;" onclick="ajaxColorBySize('${size}')" required>   ${size}<br >
                                 </c:forEach>
                             </fieldset>
                         </div>
@@ -485,8 +500,8 @@
                                 <legend>Choose Colors</legend>
                                 <c:forEach var="color" items="${listAllColor}">
                                     <label>
-                                        <input type="radio" name="color" value="${color.color_id}" required>
-                                        <span class="color-box" style="background-color: ${color.color_name};"></span> ${color.color_name}
+                                        <input style="margin-bottom:10px;" type="radio" name="color" value="${color.color_name}" required>
+                                        <span class="color-box" style="background-color: ${color.color_name};"></span><span class="color-name">${color.color_name}</span>
                                     </label>
                                     <br>
                                 </c:forEach>
@@ -537,7 +552,55 @@
                                             });
                                         }
                                     });
+                                    function enableOnlyColors(enabledColors) {
+                                        var inputs = document.querySelectorAll('input[name="color"]');
+                                        inputs.forEach(function (input) {
+                                            var label = input.closest('label');
 
+                                            var existingSpan = label.querySelector('.disabled-text');
+                                            if (existingSpan) {
+                                                label.removeChild(existingSpan);
+                                            }
+                                            if (!enabledColors.includes(input.value)) {
+                                                input.disabled = true;
+
+                                                if (input.checked) {
+                                                    input.checked = false;
+                                                }
+
+                                                var span = document.createElement('span');
+                                                span.classList.add('disabled-text');
+                                                span.style.color = 'red';
+                                                span.style.marginLeft = '10px';
+                                                span.textContent = 'Products with the same size and color already exist';
+                                                label.appendChild(span);
+                                            } else {
+                                                input.disabled = false;
+                                            }
+                                        });
+                                    }
+
+                                    function ajaxColorBySize(size) {
+                                        var name = document.getElementById('productInput').value;
+                                        console.log(size, name);
+                                        $.ajax({
+                                            url: "/clothesstore/createVariants",
+                                            type: "get",
+                                            data: {
+                                                size: size,
+                                                name: name
+
+                                            },
+                                            success: function (data) {
+                                                console.log("Data Colors: ", data.colors);
+                                                enableOnlyColors(data.colors);
+                                            },
+                                            error: function (xhr) {
+
+                                            }
+                                        });
+
+                                    }
                                     function onInputChange(value) {
                                         console.log("imhere");
                                         console.log(value);
@@ -566,47 +629,37 @@
                                         const toast = document.querySelector(".toast"),
                                                 closeIcon = document.querySelector(".close"),
                                                 progress = document.querySelector(".progress");
-
                                         let timer1, timer2;
 
-                                        // Thêm các l?p active
                                         toast.classList.add("active");
                                         progress.classList.add("active");
 
-                                        // Hi?n th? toast và progress
                                         toast.style.visibility = "visible";
                                         toast.style.opacity = "1";
                                         progress.style.visibility = "visible";
                                         progress.style.opacity = "1";
 
-                                        // ??t th?i gian ?n toast và progress
                                         timer1 = setTimeout(() => {
                                             toast.style.visibility = "hidden";
                                             toast.style.opacity = "0";
-                                        }, 4000); // 1s = 1000 milliseconds
+                                        }, 4000);
 
                                         timer2 = setTimeout(() => {
                                             progress.style.visibility = "hidden";
                                             progress.style.opacity = "0";
                                         }, 4300);
 
-                                        // X? lý s? ki?n click vào closeIcon
                                         closeIcon.addEventListener("click", () => {
                                             toast.style.visibility = "hidden";
                                             toast.style.opacity = "0";
-
                                             setTimeout(() => {
                                                 progress.style.visibility = "hidden";
                                                 progress.style.opacity = "0";
                                             }, 300);
-
                                             clearTimeout(timer1);
                                             clearTimeout(timer2);
                                         });
                                     });
-
-
-
                                     document.addEventListener("DOMContentLoaded", function () {
 
                                         function removeQueryString() {
@@ -619,13 +672,13 @@
                                         var newURL = removeQueryString();
                                         window.history.pushState({}, "", newURL);
                                     });
-
                                     function hideDiv() {
                                         document.getElementById('message-noti').style.display = 'none';
                                     }
 
 
                                     setTimeout(hideDiv, 4000);
+
         </script>
     </body>
 

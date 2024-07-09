@@ -33,10 +33,49 @@ import service.ProductService;
 @MultipartConfig
 public class Create_Product_Variant_Controller extends HttpServlet {
 
+    protected void getColorBySize(HttpServletRequest request, HttpServletResponse response, String proName, String sizeName)
+            throws ServletException, IOException {
+        System.out.println("Da vao phuong thuc voi Proname la: " + proName + "size la:" + sizeName);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        ProductVariantService productVariantService = new ProductVariantService();
+        ProductColorService productColorService = new ProductColorService();
+        List<ProductsVariant> listVariant = productVariantService.getProductVariantsByProNameAndSizeName(proName, sizeName);
+        List<ProductColor> listAllColor = productColorService.getALLProductColor();
+        System.out.println("Tong so ban dau:" + listAllColor.size());
+        List<ProductColor> colorsToRemove = new ArrayList<>();
+        for (ProductsVariant productVariant : listVariant) {
+            ProductColor colorToRemove = productColorService.GetProColorByID(productVariant.getColor_id());
+            colorsToRemove.add(colorToRemove);
+        }
+
+        listAllColor.removeIf(color -> colorsToRemove.stream()
+                .anyMatch(toRemove -> toRemove.getColor_id() == color.getColor_id()));
+
+        System.out.println("Tong so sau khi xoa: " + listAllColor.size());
+        System.out.println(listAllColor.size());
+        StringBuilder json = new StringBuilder();
+        json.append("{");
+        json.append("\"colors\":[");
+        for (int i = 0; i < listAllColor.size(); i++) {
+            json.append("\"").append(listAllColor.get(i).getColor_name()).append("\"");
+            if (i < listAllColor.size() - 1) {
+                json.append(",");
+            }
+        }
+        json.append("]}");
+
+        out.print(json.toString());
+        out.flush();
+
+    }
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
         ProductService productService = new ProductService();
         CategoryService cateService = new CategoryService();
         String proName = request.getParameter("proName");
@@ -46,24 +85,23 @@ public class Create_Product_Variant_Controller extends HttpServlet {
         symbols.setDecimalSeparator(',');
         DecimalFormat decimalFormat = new DecimalFormat("#,### VND", symbols);
         String formattedAmount = decimalFormat.format(product.getPro_price());
-        try ( PrintWriter out = response.getWriter()) {
-            if (product != null) {
-                String json = "{";
-                json += "\"price\":\"" + formattedAmount + "\",";
-                json += "\"description\":\"" + product.getDescription() + "\",";
-                json += "\"categoryName\":\"" + cateService.getNameCateByIDCate(product.getCat_id()).getCat_name() + "\"";
-                json += "}";
-                out.print(json);
-            } else {
-                String json = "{";
-                json += "\"price\": \"Not Found\",";
-                json += "\"description\": \"Not Found\",";
-                json += "\"categoryName\": \"Not Found\"";
-                json += "}";
-                out.print(json);
-            }
-            out.flush();
+        if (product != null) {
+            String json = "{";
+            json += "\"price\":\"" + formattedAmount + "\",";
+            json += "\"description\":\"" + product.getDescription() + "\",";
+            json += "\"categoryName\":\"" + cateService.getNameCateByIDCate(product.getCat_id()).getCat_name() + "\"";
+            json += "}";
+            out.print(json);
+        } else {
+            String json = "{";
+            json += "\"price\": \"Not Found\",";
+            json += "\"description\": \"Not Found\",";
+            json += "\"categoryName\": \"Not Found\"";
+            json += "}";
+            out.print(json);
         }
+        out.flush();
+
     }
 
     @Override
@@ -71,6 +109,12 @@ public class Create_Product_Variant_Controller extends HttpServlet {
             throws ServletException, IOException {
         if (request.getParameter("proName") != null) {
             processRequest(request, response);
+            return;
+        }
+        if (request.getParameter("size") != null && request.getParameter("name") != null) {
+            String size = request.getParameter("size");
+            String proName = request.getParameter("name");
+            getColorBySize(request, response, proName, size);
             return;
         }
         ProductService productService = new ProductService();
@@ -113,7 +157,7 @@ public class Create_Product_Variant_Controller extends HttpServlet {
                     }
                     ProductSizeType size = ProductSizeType.valueOf(size_Name);
                     int sizeID = size.ordinal();
-                    
+
                     String applicationPath = request.getServletContext().getRealPath("");
                     String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR;
                     File uploadDir = new File(uploadFilePath);

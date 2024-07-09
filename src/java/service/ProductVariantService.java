@@ -241,6 +241,57 @@ public class ProductVariantService {
         return isAdded;
     }
 
+    public List<ProductsVariant> getAllProductVariantsByPro_id(int pro_id) {
+        List<ProductsVariant> list = new ArrayList<>();
+        String query = "SELECT * FROM ProductVariants Where pro_id=?";
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, pro_id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new ProductsVariant(rs.getInt("variant_id"),
+                        rs.getInt("pro_id"),
+                        ProductSizeType.values()[rs.getInt("size_id")],
+                        rs.getInt("color_id"),
+                        rs.getInt("image_id"))
+                );
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred while fetching products: " + e.getMessage());
+        }
+        return list;
+    }
+
+    public List<ProductsVariant> getProductVariantsByProNameAndSizeName(String proName, String sizeName) {
+        List<ProductsVariant> list = new ArrayList<>();
+        String query = "SELECT pv.* FROM Products p "
+                + "JOIN ProductVariants pv ON p.pro_id = pv.pro_id "
+                + "JOIN ProductSizes ps ON pv.size_id = ps.size_id "
+                + "WHERE p.pro_name = ? AND ps.size_name = ?";
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setString(1, proName);
+            ps.setString(2, sizeName);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new ProductsVariant(
+                        rs.getInt("variant_id"),
+                        rs.getInt("pro_id"),
+                        ProductSizeType.values()[rs.getInt("size_id")],
+                        rs.getInt("color_id"),
+                        rs.getInt("image_id"))
+                );
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred while fetching products: " + e.getMessage());
+        }
+        return list;
+    }
+
     public List<ProductsVariant> getAllProducts() {
         List<ProductsVariant> list = new ArrayList<>();
         String query = "SELECT * FROM ProductVariants";
