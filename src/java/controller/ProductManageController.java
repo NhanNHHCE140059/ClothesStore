@@ -7,7 +7,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Account;
-import java.util.List;
+import model.Product;
+import model.ProductVariantInfomation;
 import model.ProductsVariant;
 import java.io.IOException;
 import helper.*;
@@ -42,15 +43,16 @@ public class ProductManageController extends HttpServlet {
             }
         }
 
-        List<ProductVariantInfo> listAll = productVRASV.getAllVariantInfo();
-        if (request.getParameter("searchName") != null && !request.getParameter("searchName").isEmpty()) {
-            listAll = productVRASV.searchByName(request.getParameter("searchName"));
-        }
-        int start = (indexPage - 1) * variantPerPage;
-        int end = Math.min(start + variantPerPage, listAll.size());
-        int endPageList = (int) Math.ceil((double) listAll.size() / variantPerPage);
-        listAll = listAll.subList(start, end); // Cat list phan trang
-        PrintWriter out = response.getWriter();
+
+        ProductVariantService p = new ProductVariantService();
+        List<ProductVariantInfomation> listPVar = p.getAllInfoVariant();
+        System.out.println(listPVar.size());
+        int productPerPage = 5;
+        int start = (indexPage - 1) * productPerPage;
+        int end = Math.min(start + productPerPage, listPVar.size());
+        int endPage = (int) Math.ceil((double) listPVar.size() / productPerPage);
+        listPVar = listPVar.subList(start, end);
+
 
         out.println("    <table class=\"table\">");
         out.println("        <thead>");

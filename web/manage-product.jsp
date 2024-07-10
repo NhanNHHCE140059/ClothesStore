@@ -5,6 +5,8 @@
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -625,29 +627,20 @@
                     </tr>
                 </thead>
                 <tbody id="manage-product">
-                    <%for(ProductsVariant pv : list){
-                    Product p = product.GetProById(pv.getPro_id());
-                    %>
+                    <c:forEach var="productVariant" items="${list}">
                     <tr>
-                        <td><%=p.getPro_id()%></td>
+                        <td>${productVariant.pro_id}</td>
+                        <td class="imageProTd"><img class="imgPro" src="${productVariant.imageURL}"></td>
+                        <td>${productVariant.pro_name}</td>
+                        <td><fmt:formatNumber value="${productVariant.pro_price}" type="number" pattern="#,##0"/> VND</td>
+                        <%ProductVariantInfomation p = (ProductVariantInfomation) pageContext.findAttribute("productVariant"); %>
+                        <td><%=p.getDescription().length() > 30 ? p.getDescription().substring(0, 100) + "..." : p.getDescription()%></td>
+                        <td>${productVariant.cat_name}</td>
+                        <td>${productVariant.size_name}</td>
+                        <td>${productVariant.color_name}</td>
 
-                        <td class="imageProTd"><img class="imgPro" src="<%= img.getImageID(pv.getImage_id()).getImageURL() %>"></td>
-                        <td><%=p.getPro_name()%></td>
-                        <td><fmt:formatNumber value="<%=p.getPro_price()%>" type="number" pattern="#,##0"/> VND</td>
-                        <td><%=p.getDescription()%></td>
-                        <td><%=cate.getNameCateByIDCate(p.getCat_id()).getCat_name()%></td>
-                        <td><%=pv.getSize_name()%></td>
-                        <td><%=color.GetProColorByID(pv.getColor_id()).getColor_name()%></td>
-                        <td class="actions">
-                            <a href="/clothesstore/update-product" class="btn-update">Update</a>
-                            <form action="delete-product" method="post">
-                                <input type="hidden" name="pro_id" value="<%=pv.getVariant_id()%>">
-                                <input type="hidden" name="currentPage" value="<%=currentPage%>">
-                                <button type="submit" name="action" value="delete" class="btn-delete">Delete</button>
-                            </form>
-                        </td>
                     </tr>
-                    <%}%>
+                </c:forEach>
                 </tbody>
             </table>
             <div class="col-12">

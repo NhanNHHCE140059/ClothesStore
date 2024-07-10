@@ -706,6 +706,24 @@
                                                 valid = true;
                                                 break;
                                             }
+                                            if (valid === false) {
+                                                var sizeSelected = document.querySelector('input[name="size"]:checked');
+                                                var colorSelected = document.querySelector('input[name="color"]:checked');
+                                                if (sizeSelected) {
+                                                    sizeSelected.checked = false;
+                                                    var sizeSelecteds = document.querySelectorAll('.disabled-text');
+                                                    sizeSelecteds.forEach(function (sizeSelected) {
+                                                        sizeSelected.style.display = 'none';
+                                                    });
+                                                }
+                                                if (colorSelected) {
+                                                    colorSelected.checked = false;
+                                                }
+                                                document.getElementById('price').value = '';
+                                                document.getElementById('description').value = '';
+                                                document.getElementById('categoryName').value = '';
+
+                                            }
                                         }
 
                                         if (!valid) {
@@ -718,7 +736,7 @@
                                         }
                                     }
                                     function validateForm() {
-                                        
+
                                         var productInput = document.getElementById('productInput').value;
                                         var sizeSelected = document.querySelector('input[name="size"]:checked');
                                         var colorSelected = document.querySelector('input[name="color"]:checked');
@@ -741,7 +759,7 @@
                                                 colorSelected.checked = false;
                                             }
                                             return false;
-                                        }else {
+                                        } else {
                                             document.getElementById('size-error-message').style.display = 'none';
                                         }
 

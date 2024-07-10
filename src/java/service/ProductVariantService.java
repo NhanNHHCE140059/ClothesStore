@@ -376,7 +376,8 @@ public class ProductVariantService {
                 + "JOIN Products p ON p.pro_id = v.pro_id\n"
                 + "JOIN ProductImages pi ON pi.image_id = v.image_id\n"
                 + "JOIN ProductColors pc ON pc.color_id  = v.color_id\n"
-                + "JOIN Categories c ON c.cat_id = p.cat_id";
+                + "JOIN Categories c ON c.cat_id = p.cat_id\n"
+                + "ORDER BY v.variant_id DESC;";
         try {
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
