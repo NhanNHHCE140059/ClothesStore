@@ -332,8 +332,19 @@
                 min-width: 60px;
                 width: 60px;
                 max-width: 60px;
-            
+
             }
+            #error-message, #size-error-message, #size-error-message{
+                background-color: #ffcccc;
+                padding: 5px;
+                font-weight: 600;
+                border:1px solid #ff6666;
+                margin-left: 10px;
+                border-radius: 4px;
+                display: none;
+                color : #cc0000;
+            }
+
         </style>
     </head>
 
@@ -450,18 +461,18 @@
 
         <div class="content">
             <div class="card">
-                <div class="card-header">Create New Product</div>
+                <div class="card-header">Create New Product (Variant)</div>
                 <div class="card-body">
                     <form action="createVariants" method="post" enctype="multipart/form-data">
                         <div class="input-group form-group">
                             <label>Product name:</label>
-                            <input required list="nameProduct" id="productInput" name="pro_Name" onchange="onInputChange(this.value)" style="padding:5px;border-radius:6px; border: 0.5px solid;overflow: hidden" placeholder="Please choose Product">
+                            <input required list="nameProduct" id="productInput" name="pro_Name" onchange="onInputChange(this.value);validateProductSelection()" style="padding:5px;border-radius:6px; border: 0.5px solid;overflow: hidden" placeholder="Choose one product">
                             <datalist id="nameProduct">
                                 <c:forEach var="product" items="${listAllProduct}">
                                     <option value="${product.pro_name}"></option>
                                 </c:forEach>
                             </datalist>
-                            <p id="error-message" style="color: red; display: none;">Please choose one Product</p>
+                            <p id="error-message"">Please choose one Product</p>
                         </div>
                         <div class="form-group" id="image-group">
                             <label>Image:</label>
@@ -476,31 +487,34 @@
                         <div>
                             <div class="input-group form-group">
                                 <label>Price:</label>
-                                <input type="text" id="price" name="price" value="" class="form-control" placeholder="Price" readonly>
+                                <input type="text" id="price" name="price" style="pointer-events: none;" value="" class="form-control" placeholder="Price" readonly>
                             </div>
                             <div class="input-group form-group">
                                 <label>Description:</label>
-                                <textarea id="description" name="description" class="form-control" placeholder="Description" style="resize: none;height: 120px;" readonly></textarea>
+                                <textarea id="description" name="description" class="form-control" placeholder="Description" style="resize: none;pointer-events: none;height: 120px;" readonly></textarea>
                             </div>
                             <div class="select">
                                 <label>Category name:</label>
-                                <input type="text" id="categoryName" name="categoryName" class="form-control" placeholder="Category Name" style="width:90%" readonly>
+                                <input type="text" id="categoryName" name="categoryName" class="form-control" placeholder="Category Name" style="width:90%;pointer-events: none;" readonly>
                             </div>
                         </div>
                         <div class="choose-size">
                             <fieldset>
                                 <legend>Choose Sizes</legend>
                                 <c:forEach var="size" items="${allSize}" begin="1" >
-                                    <input type="radio" name="size" value="${size}" style="margin-bottom:10px;" onclick="ajaxColorBySize('${size}')" required>   ${size}<br >
+                                    <input type="radio" name="size" value="${size}" style="margin-bottom:10px;" onclick="ajaxColorBySize('${size}');validateForm()" required>   ${size}<br >
                                 </c:forEach>
+                                <p id="size-error-message">Please choose a one size before selecting color</p>
+
                             </fieldset>
+
                         </div>
                         <div class="choose-color">
                             <fieldset>
                                 <legend>Choose Colors</legend>
                                 <c:forEach var="color" items="${listAllColor}">
                                     <label>
-                                        <input style="margin-bottom:10px;" type="radio" name="color" value="${color.color_name}" required>
+                                        <input style="margin-bottom:10px;" type="radio" name="color" value="${color.color_name}" onclick="validateForm()" required>
                                         <span class="color-box" style="background-color: ${color.color_name};"></span><span class="color-name">${color.color_name}</span>
                                     </label>
                                     <br>
@@ -630,35 +644,36 @@
                                                 closeIcon = document.querySelector(".close"),
                                                 progress = document.querySelector(".progress");
                                         let timer1, timer2;
+                                        if (toast) {
+                                            toast.classList.add("active");
+                                            progress.classList.add("active");
 
-                                        toast.classList.add("active");
-                                        progress.classList.add("active");
+                                            toast.style.visibility = "visible";
+                                            toast.style.opacity = "1";
+                                            progress.style.visibility = "visible";
+                                            progress.style.opacity = "1";
 
-                                        toast.style.visibility = "visible";
-                                        toast.style.opacity = "1";
-                                        progress.style.visibility = "visible";
-                                        progress.style.opacity = "1";
+                                            timer1 = setTimeout(() => {
+                                                toast.style.visibility = "hidden";
+                                                toast.style.opacity = "0";
+                                            }, 4000);
 
-                                        timer1 = setTimeout(() => {
-                                            toast.style.visibility = "hidden";
-                                            toast.style.opacity = "0";
-                                        }, 4000);
-
-                                        timer2 = setTimeout(() => {
-                                            progress.style.visibility = "hidden";
-                                            progress.style.opacity = "0";
-                                        }, 4300);
-
-                                        closeIcon.addEventListener("click", () => {
-                                            toast.style.visibility = "hidden";
-                                            toast.style.opacity = "0";
-                                            setTimeout(() => {
+                                            timer2 = setTimeout(() => {
                                                 progress.style.visibility = "hidden";
                                                 progress.style.opacity = "0";
-                                            }, 300);
-                                            clearTimeout(timer1);
-                                            clearTimeout(timer2);
-                                        });
+                                            }, 4300);
+
+                                            closeIcon.addEventListener("click", () => {
+                                                toast.style.visibility = "hidden";
+                                                toast.style.opacity = "0";
+                                                setTimeout(() => {
+                                                    progress.style.visibility = "hidden";
+                                                    progress.style.opacity = "0";
+                                                }, 300);
+                                                clearTimeout(timer1);
+                                                clearTimeout(timer2);
+                                            });
+                                        }
                                     });
                                     document.addEventListener("DOMContentLoaded", function () {
 
@@ -673,12 +688,65 @@
                                         window.history.pushState({}, "", newURL);
                                     });
                                     function hideDiv() {
-                                        document.getElementById('message-noti').style.display = 'none';
+                                        if (document.getElementById('message-noti')) {
+                                            document.getElementById('message-noti').style.display = 'none';
+                                        }
                                     }
 
 
                                     setTimeout(hideDiv, 4000);
+                                    function validateProductSelection() {
+                                        var input = document.getElementById('productInput');
+                                        var datalist = document.getElementById('nameProduct');
+                                        var options = datalist.options;
+                                        var valid = false;
 
+                                        for (var i = 0; i < options.length; i++) {
+                                            if (input.value === options[i].value) {
+                                                valid = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!valid) {
+                                            document.getElementById('error-message').style.display = 'inline-block';
+                                            input.value = '';
+                                            return false;
+                                        } else {
+                                            document.getElementById('error-message').style.display = 'none';
+                                            return true;
+                                        }
+                                    }
+                                    function validateForm() {
+                                        
+                                        var productInput = document.getElementById('productInput').value;
+                                        var sizeSelected = document.querySelector('input[name="size"]:checked');
+                                        var colorSelected = document.querySelector('input[name="color"]:checked');
+                                        console.log(colorSelected);
+                                        if (!productInput) {
+                                            validateProductSelection();
+                                            if (sizeSelected) {
+                                                sizeSelected.checked = false;
+                                            }
+                                            if (colorSelected) {
+                                                colorSelected.checked = false;
+                                            }
+                                            return false;
+                                        }
+
+                                        if (!sizeSelected) {
+                                            if (colorSelected) {
+                                                document.getElementById('size-error-message').style.display = 'inline-block';
+
+                                                colorSelected.checked = false;
+                                            }
+                                            return false;
+                                        }else {
+                                            document.getElementById('size-error-message').style.display = 'none';
+                                        }
+
+                                        return true;
+                                    }
         </script>
     </body>
 

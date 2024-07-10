@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import model.ProductVariantInfo;
+import model.Product;
+import model.ProductVariantInfomation;
 import model.ProductsVariant;
 
 /**
@@ -357,25 +359,34 @@ public class ProductVariantService {
         return null;
     }
 
-    public List<ProductsVariant> getAllProductsVra() {
-        List<ProductsVariant> list = new ArrayList<>();
-        String query = "SELECT * FROM ProductVariants";
 
+    public List<ProductVariantInfomation> getAllInfoVariant() {
+        List<ProductVariantInfomation> listAll = new ArrayList<>();
+        String query = "Select \n"
+                + "v.variant_id,\n"
+                + "p.pro_id,\n"
+                + "p.pro_name,\n"
+                + "p.pro_price,\n"
+                + "c.cat_name,\n"
+                + "v.size_id,\n"
+                + "p.description,\n"
+                + "pc.color_name,\n"
+                + "pi.imageURL\n"
+                + "From ProductVariants v\n"
+                + "JOIN Products p ON p.pro_id = v.pro_id\n"
+                + "JOIN ProductImages pi ON pi.image_id = v.image_id\n"
+                + "JOIN ProductColors pc ON pc.color_id  = v.color_id\n"
+                + "JOIN Categories c ON c.cat_id = p.cat_id";
         try {
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
             rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new ProductsVariant(rs.getInt("variant_id"),
-                        rs.getInt("pro_id"),
-                        ProductSizeType.values()[rs.getInt("size_id")],
-                        rs.getInt("color_id"),
-                        rs.getInt("image_id")));
+              listAll.add(new ProductVariantInfomation(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getDouble(4), rs.getString(5), ProductSizeType.values()[rs.getInt(6)], rs.getString(7), rs.getString(8), rs.getString(9)));
             }
         } catch (Exception e) {
-            System.out.println("An error occurred while fetching products: " + e.getMessage());
         }
-        return list;
+        return listAll;
     }
 
     public ProductsVariant getPVbyColorAndSize(int pro_id, String size_name, String color_name) {
@@ -494,5 +505,6 @@ public class ProductVariantService {
         } catch (Exception e) {
         }
         return productV;
+
     }
 }

@@ -83,6 +83,30 @@ public class ProductColorService {
         return pro;
     }
 
+    public ProductColor GetProColorByName(String color_name) {
+        ProductColor pro = null;
+        String sql = "select * from ProductColors where color_name =?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, color_name);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                pro = new ProductColor(
+                        rs.getInt("color_id"),
+                        rs.getString("color_name")
+                );
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return pro;
+    }
+
     public List<ProductColor> getALLProductColor() {
         List<ProductColor> list = new ArrayList<>();
         String sql = "Select * from ProductColors";
@@ -101,6 +125,7 @@ public class ProductColorService {
         return list;
     }
 
+<<<<<<< HEAD
     public boolean addNewColor(String color_name) {
         boolean isAdded = false;
         String sql = "INSERT INTO ProductColors (color_name) VALUES (?)";
@@ -118,4 +143,6 @@ public class ProductColorService {
         }
         return isAdded;
     }
+=======
+>>>>>>> 877535d (Update view chua xong ...)
 }

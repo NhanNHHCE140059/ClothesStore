@@ -133,16 +133,16 @@ public class Create_Product_Variant_Controller extends HttpServlet {
         if (request.getParameter("action") != null) {
             String action = request.getParameter("action");
             ProductService productService = new ProductService();
+            ProductColorService productColorService = new ProductColorService();
             ProductVariantService productVaService = new ProductVariantService();
             switch (action) {
                 case "create-new-variant":
-                    String UPLOAD_DIR = "uploads";
                     String proName = request.getParameter("pro_Name");
                     Product product = productService.GetProByName(proName);
-                    String colorID = request.getParameter("color");
+                    String colorName = request.getParameter("color");
                     String size_Name = request.getParameter("size");
 
-                    if (colorID == null || colorID.isEmpty()) {
+                    if (colorName == null || colorName.isEmpty()) {
                         response.sendRedirect("createVariants?error=ColorError");
                         return;
                     }
@@ -155,15 +155,9 @@ public class Create_Product_Variant_Controller extends HttpServlet {
                         response.sendRedirect("createVariants?error=notFoundProduct");
                         return;
                     }
+                    int colorID = productColorService.GetProColorByName(colorName).getColor_id();
                     ProductSizeType size = ProductSizeType.valueOf(size_Name);
                     int sizeID = size.ordinal();
-
-                    String applicationPath = request.getServletContext().getRealPath("");
-                    String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR;
-                    File uploadDir = new File(uploadFilePath);
-                    if (!uploadDir.exists()) {
-                        uploadDir.mkdirs();
-                    }
 
                     List<Part> fileParts = new ArrayList<>();
                     for (Part part : request.getParts()) {
@@ -173,16 +167,25 @@ public class Create_Product_Variant_Controller extends HttpServlet {
                     }
                     int image_ID = -1;
                     for (Part filePart : fileParts) {
-                        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-                        System.out.println("assets/img/" + fileName);
-                        image_ID = productVaService.addProductImage(product.getPro_id(), fileName);
-                        filePart.write(uploadFilePath + File.separator + fileName);
+                        if (filePart != null) {
+                            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                            String uploadDir = getServletContext().getRealPath("/") + "assets/img";
+                            File uploadDirFile = new File(uploadDir);
+                            if (!uploadDirFile.exists()) {
+                                uploadDirFile.mkdirs();
+                            }
+                            String absoluteFilePath = uploadDir + File.separator + fileName;
+                            String relativeImage = "assets/img/" + fileName;
+
+                            image_ID = productVaService.addProductImage(product.getPro_id(), relativeImage);
+                            filePart.write(absoluteFilePath);
+                        }
                     }
                     if (image_ID == -1) {
                         response.sendRedirect("createVariants?Error=cantAddImg");
                         return;
                     } else {
-                        boolean idAdded = productVaService.addNewVariant(product.getPro_id(), sizeID, Integer.parseInt(colorID), image_ID);
+                        boolean idAdded = productVaService.addNewVariant(product.getPro_id(), sizeID, colorID, image_ID);
                         if (idAdded == false) {
                             response.sendRedirect("createVariants?Error=canAddProduct");
                             return;
