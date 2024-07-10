@@ -1,6 +1,5 @@
 package controller;
 
-import helper.ProductSizeType;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,12 +8,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import model.*;
+import model.CartInfo;
 import java.util.LinkedList;
 import java.util.List;
 import model.Account;
-import model.*;
-import model.CartInfo;
+import model.Cart;
 import service.CartService;
+import service.ProductService;
 import service.ProductVariantService;
 import service.WarehouseService;
 import service.*;
@@ -26,7 +27,33 @@ public class CartController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         Account acc = (Account) session.getAttribute("account");
-        CartService cartService = new CartService();
+        ProductService pservice = new ProductService();
+        CartService cservice = new CartService();
+        WarehouseService wservice = new WarehouseService();
+        if (acc == null) {
+            response.sendRedirect(request.getContextPath() + "/login"); //chuyen den trang login va bat nguoi dung login lai
+        } else {
+            int indexpage = 1;
+            if (request.getParameter("indexpage") != null) {
+                indexpage = Integer.parseInt(request.getParameter("indexpage"));
+            }
+            int count = cservice.CountPageCart(acc.getAcc_id());
+            int size = 5;
+            int endpage = count / size;
+            if (count % size != 0) {
+                endpage++;
+            }
+            LinkedList<CartInfo> carttop5 = cservice.GetTop5CartByAccID(acc.getAcc_id(), indexpage);
+            if (carttop5.isEmpty() && indexpage != 1) {
+                response.sendRedirect(request.getContextPath() + "/cart?indexpage=" + (indexpage - 1));
+                return;
+            }
+            request.setAttribute("carttop5", carttop5);
+            request.setAttribute("endpage", endpage);
+            request.setAttribute("indexpage", indexpage);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("cart.jsp");
+            dispatcher.forward(request, response);
+        }
 
         if (acc == null) {
             response.sendRedirect(request.getContextPath() + "/login");
@@ -55,10 +82,7 @@ public class CartController extends HttpServlet {
 
         if (action != null) {
             ProductVariantService pVservice = new ProductVariantService();
-            WarehouseService wservice = new WarehouseService();
-            ProductColorService colorService = new ProductColorService();
-            ProductService productService = new ProductService();
-            List<Cart> list_cart = cartService.GetListCartByAccID(acc.getAcc_id());
+            List<Cart> list_cart = cservice.GetListCartByAccID(acc.getAcc_id());
             switch (action) {
                 case "addToCart":
                     if (request.getParameter("size") != null && request.getParameter("color") != null) {
@@ -87,7 +111,7 @@ public class CartController extends HttpServlet {
                             /// loi khong tim thay product Variant ( it xay ra )
                             return;
                         }
-                        Product product = productService.GetProById(productVariant.getPro_id());
+                        Product product = pservice.GetProById(productVariant.getPro_id());
 
                         if ((wservice.GetProByIdInWareHouse(productVariant.getVariant_id())).getInventory_number() < quantity) {
                             System.out.println(productVariant.getVariant_id());
@@ -107,7 +131,7 @@ public class CartController extends HttpServlet {
                                     }
                                     isHave = true;
                                     int newQuantity = quantity + c.getPro_quantity();
-                                    noti = cartService.UpdateQuan(newQuantity, (double) newQuantity * c.getPro_price(), c.getCart_id(), productVariant.getVariant_id());
+                                    noti = cservice.UpdateQuan(newQuantity, (double) newQuantity * c.getPro_price(), c.getCart_id(), productVariant.getVariant_id());
 
                                     if (noti != 1) {
                                         response.sendRedirect("detail?error=4&pid=" + proID);
@@ -123,7 +147,7 @@ public class CartController extends HttpServlet {
                                     response.sendRedirect("detail?error=3&pid=" + proID);
                                     return;
                                 }
-                                noti = cartService.AddCart(acc.getAcc_id(), productVariant.getVariant_id(), quantity, product.getPro_price(), (double) product.getPro_price() * quantity);
+                                noti = cservice.AddCart(acc.getAcc_id(), productVariant.getVariant_id(), quantity, product.getPro_price(), (double) product.getPro_price() * quantity);
 
                                 if (noti != 1) {
                                     response.sendRedirect("detail?error=4&pid=" + proID);
@@ -147,7 +171,7 @@ public class CartController extends HttpServlet {
                             if (newquantity <= 0) {
                                 message = "Product quantity cannot be reduced less than 1!!!";
                             } else {
-                                int updateQuan = cartService.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getVariant_id());
+                                int updateQuan = cservice.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getVariant_id());
                                 if (updateQuan == 0) {
                                     message = "Error";
                                 } else if (updateQuan == -1) {
@@ -171,7 +195,7 @@ public class CartController extends HttpServlet {
                                     message = "Increase the number of failed products ☺<br> Number of products in Warehouse: " + wservice.GetProByIdInWareHouse(proV_id).getInventory_number();
                                     break;
                                 }
-                                int updateQuan = cartService.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getVariant_id());
+                                int updateQuan = cservice.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getVariant_id());
                                 if (updateQuan == 0) {
                                     message = "Error";
                                 } else if (updateQuan == -1) {
@@ -188,7 +212,7 @@ public class CartController extends HttpServlet {
                     int cart_id = Integer.parseInt(request.getParameter("cart_id"));
                     for (Cart c : list_cart) {
                         if (cart_id == c.getCart_id()) {
-                            int deleteNum = cartService.DeleteCart(c.getCart_id());
+                            int deleteNum = cservice.DeleteCart(c.getCart_id());
                             message = "Remove the products successful ✔"; /// Thong bao cho remove
                             break;
                         }
@@ -214,7 +238,7 @@ public class CartController extends HttpServlet {
                                 break;
                             }
                             if (quantityC < c.getPro_quantity()) {
-                                int updateQuan = cartService.UpdateQuan(quantityC, c.getPro_price() * quantityC, c.getCart_id(), c.getVariant_id());
+                                int updateQuan = cservice.UpdateQuan(quantityC, c.getPro_price() * quantityC, c.getCart_id(), c.getVariant_id());
                                 if (updateQuan == 0) {
                                     message = "Error";
                                     break;
@@ -228,7 +252,7 @@ public class CartController extends HttpServlet {
 
                             } else {
                                 if (wservice.GetProByIdInWareHouse(proV_id).getInventory_number() > 0 && quantityC <= wservice.GetProByIdInWareHouse(proV_id).getInventory_number()) {
-                                    int updateQuan = cartService.UpdateQuan(quantityC, c.getPro_price() * quantityC, c.getCart_id(), c.getVariant_id());
+                                    int updateQuan = cservice.UpdateQuan(quantityC, c.getPro_price() * quantityC, c.getCart_id(), c.getVariant_id());
                                     if (updateQuan == 0) {
                                         message = "Error";
                                         break;
@@ -251,22 +275,22 @@ public class CartController extends HttpServlet {
             session.setAttribute("message", message);
         }
 
-        int count = cartService.CountPageCart(acc.getAcc_id());
+        int count = cservice.CountPageCart(acc.getAcc_id());
         int size = 5;
         int endpage = count / size;
         if (count % size != 0) {
             endpage++;
         }
 
-        LinkedList<CartInfo> carttop5 = cartService.GetTop5CartByAccID(acc.getAcc_id(), indexPage);
-        if (carttop5.size() == 0 && indexPage != 1) {
+        LinkedList<CartInfo> carttop5 = cservice.GetTop5CartByAccID(acc.getAcc_id(), indexPage);
+        if (carttop5.isEmpty() && indexPage != 1) {
             response.sendRedirect(request.getContextPath() + "/cart?indexPage=" + (indexPage - 1));
             return;
         }
         double totalPrice = 0;
         int quantityProduct = 0;
         int quantityCart = 0;
-        for (Cart c : cartService.GetListCartByAccID(acc.getAcc_id())) {
+        for (Cart c : cservice.GetListCartByAccID(acc.getAcc_id())) {
             totalPrice += c.getTotal_price();
             quantityProduct += c.getPro_quantity();
             ++quantityCart;
@@ -279,5 +303,146 @@ public class CartController extends HttpServlet {
         request.setAttribute("indexPage", indexPage);
         RequestDispatcher dispatcher = request.getRequestDispatcher("cart.jsp");
         dispatcher.forward(request, response);
+    }
+    
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        if (request.getParameter("action") != null) {
+            HttpSession session = request.getSession();
+            String action = request.getParameter("action");
+            String message = null;
+            int pro_Vid = -1;
+            CartService cservice = new CartService();
+            WarehouseService wservice = new WarehouseService();
+            if (session.getAttribute("account") == null) {
+                response.sendRedirect(request.getContextPath() + "/login");
+                return;
+            }
+            int indexpage = 1;
+            if (request.getParameter("print") != null) {
+                indexpage = Integer.parseInt(request.getParameter("indexpage"));
+            }
+
+            Account acc = (Account) session.getAttribute("account");
+            List<Cart> list_cart = cservice.GetListCartByAccID(acc.getAcc_id());
+            if (request.getParameter("pro_Vid") != null) {
+                pro_Vid = Integer.parseInt(request.getParameter("pro_Vid"));
+                pro_Vid = pro_Vid - 1;
+            }
+            switch (action) {
+                case "decQuan":
+                    for (Cart c : list_cart) {
+                        if (c.getVariant_id() == pro_Vid) {
+                            int newquantity = c.getPro_quantity();
+                            newquantity--;
+                            if (newquantity <= 0) {
+                                message = "Product quantity cannot be reduced less than 1!!!";
+                                break;
+                            } else {
+                                int UpdateQuan = cservice.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getVariant_id());
+                                if (UpdateQuan == 0) {
+                                    message = "Error";
+                                    break;
+                                } else if (UpdateQuan == -1) {
+                                    message = "Exceeded quantity";
+                                    break;
+                                } else {
+                                    message = "Reduce the number of successful products ✔";
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case "incQuan":
+                    for (Cart c : list_cart) {
+                        if (c.getVariant_id() == pro_Vid) {
+                            int newquantity = c.getPro_quantity();
+                            newquantity++;
+                            if (wservice.GetProByIdInWareHouse(pro_Vid).getInventory_number() == 0) {
+                                message = "The number of products in the Warehouse is no longer available!!";
+                                break;
+                            }
+                            if (wservice.GetProByIdInWareHouse(pro_Vid).getInventory_number() > 0) {
+                                int UpdateQuan = cservice.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getVariant_id());
+                                if (UpdateQuan == 0) {
+                                    message = "Error";
+                                    break;
+                                }
+                                if (UpdateQuan == -1) {
+                                    message = "Exceeded quantity";
+                                    break;
+                                } else {
+                                    message = "Increase the number of successful products ✔";
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case "delete":
+                    int cart_id = Integer.parseInt(request.getParameter("cart_id"));
+                    for (Cart c : list_cart) {
+                        if (cart_id == c.getCart_id()) {
+                            int deleteNum = cservice.DeleteCart(c.getCart_id());
+                            break;
+                        }
+                    }
+                    break;
+
+                case "addToCart":
+//                    int color_id = Integer.parseInt(request.getParameter("color_id"));
+//                    String size_name = request.getParameter("size_name");
+//                    int pro_id = Integer.parseInt(request.getParameter("pro_id"));
+//                    pro_Vid = pVservice.getProductByColorAndSize(size_name, color_id, pro_id).getVariant_id();
+//                    break;
+                case "quantityCustom":
+                    int quantityC = Integer.parseInt(request.getParameter("quantityC"));
+                    System.out.println(quantityC);
+                    response.sendRedirect(request.getContextPath() + "/home");
+                    return;
+//                    cart = cservice.GetListCartByAccID(acc.getAcc_id());
+//                    pro_id = Integer.parseInt(request.getParameter("pro_id"));
+//                    p = pservice.GetProById(pro_id);
+//                    if (request.getParameter("quantity") == null) {
+//                        message = "Product quantity cannot be left blank ✘";
+//                        break;
+//                    } else {
+//                        if (request.getParameter("quantity").length() > 9) {
+//                            break;
+//                        }
+//                        int quantity = Integer.parseInt(request.getParameter("quantity"));
+//                        if (quantity <= 0) {
+//                            message = "Update product quantity failed ☺ <br> Default product quantity is 1";
+//                            break;
+//                        }
+//                        for (Cart c : cart) {
+//                            if (pro_id == c.getPro_id()) {
+//                                int newquantity = quantity - c.getPro_quantity();
+//                                if (newquantity < 0) {
+//                                    int UpdateQuan = cservice.UpdateQuan(quantity, c.getPro_price() * quantity, c.getCart_id(), c.getPro_id());
+//                                    message = "Reduce the number of successful products ✔";
+//                                    break;
+//                                } else {
+//                                    if (newquantity > wservice.GetProByIdInWareHouse(pro_id).getInventory_number()) {
+//                                        message = "The quantity of the product you want to buy is currently insufficient ☺<br> Number of products in Warehouse: " + wservice.GetProByIdInWareHouse(pro_id).getInventory_number();
+//                                        break;
+//                                    } else {
+//                                        int UpdateQuan = cservice.UpdateQuan(quantity, c.getPro_price() * quantity, c.getCart_id(), c.getPro_id());
+//                                        message = "Increase the number of successful products ✔";
+//                                        break;
+//                                    }
+//                                }
+//
+//                            }
+//                        }
+//                    }
+//
+//                    break;
+            }
+            session.setAttribute("message", message);
+            response.sendRedirect(request.getContextPath() + "/cart?indexpage=" + indexpage);
+            return;
+        }
     }
 }

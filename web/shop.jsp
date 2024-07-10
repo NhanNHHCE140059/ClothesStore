@@ -72,15 +72,13 @@
             }
         </style>
         <!-- Breadcrumb Start -->
-        <c:if test="${not empty successP}">
-            <div class="box">
+        <c:if test="${param.fvss ==1}">
+            <div class="box" style="background-color: #d90c0c">
                 <div class="content">
-                    <p>Thank you for adding to cart!</p>
-                    <p class="product-name">${successP.pro_name}</p>
+                    <p style="padding-left: 10px; color: #FFD333;">Product is available in Favorite List!!!</p>
                 </div>
-                <img src="${successP.imageURL}" alt="Product Image">
             </div>
-        </c:if>  
+        </c:if>   
         <div class="container-fluid">
             <div class="row px-xl-5">
                 <div class="col-12">
@@ -139,9 +137,9 @@
                                         <div class="product-img position-relative overflow-hidden">
                                             <img class="img-fluid w-100" src="${o.imageURL}">
                                             <div class="product-action">
-                                                <a class="btn btn-outline-dark btn-sm" href="${pageContext.request.contextPath}/cart?action=addToCart&pro_id=${o.pro_id}&indexpage=${currentPage}"><i class="fa fa-shopping-cart"></i> Add to Cart</a>
-                                                <a class="btn btn-outline-dark btn-sm" href="#"><i class="far fa-heart"></i> Add to Wishlist</a>
-                                                <a class="btn btn-outline-dark btn-sm" href="/clothesstore/detail?pid=${o.pro_id}"><i class="fa fa-info-circle"></i> More information</a>
+                                                <c:set var="page" value="${param.page != null ? param.page : 1}" />
+                                                <a class="btn btn-outline-dark btn-sm" href="/clothesstore/favorite?pid=${o.pro_id}&page=${page}"><i class="far fa-heart"></i> Add to Favorite</a>
+                                                <a class="btn btn-outline-dark btn-sm" href="/clothesstore/detail?pid=${o.pro_id}"><i class="fa fa-info-circle"></i> More information and Buy</a>
                                             </div>
                                         </div>
                                         <div class="text-center py-3">

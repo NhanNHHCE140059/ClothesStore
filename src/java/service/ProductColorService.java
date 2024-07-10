@@ -20,21 +20,44 @@ public class ProductColorService {
     PreparedStatement ps = null;
     ResultSet rs = null;
     DBContext dbcontext = new DBContext();
-    
-    
-    public ProductColor getProductByName (String name) {
+
+    public ProductColor getProductByName(String name) {
         ProductColor prdColor = new ProductColor();
         try {
             String query = "Select * form ProductColors where color_name = ?";
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
-            ps.setString(1,name);
+            ps.setString(1, name);
             rs = ps.executeQuery();
-            while (rs.next()){
-                prdColor = new ProductColor (rs.getInt(1),rs.getString(2));               
+            while (rs.next()) {
+                prdColor = new ProductColor(rs.getInt(1), rs.getString(2));
             }
         } catch (Exception e) {
         }
         return prdColor;
+    }
+
+    public ProductColor getProductColorByID(int ID) {
+        ProductColor proColor = null;
+        String query = "Select * from ProductColors where color_id= ?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, ID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                proColor = new ProductColor(
+                        rs.getInt(1),
+                        rs.getString(2));
+            }
+        } catch (Exception e) {
+        }
+        return proColor;
+    }
+
+    public static void main(String[] args) {
+        ProductColorService ps = new ProductColorService();
+        ps.getProductColorByID(1);
+        System.out.println(ps.getProductColorByID(2));
     }
 }
