@@ -101,4 +101,22 @@ public class ProductColorService {
         }
         return list;
     }
+
+    public boolean addNewColor(String color_name) {
+        boolean isAdded = false;
+        String sql = "INSERT INTO ProductColors (color_name) VALUES (?)";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, color_name);
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                isAdded = true;
+            }
+        } catch (Exception e) {
+         
+        }
+        return isAdded;
+    }
 }
