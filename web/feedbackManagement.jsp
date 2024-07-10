@@ -1,31 +1,65 @@
-    <!DOCTYPE html>
-    <html lang="en">
-        <%@page import="model.Account"%>
-        <%@page import="helper.Role"%>
-        <%@page import="model.Order"%>
-        <%@page import="java.util.List"%>
-        <% Account account = (Account) request.getAttribute("account"); %>
-        <% List<Order> listOrderS = (List<Order>) request.getAttribute("listOrderShipped"); %>
-        <% Integer endPage = (Integer) request.getAttribute("endPage");%>
-        <% String searchText = (String) request.getAttribute("searchText"); %>
-        <% Integer indexPage =(Integer) request.getAttribute("indexPage"); %>
-        <head>
-            <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/feedbackManagement.css"/>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Producter Feedback Dashboard</title>
-        </head>
+<!DOCTYPE html>
+<html lang="en">
+    <%@page import="model.Account"%>
+    <%@page import="helper.Role"%>
+    <%@page import="model.Order"%>
+    <%@page import="java.util.List"%>
+    <% Account account = (Account) request.getAttribute("account"); %>
+    <% List<Order> listOrderS = (List<Order>) request.getAttribute("listOrderShipped"); %>
+    <% Integer endPage = (Integer) request.getAttribute("endPage");%>
+    <% String searchText = (String) request.getAttribute("searchText"); %>
+    <% Integer indexPage =(Integer) request.getAttribute("indexPage"); %>
+    <head>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/feedbackManagement.css"/>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Shop Management</title>
+    </head>
+    <body>
+        <div class="sidebar">
+            <div class="sidebar-header">Dashboard For Staff</div>
+            <a href="#" class="menu-item">Product Management</a>
+            <div class="separator"></div>
+            <div class="submenu">
+                <a href="/clothesstore/manage-product">Manage Product Variant</a>
+                <a href="/clothesstore/main-manage-product">Manage Product</a>
+            </div>
+            <a href="#" class="menu-item">Category Management</a>
+            <div class="separator"></div>
+            <div class="submenu">
+                <a href="#">Create Category</a>
+                <a href="#">Update Category</a>
+                <a href="#">Delete Category</a>
+            </div>
+            <a href="#" class="menu-item">Feedback Management</a>
+            <div class="separator"></div>
+            <div class="submenu">
+                <a href="#">View Feedback</a>
+            </div>
+            <a href="#" class="menu-item">Orders Management</a>
+            <div class="separator"></div>
+            <div class="submenu">
+                <a href="#">Confirm Orders</a>
+                <a href="#">Cancel Orders</a>
+                <a href="#">Change Ship Status</a>
+            </div>
+            <a href="#" class="menu-item">Warehouse Management</a>
+            <div class="separator"></div>
+            <div class="submenu">
+                <a href="#">Create New Product (Warehouse)</a>
+                <a href="#">Update Product (Warehouse)</a>
+                <a href="#">Delete Product (Warehouse)</a>
+            </div>
 
-        <body>
+        </div>
 
-            <div class="sidebar">
-                <div class="sidebar-header">Dashboard For Staff</div>
-                <a href="#" class="menu-item">Product Management</a>
-                <div class="separator"></div>
-                <div class="submenu">
-                    <a href="#">Create Product</a>
-                    <a href="#">Update Product</a>
-                    <a href="#">Delete Product</a>
+        <div class="content">
+            <a href="${pageContext.request.contextPath}/home" class=" back-home">Back to Home</a>
+            <div class="header">
+                <input oninput="searchByPhone(this)" value="${phoneSearch}" type="number" id="autoSubmitInput" name="searchText" placeholder="Enter phone to search...">
+
+                <div class="role-info">
+                    <span><%= account.getRole()%> :</span><span><%= account.getName()%></span>
                 </div>
                 <a href="#" class="menu-item">Category Management</a>
                 <div class="separator"></div>
@@ -49,15 +83,15 @@
                 <a href="#" class="menu-item">Warehouse Management</a>
                 <div class="separator"></div>
                 <div class="submenu">
-<!--                    <a href="#">Create New Product (Warehouse)</a>
-                    <a href="#">Update Product (Warehouse)</a>-->
+                    <!--                    <a href="#">Create New Product (Warehouse)</a>
+                                        <a href="#">Update Product (Warehouse)</a>-->
                     <a href="${pageContext.request.contextPath}/ViewWarehouse">Manage Warehouse </a>
                 </div>
 
             </div>
 
             <div class="content">
-                 <a href="${pageContext.request.contextPath}/home" class=" back-home">Back to Home</a>
+                <a href="${pageContext.request.contextPath}/home" class=" back-home">Back to Home</a>
                 <div class="header">
                     <input oninput="searchByPhone(this)" value="${phoneSearch}" type="number" id="autoSubmitInput" name="searchText" placeholder="Enter phone to search...">
 
@@ -146,6 +180,6 @@
             <% }%>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
             <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
-        </body>
+    </body>
 
-    </html>
+</html>
