@@ -1,3 +1,4 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -13,6 +14,7 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Cart;
+import model.CartInfo;
 
 public class CartService {
 
@@ -59,11 +61,6 @@ public class CartService {
             ps.setDouble(4, pro_price);
             ps.setDouble(5, Total_price);
             count = ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
-            if ("52000".equals(ex.getSQLState())) {
-                count = -1;
-            }
         } catch (Exception ex) {
             Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -97,11 +94,7 @@ public class CartService {
             ps.setInt(3, cart_id);
             ps.setInt(4, variant_id);
             count = ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
-            if ("52000".equals(ex.getSQLState())) {
-                count = -1;
-            }
+
         } catch (Exception ex) {
             Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -131,9 +124,18 @@ public class CartService {
         return c;
     }
 
-    public LinkedList<Cart> GetTop5CartByAccID(int acc_id, int indexpage) {
-        LinkedList<Cart> list = new LinkedList<>();
-        String sql = "WITH x AS (SELECT ROW_NUMBER() OVER (ORDER BY cart_id ASC) AS r, * FROM Carts WHERE acc_id = ?) "
+    public LinkedList<CartInfo> GetTop5CartByAccID(int acc_id, int indexpage) {
+        LinkedList<CartInfo> list = new LinkedList<>();
+        String sql = "WITH x AS ("
+                + "  SELECT ROW_NUMBER() OVER (ORDER BY c.cart_id ASC) AS r, "
+                + "         c.cart_id, c.variant_id, c.pro_quantity, c.pro_price, c.Total_price, "
+                + "         pc.color_name, pv.size_id, p.pro_name, p.imageURL "
+                + "  FROM Carts c "
+                + "  JOIN ProductVariants pv ON c.variant_id = pv.variant_id "
+                + "  JOIN ProductColors pc ON pv.color_id = pc.color_id "
+                + "  JOIN Products p ON pv.pro_id = p.pro_id "
+                + "  WHERE c.acc_id = ? "
+                + ") "
                 + "SELECT * FROM x WHERE r BETWEEN ? * 5 - 4 AND ? * 5";
         try {
             connection = dbcontext.getConnection();
@@ -143,16 +145,38 @@ public class CartService {
             ps.setInt(3, indexpage);
             rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new Cart(rs.getInt("cart_id"), rs.getInt("acc_id"),
-                        rs.getInt("variant_id"), rs.getInt("pro_quantity"),
-                        rs.getDouble("pro_price"), rs.getDouble("Total_price")));
+                CartInfo cartInfo = new CartInfo(
+                        rs.getInt("cart_id"),
+                        rs.getInt("variant_id"),
+                        rs.getInt("pro_quantity"),
+                        rs.getDouble("pro_price"),
+                        rs.getDouble("Total_price"),
+                        rs.getString("color_name"),
+                        rs.getInt("size_id"),
+                        rs.getString("pro_name"),
+                        rs.getString("imageURL")
+                );
+                list.add(cartInfo);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-
         return list;
     }
 
@@ -177,8 +201,6 @@ public class CartService {
 
     public static void main(String[] args) {
         CartService dao = new CartService();
-  
 
     }
 }
-
