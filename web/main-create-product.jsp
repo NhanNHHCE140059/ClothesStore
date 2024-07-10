@@ -1,13 +1,7 @@
-<%-- 
-    Document   : main-create-product
-    Created on : Jul 2, 2024, 8:09:18 PM
-    Author     : Huenh
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
+    <%@page contentType="text/html" pageEncoding="UTF-8"%>
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     <%@page import="service.*" %>
     <%@page import="model.*" %>
     <%@page import="helper.*" %>
@@ -198,14 +192,18 @@
             <div class="card">
                 <div class="card-header">Create New Product</div>
                 <div class="card-body">
-                    <form action="main-create-product" method="post"  enctype="multipart/form-data">
+                    <form action="main-create-product" method="post" enctype="multipart/form-data">
                         <div class="input-group form-group">
                             <label>Product name:</label>
                             <input type="text" name="name_product" value="" class="form-control" required placeholder="Product name">
+                            <c:if test="${param.error!=null && param.error.equals('duplicateName')}">
+                                <p id="error-message" class="error">Product name already exists</p>
+                            </c:if>
                         </div>
-                      <div class="input-group form-group">
-                            <label>Image URL:</label>
-                            <input type="file" name="img_product" value="" class="form-control" required placeholder="Image URL">
+                        <div class="input-group form-group">
+                            <label>Main Image Product:</label>
+                            <input type="file" name="img_product" id="img_product" class="form-control" required multiple placeholder="Image URL">
+                            <img id="previewImage" class="preview-image" />
                         </div>
                         <div id="additional-images"></div>
                         <button type="button" id="add-more-images" class="btn">Add More Image</button>
@@ -224,7 +222,7 @@
                                     <option value="${cate.cat_id}">${cate.cat_name}</option>
                                 </c:forEach>
                             </select>
-                        </div> 
+                        </div>
                         <div>
                             <fieldset>
                                 <legend>Product Status</legend>

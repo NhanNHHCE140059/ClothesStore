@@ -220,10 +220,9 @@ public class ProductService {
         }
     }
 
-    public void createProduct(String pro_name, double pro_price, String description, String imageURL, int cat_id, int status) {
-        String query = "INSERT INTO Products (pro_name, pro_price, description, imageURL, cat_id, status_product) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
-
+    public int createProduct(String pro_name, double pro_price, String description, String imageURL, int cat_id, int status) {
+        String query = "INSERT INTO Products (pro_name, pro_price, description, imageURL, cat_id, status_product) VALUES (?, ?, ?, ?, ?, ?)";
+        int productId = -1;
         try {
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
@@ -234,12 +233,21 @@ public class ProductService {
             ps.setInt(5, cat_id);
             ps.setInt(6, status);
             ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                productId = rs.getInt(1);
+            }
+
+            rs.close();
             ps.close();
             connection.close();
         } catch (Exception e) {
             System.out.println("Error while creating product");
             e.printStackTrace();
         }
+
+        return productId;
     }
 
     public List<Product> getAllProductsShop() {
