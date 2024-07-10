@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/feedbackManagement.css"/>
-           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Shop Management</title>
@@ -257,8 +257,12 @@
             <a href="#" class="menu-item">Category Management</a>
             <div class="separator"></div>
             <div class="submenu">
-                <a href="categories">Create New Category</a>
-      
+                <a href="categories">Create New Category</a>   
+            </div>
+            <a href="#" class="menu-item">Color Management</a>
+            <div class="separator"></div>
+            <div class="submenu">
+                <a href="Color">Create New Color</a>   
             </div>
         </div>
         <div class="toast" id="toast">
@@ -299,7 +303,7 @@
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-               <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
+        <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
         <script>
                         $(document).ready(function () {
                             $('form').on('submit', function (event) {
@@ -337,8 +341,8 @@
                                 toast.classList.remove('active');
                             }, 5000);
                         }
-                          var pathname = window.location.pathname;
-                window.history.pushState({}, "", pathname);
+                        var pathname = window.location.pathname;
+                        window.history.pushState({}, "", pathname);
         </script>
     </body>
 </html>
