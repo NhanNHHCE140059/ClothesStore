@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -228,13 +229,12 @@ public class ProductService {
         }
     }
 
-    public void createProduct(String pro_name, double pro_price, String description, String imageURL, int cat_id, int status) {
-        String query = "INSERT INTO Products (pro_name, pro_price, description, imageURL, cat_id, status_product) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
-
+    public int createProduct(String pro_name, double pro_price, String description, String imageURL, int cat_id, int status) {
+        String query = "INSERT INTO Products (pro_name, pro_price, description, imageURL, cat_id, status_product) VALUES (?, ?, ?, ?, ?, ?)";
+        int productId = -1;
         try {
             Connection connection = dbcontext.getConnection();
-            PreparedStatement ps = connection.prepareStatement(query);
+            PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, pro_name);
             ps.setDouble(2, pro_price);
             ps.setString(3, description);
@@ -242,12 +242,21 @@ public class ProductService {
             ps.setInt(5, cat_id);
             ps.setInt(6, status);
             ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                productId = rs.getInt(1);
+            }
+
+            rs.close();
             ps.close();
             connection.close();
         } catch (Exception e) {
             System.out.println("Error while creating product");
             e.printStackTrace();
         }
+
+        return productId;
     }
 
     public List<Product> getAllProductsShop() {

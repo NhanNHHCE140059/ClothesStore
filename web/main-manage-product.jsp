@@ -89,7 +89,7 @@
 
                         <tr>
                             <td>${product.pro_id}</td>
-                            <td>${product.imageURL}</td>
+                            <td ><img style="width:100px;height:100px"  src="${product.imageURL}" alt="alt"/></td>
                             <td>${product.pro_name}</td>
                             <td><fmt:formatNumber value="${product.pro_price}" type="number" pattern="#,##0"/> VND</td>
                             <td><%= truncatedDescription %></td>
