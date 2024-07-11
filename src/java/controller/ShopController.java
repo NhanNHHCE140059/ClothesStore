@@ -7,7 +7,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import model.Category;
 import model.Product;
+import service.CategoryService;
 import service.ProductService;
 
 /**
@@ -20,7 +22,10 @@ public class ShopController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ProductService p = new ProductService();
-        List<Product> list = p.getAllProductsShop();
+        CategoryService c = new CategoryService();
+        List<Product> list = p.getAllProducts();
+        List<Category> categories = c.getAllCategories();  // Lấy danh sách các danh mục
+
         int page = 1;
         int productsPerPage = 6;
 
@@ -42,6 +47,8 @@ public class ShopController extends HttpServlet {
         req.setAttribute("noOfPages", noOfPages);
         req.setAttribute("currentPage", page);
         req.setAttribute("listP", paginatedList);
+        req.setAttribute("categories", categories); // Truyền danh sách các danh mục đến JSP
+
         req.getRequestDispatcher("shop.jsp").forward(req, resp);
     }
 

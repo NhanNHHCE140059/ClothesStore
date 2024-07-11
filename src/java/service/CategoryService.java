@@ -10,6 +10,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Category;
 
 /**
@@ -56,23 +61,20 @@ public class CategoryService {
         }
         return isAdded;
     }
-    public List<Category> getAllCate() {
-        List<Category> list = new ArrayList<>();
+
+    public List<Category> getAllCategories() {
+        List<Category> categories = new ArrayList<>();
+        String query = "SELECT * FROM Categories";
         try {
-            String query = "Select * from Categories";
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
             rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new Category(rs.getInt(1), rs.getString(2)));
+                categories.add(new Category(rs.getInt("cat_id"), rs.getString("cat_name")));
             }
         } catch (Exception e) {
+            Logger.getLogger(CategoryService.class.getName()).log(Level.SEVERE, null, e);
         }
-        return list;
-    }
-
-    public static void main(String[] args) {
-        CategoryService cate = new CategoryService();
-
+        return categories;
     }
 }

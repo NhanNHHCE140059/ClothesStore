@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Cart;
+import model.Category;
 import model.Product;
 
 /**
@@ -264,6 +266,7 @@ public class ProductService {
         }
         return list;
     }
+
     public List<Product> filterCategory(int c1, int c2) {
         List<Product> list = new ArrayList<>();
         String query = "SELECT * FROM Products WHERE cat_id IN (?, ?)";
@@ -302,6 +305,37 @@ public class ProductService {
             Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
         }
         return list;
+    }
+
+    public Category getNameCateByIDCate(int id_cate) throws Exception {
+        Category category = null;
+        try {
+            String query = "Select * from Categories where cat_id=?";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, id_cate);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                category = new Category(rs.getInt("cat_id"), rs.getString("cat_name"));
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(CategoryService.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                Logger.getLogger(CategoryService.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return category;
     }
 
     public static void main(String[] args) {
