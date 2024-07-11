@@ -138,6 +138,10 @@
                     right: 100%;
                 }
             }
+            .remove-button{
+                border-radius:4px;
+                margin-top:2px;
+            }
 
         </style>
         <div class="sidebar">
@@ -187,7 +191,7 @@
             <span class="close">&times;</span>
             <div class="progress active"></div>
         </div>
-
+        
         <div class="content">
             <div class="card">
                 <div class="card-header">Create New Product</div>

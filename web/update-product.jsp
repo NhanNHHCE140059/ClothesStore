@@ -97,7 +97,7 @@
                         </div>
                         <div class="form-group d-flex justify-content-center">
                             <input type="submit" value="Update" class="btn-update">
-                            <a style="display: inline-block; margin-top: 0px; background-color: #939aa3; color: white; padding: 0 14px; padding-top: 5px; padding-bottom: 9px; text-align: center; border-radius: 5px; text-decoration: none;" href="${pageContext.request.contextPath}/main-manage-product">Cancel</a>
+                            <a style="display: inline-block; margin-top: 0px; background-color: #939aa3; color: white; padding: 0 14px; padding-top: 5px; padding-bottom: 9px; text-align: center; border-radius: 5px; text-decoration: none;" href="${pageContext.request.contextPath}/main-manage-product?searchTxt=${param.searchTxt !=null ? param.searchTxt : ''}&page=${param.page}">Cancel</a>
                         </div>
                     </form>
                 </div>
