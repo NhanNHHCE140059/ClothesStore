@@ -31,7 +31,7 @@ public class MainManageProductController extends HttpServlet {
             return;
         }
         Account acc = (Account) session.getAttribute("account");
-        if (acc.getRole() == Role.Customer) {
+        if (acc.getRole() != Role.Customer) {
             response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
@@ -44,7 +44,7 @@ public class MainManageProductController extends HttpServlet {
             searchTxt = request.getParameter("searchTxt");
             listAllProduct = productService.searchByNameforStaff(searchTxt);
         }
-        if (request.getParameter("page") != null &&  !request.getParameter("page").isEmpty()) {
+        if (request.getParameter("page") != null && !request.getParameter("page").isEmpty()) {
             indexPage = Integer.parseInt(request.getParameter("page"));
         }
         int start = (indexPage - 1) * productsPerPage;
@@ -68,6 +68,17 @@ public class MainManageProductController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+
+        if (session.getAttribute("account") == null) {
+            resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+        Account acc = (Account) session.getAttribute("account");
+        if (acc.getRole() != Role.Customer) {
+            resp.sendRedirect(req.getContextPath() + "/home");
+            return;
+        }
         if (req.getParameter("idPro") != null) {
             int idPro = Integer.parseInt(req.getParameter("idPro"));
             ProductService productService = new ProductService();

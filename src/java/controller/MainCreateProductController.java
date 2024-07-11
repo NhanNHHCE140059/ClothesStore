@@ -4,12 +4,14 @@
  */
 package controller;
 
+import helper.Role;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import model.Account;
 import model.Category;
 import model.Product;
 import model.ProductColor;
@@ -35,6 +38,17 @@ public class MainCreateProductController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+             HttpSession session = request.getSession();
+
+        if (session.getAttribute("account") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        Account acc = (Account) session.getAttribute("account");
+        if (acc.getRole() != Role.Customer) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
         CategoryService cateService = new CategoryService();
         ProductColorService prColor = new ProductColorService();
         List<ProductColor> listAllColor = prColor.getALLProductColor();
@@ -47,6 +61,17 @@ public class MainCreateProductController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+             HttpSession session = request.getSession();
+
+        if (session.getAttribute("account") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        Account acc = (Account) session.getAttribute("account");
+        if (acc.getRole() != Role.Customer) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
         String nameProduct = request.getParameter("name_product");
         ProductService productService = new ProductService();
         for (Product product : productService.getAllProducts()) {
