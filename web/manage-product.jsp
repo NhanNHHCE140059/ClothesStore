@@ -388,7 +388,7 @@
             }
 
             .btn-create {
-                background-color: #0704c9;
+                background-color: #0492c9;
                 color: white;
                 text-align: center;
                 padding: 5px 10px;
@@ -547,6 +547,14 @@
                 height: 100%;
                 text-decoration: none;
             }
+            .cate_Select {
+                padding: 6.5px;
+                font-size: 16px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                width: 100%;
+            }
+
         </style>
         <div class="sidebar">
             <div class="sidebar-header">Dashboard For Staff</div>
@@ -585,33 +593,41 @@
         </div>
 
         <div class="content">
-            <a href="${pageContext.request.contextPath}/home" class=" back-home">Back to Home</a>
-            <a href="/clothesstore/createVariants" class="btn-create">Add new product</a>
-            <div class="container mt-3">
-                <div class="search-container">
-                    <div class="row w-100">
-                        <div class="col-6 mb-2">
-                            <label for="search1">Color:</label>
-                            <input type="text" id="search1" placeholder="Tìm kiếm..." class="form-control">
+            <a style="text-decoration: none;" href="${pageContext.request.contextPath}/home" class=" back-home">Back to Home</a>
+            <a style="text-decoration: none;" href="/clothesstore/createVariants" class="btn-create">Add new product</a>
+            <a style="text-decoration: none;"  href="/clothesstore/manage-product" class="btn-create">Show All</a>
+            <form action="manage-product" method="get">
+                <div class="container mt-3">
+                    <div class="search-container">
+                        <div class="row w-100">
+                            <div class="col-6 mb-2">
+                                <input type="hidden" name="search" value="true">
+                                <label for="search1">Color:</label>
+                                <input name="color_Search" value="${color_Search}" type="text" id="search1" placeholder="Tìm kiếm..." class="form-control">
+                            </div>
+                            <div class="col-6 mb-2">
+                                <label for="search2">Size:</label>
+                                <input name="size_Search" value="${size_Search}"  type="text" id="search2" placeholder="Tìm kiếm..." class="form-control">
+                            </div>
+                            <div class="col-6">
+                                <label for="search3">Name:</label>
+                                <input name="name_Search" value="${name_Search}"  type="text" id="search3" placeholder="Tìm kiếm..." class="form-control">
+                            </div>
+                            <div class="col-6">
+                                <label for="search4">Category:</label>
+                                <select class="cate_Select" name="cate_Search" value="${cate_Search}" > 
+                                    <c:forEach var="cate" items="${allCate}">
+                                        <option value="${cate.cat_name}" <c:if test="${cate.cat_name == cate_Search}">selected</c:if>>${cate.cat_name}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-6 mb-2">
-                            <label for="search2">Size:</label>
-                            <input type="text" id="search2" placeholder="Tìm kiếm..." class="form-control">
-                        </div>
-                        <div class="col-6">
-                            <label for="search3">Name:</label>
-                            <input type="text" id="search3" placeholder="Tìm kiếm..." class="form-control">
-                        </div>
-                        <div class="col-6">
-                            <label for="search4">Category:</label>
-                            <input type="text" id="search4" placeholder="Tìm kiếm..." class="form-control">
-                        </div>
+                        <button type="submit" class="search-icon">
+                            <i class="fas fa-search"></i>
+                        </button>
                     </div>
-                    <a href="#" class="search-icon">
-                        <i class="fas fa-search"></i> 
-                    </a>
                 </div>
-            </div>
+            </form>
             <table class="table">
                 <thead>
                     <tr>
@@ -628,77 +644,45 @@
                 </thead>
                 <tbody id="manage-product">
                     <c:forEach var="productVariant" items="${list}">
-                    <tr>
-                        <td>${productVariant.pro_id}</td>
-                        <td class="imageProTd"><img class="imgPro" src="${productVariant.imageURL}"></td>
-                        <td>${productVariant.pro_name}</td>
-                        <td><fmt:formatNumber value="${productVariant.pro_price}" type="number" pattern="#,##0"/> VND</td>
-                        <%ProductVariantInfomation p = (ProductVariantInfomation) pageContext.findAttribute("productVariant"); %>
-                        <td><%=p.getDescription().length() > 30 ? p.getDescription().substring(0, 100) + "..." : p.getDescription()%></td>
-                        <td>${productVariant.cat_name}</td>
-                        <td>${productVariant.size_name}</td>
-                        <td>${productVariant.color_name}</td>
 
-                    </tr>
-                </c:forEach>
+                        <tr>
+                            <td>${productVariant.pro_id}</td>
+                            <td class="imageProTd"><img class="imgPro" src="${productVariant.imageURL}"></td>
+                            <td>${productVariant.pro_name}</td>
+                            <td><fmt:formatNumber value="${productVariant.pro_price}" type="number" pattern="#,##0"/> VND</td>
+                            <%ProductVariantInfomation p = (ProductVariantInfomation) pageContext.findAttribute("productVariant"); %>
+                            <td><%=p.getDescription().length() > 30 ? p.getDescription().substring(0, 100) + "..." : p.getDescription()%></td>
+                            <td>${productVariant.cat_name}</td>
+                            <td>${productVariant.size_name}</td>
+                            <td>${productVariant.color_name}</td>
+                        </tr>
+                    </c:forEach>
+                    <c:if test="${empty list}">
+                        <tr>
+                            <td class="col-8">NOT FOUND</td>
+                        </tr>
+                    </c:if>
+
                 </tbody>
             </table>
             <div class="col-12">
                 <nav>
                     <ul class="pagination justify-content-center">
                         <%if (currentPage > 1){%>
-                        <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage - 1}">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage - 1}&color_Search=${color_Search}&size_Search=${size_Search}&name_Search=${name_Search}&cate_Search=${cate_Search}&search=${search}">Previous</a></li>
                             <%}%>
                             <%int pageRange = 5; 
                               int startPage = Math.max(1, currentPage - pageRange);
                               int end = Math.min(endPage, currentPage + pageRange);%>
+                        <%for (int i = startPage; i <= end; i++){%>
+                        <li><a class="page-link" href="manage-product?indexPage=<%=i%>&color_Search=${color_Search}&size_Search=${size_Search}&name_Search=${name_Search}&cate_Search=${cate_Search}&search=${search}"><%=i%></a></li>
+                            <%}%>
+                            <%if(currentPage < endPage){%>
+                        <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage + 1}&color_Search=${color_Search}&size_Search=${size_Search}&name_Search=${name_Search}&cate_Search=${cate_Search}&search=${search}">Next</a></li>
+                            <%}%>
+                    </ul>
+                </nav>
 
-            </div>
-            <a syle="margin-top: 10px ;" href="${pageContext.request.contextPath}/home" class=" add-new">ADD NEW</a>
-            <div class="table-container" id="table-container">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID Product</th>
-                            <th>Image</th>
-                            <th>Product name</th>
-                            <th>Product price</th>
-                            <th>Description</th>
-                            <th>Category name</th>
-                            <th>Sizes</th>
-                            <th>Colors</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="manage-product">
-
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><button class="btn-edit">Edit</button></td>
-
-
-                        </tr>
-
-                    </tbody>
-                </table>
-            </div>
-            <img src="">
-        </div>
-        <%if(session.getAttribute("quantity") != null){%>
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <p>The product is in stock so that cannot be deleted. The remaining quantity is: <%=quantity%></p>
-                <%session.removeAttribute("quantity");%>
-                <a href="manage-product?indexPage=${currentPage}">
-                    <button>OK</button>
-                </a>
             </div>
         </div>
         <%}%>
