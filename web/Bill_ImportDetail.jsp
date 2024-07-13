@@ -232,9 +232,11 @@
 
     <label for="import_priceTo">Import Price To:</label>
     <input type="text" id="import_priceTo" name="import_priceTo" pattern="\d+(\.\d{1,2})?" title="Import Price must be a positive number" value="${param.import_priceTo}"><br><br>
-    <input type="hidden" name ="bill_id" value="${param.billId}">
+    <input type="hidden" name ="bill_id" value="${billid}">
     <div class="button-group">
+        
         <input type="submit" value="Search">
+        
         <a href="${pageContext.request.contextPath}/ImportBillDetailSearchController?bill_id=${param.billId}" class="reset-button">Reset</a>
     </div>
 </form>

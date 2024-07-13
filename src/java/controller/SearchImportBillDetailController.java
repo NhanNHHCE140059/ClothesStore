@@ -143,6 +143,8 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
         request.setAttribute("prvlst", count1);
         request.setAttribute("endPage", endPage);
            request.setAttribute("colorInBill", colorInBill);
+                      request.setAttribute("bill_id", bill_id);
+
         System.out.println(endPage);
         request.getRequestDispatcher("Bill_ImportDetail.jsp").forward(request, response);
     }

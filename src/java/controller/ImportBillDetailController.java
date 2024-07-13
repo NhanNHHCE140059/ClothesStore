@@ -90,6 +90,7 @@ public class ImportBillDetailController extends HttpServlet {
             int endPage = (int) Math.ceil((double) count.size() / orderPerPage);
             request.setAttribute("prvlst", count1);
             request.setAttribute("colorInBill", colorInBill);
+                  request.setAttribute("billid", billId);
              request.setAttribute("endPage", endPage);
             RequestDispatcher dispatcher = request.getRequestDispatcher("/Bill_ImportDetail.jsp");
             dispatcher.forward(request, response);
