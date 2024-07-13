@@ -33,4 +33,22 @@ public class Order {
     private OrderStatus order_status;
     private PayStatus pay_status;
     private ShipStatus shipping_status;
+    
+       @Override
+    public String toString() {
+        return "Order{" +
+                "order_id=" + order_id +
+                ", feedback_order='" + feedback_order + '\'' +
+                ", orderDate=" + orderDate +
+                ", addressReceive='" + addressReceive + '\'' +
+                ", phone='" + phone + '\'' +
+                ", acc_id=" + acc_id +
+                ", username='" + username + '\'' +
+                ", totalPrice=" + totalPrice +
+                ", order_status=" + order_status +
+                ", pay_status=" + pay_status +
+                ", shipping_status=" + shipping_status +
+                '}';
+    }
+
 }

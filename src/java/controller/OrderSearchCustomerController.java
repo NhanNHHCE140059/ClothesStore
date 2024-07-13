@@ -17,14 +17,12 @@ import model.Account;
 import model.Order;
 import service.OrderService;
 
-
 /**
  *
  * @author HP
  */
-@WebServlet(value = "/OrderHistoryControl")
-
-public class OrderHistoryControl extends HttpServlet {
+@WebServlet(value = "/OrderSearchCustomerController")
+public class OrderSearchCustomerController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -51,48 +49,77 @@ public class OrderHistoryControl extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
-        HttpSession session = request.getSession();
+    throws ServletException, IOException {
+        processRequest(request, response);
+    HttpSession session = request.getSession();
         if (session.getAttribute("account") == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
-
         } else {
             Account a = (Account) session.getAttribute("account");
             if (a.getRole() != helper.Role.Customer) {
                 response.sendRedirect(request.getContextPath() + "/index.jsp");
                 return;
             }
+
             OrderService ordersv = new OrderService();
             String username = a.getUsername();
-            int indexPage;
-            if (request.getParameter("indexPage") != null&& !request.getParameter("indexPage").isEmpty()) {
 
+            int indexPage;
+            if (request.getParameter("indexPage") != null&&!request.getParameter("indexPage").isEmpty() ) {
                 indexPage = Integer.parseInt(request.getParameter("indexPage"));
             } else {
                 indexPage = 1;
             }
 
-            int count = ordersv.countPageOrderCustomer(username);
+            // Initialize variables before using them
+            String orderId = request.getParameter("orderId");
+            String orderDateFrom = request.getParameter("orderDateFrom");
+            String orderDateTo = request.getParameter("orderDateTo");
+            String orderStatus = request.getParameter("orderStatus");
+            String shippingStatus = request.getParameter("shippingStatus");
+            String payStatus = request.getParameter("payStatus");
+            
+     if(request.getParameter("feedback")!=null)   {
+
+            String feedback = request.getParameter("feedback");
+            int orderids = Integer.parseInt(request.getParameter("orderids"));
+         System.out.println(orderids);
+               System.out.println(feedback);
+
+            if (feedback == null || feedback.trim().length() == 0) {
+             response.sendRedirect(request.getContextPath() + "/OrderSearchCustomerController?orderId="+orderId+"&orderDateFrom="+orderDateFrom+"&orderDateTo="+orderDateTo+"&orderStatus="+orderStatus+"&shippingStatus="+shippingStatus+"&payStatus="+payStatus+"&indexPage="+indexPage);
+
+                return;
+            }
+            ordersv.updateFbCustomer(feedback, orderids);
+            response.sendRedirect(request.getContextPath() + "/OrderSearchCustomerController?orderId="+orderId+"&orderDateFrom="+orderDateFrom+"&orderDateTo="+orderDateTo+"&orderStatus="+orderStatus+"&shippingStatus="+shippingStatus+"&payStatus="+payStatus+"&indexPage="+indexPage);
+                return;
+
+
+        }
+            // Calculate count after initializing variables
+            int count = ordersv.countPageOrderSearchCustomer(orderId, a.getUsername(), orderDateFrom, orderDateTo, orderStatus, shippingStatus, payStatus);
+
             int size = 5;
             int endPage = count / size;
             if (count % size != 0) {
                 endPage++;
-
             }
-            if(request.getParameter("feedbackid")!= null){
+            if (request.getParameter("feedbackid") != null) {
                 String orderid = (request.getParameter("feedbackid"));
                 request.setAttribute("orderid", orderid);
             }
-            List<Order> lstOrder = ordersv.getTop50OrderHistoryByAccountID(a.getUsername(), indexPage);
+            if (endPage >= 1) {
+                int aaa = 1;
+                request.setAttribute("aaa", aaa);
 
-            
-            
-            request.setAttribute("lstOrder", lstOrder);
+            }
+            List<Order> orders = ordersv.searchTop5Orders(orderId, a.getUsername(), orderDateFrom, orderDateTo, orderStatus, shippingStatus, payStatus, indexPage);
+//            List<Order> orders = ordersv.searchOrders(orderId, a.getUsername(), orderDateFrom, orderDateTo, orderStatus, shippingStatus, payStatus);
+            request.setAttribute("lstOrder", orders);
+
             request.setAttribute("endPage", endPage);
-            System.out.println(lstOrder.toString());
-            request.getRequestDispatcher("/orderHistory.jsp").forward(request, response);
+            request.getRequestDispatcher("orderHistory.jsp").forward(request, response);
         }
     }
 
@@ -105,20 +132,11 @@ public class OrderHistoryControl extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-             String feedback = request.getParameter("feedback");
-               int orderid =Integer.parseInt( request.getParameter("orderid"));
-                       int indexPage =Integer.parseInt( request.getParameter("indexPage"));
-             OrderService ordersv = new OrderService();
-             if(feedback== null || feedback.trim().length()==0){
-                              response.sendRedirect(request.getContextPath()+"/OrderHistoryControl?indexPage="+indexPage);
-return;
-             }
-             ordersv.updateFbCustomer(feedback, orderid);
-             response.sendRedirect(request.getContextPath()+"/OrderHistoryControl?indexPage="+indexPage);
-             
+
+
     }
 
     /**

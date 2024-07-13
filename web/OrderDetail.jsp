@@ -3,133 +3,208 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
-<head>
-    <jsp:include page="/shared/_head.jsp" />
-    <link rel="stylesheet" type="text/css" href="assets/css/orderhistory.css" />
-    <style>
-        /* CSS để căn giữa bảng order */
-        .section-padding-100 {
-            padding: 100px 0;
-            text-align: center; /* căn giữa nội dung */
-        }
-        .table-container {
-            margin: 0 auto;
-            width: 100%; /* chiều rộng tối đa */
-            max-width: 1100px; /* giới hạn chiều rộng */
-            border: 2px solid #ccc; /* đường viền của khung */
-            padding: 20px; /* khoảng cách bên trong khung */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* đổ bóng cho khung */
-            background-color: #fff; /* nền trắng cho khung */
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse; /* gộp các đường viền */
-        }
-        th, td {
-            border: 1px solid #ddd; /* đường viền ô */
-            padding: 8px; /* khoảng cách bên trong ô */
-            text-align: center; /* căn giữa nội dung */
-        }
-        th {
-            background-color: #f5f7fa; /* màu nền tiêu đề */
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9; /* màu nền cho các hàng chẵn */
-        }
-        tr:hover {
-            background-color: #f1f1f1; /* màu nền khi rê chuột */
-        }
-        .back-button {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .back-button a {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .back-button a:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
+    <head>
+        <jsp:include page="/shared/_head.jsp" />
+        <link rel="stylesheet" type="text/css" href="assets/css/orderhistory.css" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <style>
+            .section-padding-100 {
+                padding: 100px 0;
+                text-align: center;
+            }
+            table {
+                margin: 0 auto;
+                width: 100%;
+                max-width: 1100px;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 10px;
+                border: 1px solid #ddd;
+                text-align: center;
+            }
+            th {
+                background-color: #f5f7fa;
+                font-weight: bold;
+            }
+            tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+            tr:hover {
+                background-color: #f1f1f1;
+            }
+            .pagination {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+                flex-wrap: nowrap;
+            }
+            .page-numbers {
+                display: flex;
+                flex-wrap: wrap;
+            }
+            .page-link {
+                margin: 0 5px;
+                padding: 8px 16px;
+                text-decoration: none;
+                color: #000;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                transition: background-color 0.3s, color 0.3s;
+            }
+            .page-link:hover {
+                background-color: #f0f0f0;
+            }
+            .page-link.active {
+                background-color: #4CAF50;
+                color: white;
+                border: 1px solid #4CAF50;
+            }
+            .page-link.prev, .page-link.next {
+                display: flex;
+                align-items: center;
+            }
+            .modal {
+                display: block;
+                position: fixed;
+                z-index: 1;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.5);
+                padding-top: 60px;
+            }
+            .modal-content {
+                background-color: #ffffff;
+                margin: 5% auto;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                width: 80%;
+                max-width: 500px;
+                text-align: center;
+            }
+            .modal-footer {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                margin-top: 20px;
+            }
+            .modal-button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 4px;
+                background-color: #f44336;
+                color: white;
+                cursor: pointer;
+                font-size: 16px;
+                transition: background-color 0.3s ease;
+            }
+            .modal-button:hover {
+                background-color: #d32f2f;
+            }
+            .modal-button.cancel {
+                background-color: #555555;
+            }
+            .modal-button.cancel:hover {
+                background-color: #333333;
+            }
+        </style>
+    </head>
+    <body>
 
-    <jsp:include page="/shared/_header.jsp" />
-    <jsp:include page="/shared/_nav.jsp" />
-    <!-- Header Area -->
+        <jsp:include page="/shared/_header.jsp" />
+        <jsp:include page="/shared/_nav.jsp" />
+        <!-- Header Area -->
 
-    <div class="section-padding-100">
-        <div class="cart-title mt-50">
-            <c:if test="${sessionScope.account.role == 'Customer'}">
+        <div class="section-padding-100">
+            <div class="cart-title mt-50">
                 <h2>Order Detail</h2>
-            </c:if>
-            <c:if test="${sessionScope.account.role == 'Staff'}">
-                <h2>Order Detail (Staff)</h2>
-            </c:if>
-        </div>
+            </div>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 100px">Product ID</th>
-                        <th>Image</th>
-                        <th>Product Name</th>
-                        <th>Unit Price</th>
-                        <th>Category</th>
-                        <th>Quantity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach items="${lstOrderDetail}" var="map">
-                        <c:forEach items="${map}" var="entry">
-                            <c:set var="odd" value="${entry.key}"/>
-                            <c:set var="product" value="${entry.value}"/>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Order Date</th>                 
+                            <th>Product Name</th>
+                            <th>Unit Price</th>
+                            <th>Quantity</th>
+                            <th>Color</th>
+                            <th>Size</th>
+                            <th>Image</th>
+                            <th>Feedback</th>
+                            <th>Address</th>
+                            <th>Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${prvlst}" var="o">
                             <tr>
-                                <td class="id">
-                                    <span>${odd.pro_id}</span>
-                                </td>
-                                <td class="image">
-                                    <a href="#"><img src="${product.imageURL}" alt="Product" style="width: 150px"></a>
-                                </td>
-                                <td class="productName">
-                                    <span>${product.pro_name}</span>
-                                </td>
-                                <td class="price">
-                                    <span><fmt:formatNumber value="${product.pro_price}" type="number" pattern="#,##0" /></span>
-                                </td>
-                                <td class="categoryName">
-                                    <span>${product.cat_name}</span>
-                                </td>
-                                <td class="quantity">
-                                    <span>${odd.quantity}</span>
-                                </td>
+                                <td class="id"><span>${o.order_id}</span></td>
+                                <td class="date"><span>${o.orderDate}</span></td>
+<!--                                <td class="order_status"><span>${o.order_status}</span></td>
+                                <td class="ship_status"><span>${o.shipping_status}</span></td>-->
+                                <td class="pro_name"><span>${o.pro_name}</span></td>
+                                <td class="UnitPrice"><span><fmt:formatNumber value="${o.unitPrice}" type="number" pattern="#,##0" /></span></td>
+                                <td class="Quantity"><span>${o.quantity}</span></td>
+                                <td class="color_name"><span>${o.color_name}</span></td>
+                                <td class="size_name"><span>${o.size_name}</span></td>
+                                <td class="imageURL"><span><img src="${o.imageURL}" alt="Product Image" style="width:50px;height:auto;"/></span></td>
+
+                                                            <c:choose>
+                                    <c:when test = "${o.shipping_status=='SUCCESS'&&o.feedback_details!= null}">
+                                                                        <td class="Feed_Back"><span>${o.feedback_details}</span></td>
+
+                                    </c:when>   
+                                    <c:when test = "${o.shipping_status!='SUCCESS'}">
+                                                                        <td class="Feed_Back"><span>chua đc giao hang nên ch đc fb</span></td>
+
+                                    </c:when>
+                                                                           <c:when test = "${o.shipping_status=='SUCCESS'&&o.feedback_details== null}">
+                                                                               <td class="Feed_Back"><span><a href="${pageContext.request.contextPath}/OrderDetailControl?feedbackid=${o.order_detail_id}&orderId=${param.orderId}"><button>Click to feedback</button></a></span></td>
+
+                                    </c:when>
+                                </c:choose>
+                                
+                                <td class="addressReceive"><span>${o.addressReceive}</span></td>
+                                <td class="phone"><span>${o.phone}</span></td>
                             </tr>
                         </c:forEach>
-                    </c:forEach>
-                </tbody>
-            </table>
+                            
+                    </tbody>
+                </table>
+            </div>
         </div>
-        
-        <!-- Nút Back -->
-        <div class="back-button">
-            <c:if test="${sessionScope.account.role == 'Customer'}">
-                <a href="/clothesstore/OrderHistoryControl">Back to Order History</a>
-            </c:if>
-            <c:if test="${sessionScope.account.role == 'Staff'}">
-                <a href="/clothesstore/OrderHistoryStaffControl">Back to Staff Order History</a>
-            </c:if>
-        </div>
+<c:if test = "${not empty order_detail_id }">
+    <div id="myModal" class="modal" >
+        <form action="OrderDetailControl" method="post">
+            <input name="order_detail_id" value="${order_detail_id}" type="hidden">
+            <input name="orderId" value="${param.orderId}" type="hidden">
+            <div class="modal-content">
+                <p>DO YOU WANT TO FEEDBACK FOR ORDER ID: <span id="feedbackId"></span>${order_detail_id}</p>
+                <input type="text" id="feedbackInput" name="feedback" placeholder="Enter your feedback here">
+                <div class="modal-footer">
+                    <button type="submit" class="modal-button" id="submitFeedback">Submit Feedback</button>
+                    <a href="${pageContext.request.contextPath}/OrderDetailControl?orderId=${param.orderId}" class="modal-button cancel">Cancel</a>
+                </div>
+            </div>
+        </form>
     </div>
+</c:if>
 
-    <!-- Footer Area -->
-    <jsp:include page="/shared/_footer.jsp" />
-    <!-- End of Footer Area -->
 
-</body>
+        <!-- Footer Area -->
+
+        <jsp:include page="/shared/_footer.jsp" />
+
+        <!-- End of Footer Area -->
+        <script>
+            // Pagination Script Here if Needed
+        </script>
+        
+    </body>
 </html>
