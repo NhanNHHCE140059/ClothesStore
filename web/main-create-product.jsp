@@ -142,6 +142,9 @@
                 border-radius:4px;
                 margin-top:2px;
             }
+            #productNameError, #priceError, #descriptionError{
+                color: red;
+            }
 
         </style>
         <div class="sidebar">
@@ -330,8 +333,8 @@
                                     const namePattern = /^[A-Za-z ]+$/;
                                     const productNameError = document.getElementById('productNameError');
 
-                                    if (!namePattern.test(productName.value)) {
-                                        productNameError.textContent = "Product name can only contain letters and spaces.";
+                                    if (!namePattern.test(productName.value.trim())) {
+                                        productNameError.textContent = "Product name can only contain letters and spaces (at least 1 letter).";
                                         productName.value = "";
                                     } else {
                                         productNameError.textContent = "";
