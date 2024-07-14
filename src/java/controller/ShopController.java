@@ -20,7 +20,7 @@ public class ShopController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ProductService p = new ProductService();
-        List<Product> list = p.getAllProductsShop();
+        List<Product> list = p.getAllProducts();
         int page = 1;
         int productsPerPage = 6;
 
