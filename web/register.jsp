@@ -85,6 +85,9 @@
                         <div class="d-flex justify-content-center links">
                             Already have an account?<a href="/clothesstore/login">Login</a>
                         </div>
+                        <div class="d-flex justify-content-center links">
+                            <a href="/clothesstore">Back to home</a>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -8,17 +8,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import model.*;
 import model.CartInfo;
 import java.util.LinkedList;
 import java.util.List;
 import model.Account;
 import model.Cart;
+import model.Product;
+import model.ProductsVariant;
 import service.CartService;
 import service.ProductService;
 import service.ProductVariantService;
 import service.WarehouseService;
-import service.*;
 
 @WebServlet(value = "/cart")
 public class CartController extends HttpServlet {
@@ -31,32 +31,7 @@ public class CartController extends HttpServlet {
         CartService cservice = new CartService();
         WarehouseService wservice = new WarehouseService();
         if (acc == null) {
-            response.sendRedirect(request.getContextPath() + "/login"); //chuyen den trang login va bat nguoi dung login lai
-        } else {
-            int indexpage = 1;
-            if (request.getParameter("indexpage") != null) {
-                indexpage = Integer.parseInt(request.getParameter("indexpage"));
-            }
-            int count = cservice.CountPageCart(acc.getAcc_id());
-            int size = 5;
-            int endpage = count / size;
-            if (count % size != 0) {
-                endpage++;
-            }
-            LinkedList<CartInfo> carttop5 = cservice.GetTop5CartByAccID(acc.getAcc_id(), indexpage);
-            if (carttop5.isEmpty() && indexpage != 1) {
-                response.sendRedirect(request.getContextPath() + "/cart?indexpage=" + (indexpage - 1));
-                return;
-            }
-            request.setAttribute("carttop5", carttop5);
-            request.setAttribute("endpage", endpage);
-            request.setAttribute("indexpage", indexpage);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("cart.jsp");
-            dispatcher.forward(request, response);
-        }
-
-        if (acc == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect("login"); //chuyen den trang login va bat nguoi dung login lai
             return;
         }
 

@@ -43,6 +43,9 @@
                     <div class="card-footer d-flex flex-column align-items-center">
                         <span class="text-danger mb-3">${msgError}</span>
                         <div class="d-flex justify-content-center links">
+                            <a href="/clothesstore">Back to home</a>
+                        </div>
+                        <div class="d-flex justify-content-center links">
                             Don't have an account?<a href="/clothesstore/register">Register</a>
                         </div>
                         <div class="d-flex justify-content-center">

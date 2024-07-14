@@ -157,21 +157,6 @@
             background-color: white;
         }
 
-        .size-options button:hover, .color-options button:hover {
-            border-color: #007bff;
-        }
-
-        .size-options button.active, .color-options button.active {
-            border-color: #007bff;
-            background-color: #ffd333;
-            color: white;
-        }
-
-        .product-availability {
-            padding-left: 5px;
-            margin-top: 22px;
-            margin-right: 55px;
-        }
         .buy-now-btn {
             background-color: #ee4d2d;
             color: #3D464D;
@@ -187,8 +172,79 @@
         .add-cart-btn, .buy-now-btn {
             height: 50px;
             line-height: 38px;
-            font-size: 16px; 
+            font-size: 16px;
             font-weight: bold;
+        }
+
+        .size-options button:hover, .color-options button:hover {
+            border-color: #007bff;
+        }
+
+        .size-options button.active, .color-options button.active {
+            border-color: #007bff;
+            background-color: #ffd333;
+            color: white;
+        }
+        .size-options button.hintSize {
+            box-shadow: #ffd333 0px 1px 4px, #ffd333 0px 0px 0px 3px;
+        }
+
+        .color-options {
+            display: flex;
+            margin-bottom: 15px;
+
+        }
+
+        .color-options button {
+            margin-right: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .color-options button:hover {
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .color-options button.active {
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px, rgb(51, 51, 51) 0px 0px 0px 3px !important;
+        }
+        .color-btn {
+            position: relative;
+            box-shadow: rgba(255, 255, 255, 0.2) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.9) 0px 0px 0px 1px;
+        }
+
+        .color-btn.active::after {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #79ff79;
+            bottom: -17px;
+            left: 10px;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+        .out-of-stock-message {
+            background-color: #ffe6e6;
+            color: #cc0000;
+            border: 1px solid #cc0000;
+            padding: 0 8px 0 8px !important;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
     </style>
     <body>
@@ -264,90 +320,104 @@
         </div>
     </div>
     <!-- Breadcrumb End -->
-        <!-- Shop Detail Start -->
-        <div class="container-fluid pb-5">
-            <div class="row px-xl-5 align-items-center">
-                <div class="col-lg-5 mb-4 mb-lg-0 product-detail-img-container">
-                    <!-- Thumbnail Images Start -->
-                    <div class="row px-xl-5">
-                        <div class="col-12 text-center">
-                            <%         if (imgList.size() !=0 ) {
+
+
+    <!-- Shop Detail Start -->
+    <div class="container-fluid pb-5">
+        <div class="row px-xl-5 align-items-center">
+            <div class="col-lg-5 mb-4 mb-lg-0 product-detail-img-container">
+                <!-- Thumbnail Images Start -->
+                <div class="row px-xl-5">
+
+                    <div class="col-12 text-center">
+                        <%        if ( imgList!=null) {
                              for (ProductImage img :imgList){ %>
-                            <div class="thumbnail-container">                       
-                                <div class="thumbnail">
-                                    <img src="<%= img.getImageURL()%>" alt="Thumbnail" onmouseover="changeMainImage('<%= img.getImageURL() %>')">
-                                </div>
+                        <div class="thumbnail-container">                       
+                            <div class="thumbnail">
+                                <img src="<%= img.getImageURL()%>" alt="Thumbnail" onmouseover="changeMainImage('<%= img.getImageURL() %>')">
                             </div>
-                            <% }}%>
                         </div>
+                        <% }}%>
                     </div>
-                    <!-- Thumbnail Images End -->
-                    <img class="product-detail-img" id="mainImage" src="${pro_detail.imageURL}" alt="Image">
                 </div>
-                <div class="col-lg-7">
-                    <div class="bg-light p-4 rounded">
-                        <h3 class="my-3">${pro_detail.pro_name}</h3>
-                        <div class="d-flex mb-3">
-                            <div class="text-primary mr-2">
-                                <small class="fas fa-star"></small>
-                                <small class="fas fa-star"></small>
-                                <small class="fas fa-star"></small>
-                                <small class="fas fa-star-half-alt"></small>
-                                <small class="far fa-star"></small>
+                <!-- Thumbnail Images End -->
+                <img class="product-detail-img" id="mainImage" src="${pro_detail.imageURL}" alt="Image">
+            </div>
+            <div class="col-lg-7">
+                <div class="bg-light p-4 rounded">
+                    <h3 class="my-3">${pro_detail.pro_name}</h3>
+                    <div class="d-flex mb-3">
+                        <div class="text-primary mr-2">
+                            <small class="fas fa-star"></small>
+                            <small class="fas fa-star"></small>
+                            <small class="fas fa-star"></small>
+                            <small class="fas fa-star-half-alt"></small>
+                            <small class="far fa-star"></small>
+                        </div>
+                        <small class="pt-1">(99 Reviews)</small>
+                    </div>
+                    <h4 class="font-weight-semi-bold mb-4 my-3">
+                        <fmt:formatNumber value="${pro_detail.pro_price}" type="number" pattern="#,##0"/> VND
+                    </h4>
+                    <p class="mb-4">${pro_detail.description}</p>
+                    <!-- Size and Color Options Start -->
+
+                    <div class="size-options mb-4" id="sizeOptions">
+                        <% if (isCap != 3 ){ %>
+                        <label for="size" style="margin:6px 12px 0 0;" >Size:</label>
+                        <%  
+                     if (imgList.size() !=0 ) {
+                                 for (String size : sizes) {
+                            if (!"ALL_COLORS".equals(size)) { 
+                        %>
+                        <button class="size-btn" id="size_<%= size %>" data-size="<%= size %>" onclick="fetchColorsAndQuantities('<%= size %>')"><%= size %></button>
+                        <% 
+                            }
+                        } } }
+                        %>
+                    </div>
+                    <div class="color-options mb-4" id="colorOptions" style="max-height:30px;">
+                        <label for="color" style="margin:6px 12px 0 0;">Color:</label>
+                        <%                             
+                         for (String color : allColors) { 
+                        %>
+                        <button class="color-btn" data-color="<%= color %>" style="background-color: <%= color %>;"onclick="selectColor('<%= color %>');fetchSizeAndQuantities('<%= color %>')"></button>
+                        <% 
+                        }
+                        %>
+
+
+                    </div>
+                    <a href="detail?pid=${pro_detail.pro_id}" style="text-decoration: none;background-color:#ffd333 ;padding:2px 4px 2px 4px;border-radius:4px;color:#3d464d;font-weight: 500;margin-top:10px;">Click to find size by color</a>
+                    <!-- Size and Color Options End -->
+                    <div class="d-flex align-items-center mb-4 pt-2">
+                        <div class="input-group quantity mr-3" style="width: 130px;">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-primary btn-minus">
+                                    <i class="fa fa-minus"></i>
+                                </button>
                             </div>
-                            <small class="pt-1">(99 Reviews)</small>
-                        </div>
-                        <h4 class="font-weight-semi-bold mb-4 my-3">
-                            <fmt:formatNumber value="${pro_detail.pro_price}" type="number" pattern="#,##0"/> VND
-                        </h4>
-                        <p class="mb-4">${pro_detail.description}</p>
-                        <!-- Size and Color Options Start -->
-                        <div class="size-options mb-4">
-                            <label for="size" style="margin:6px 12px 0 0;" >Size:</label>
-                            <button class="size-btn">S</button>
-                            <button class="size-btn">M</button>
-                            <button class="size-btn">L</button>
-                            <button class="size-btn">XL</button>
-                        </div>
-                        <div class="color-options mb-4">
-                            <label for="color" style="margin:6px 12px 0 0;">Color:</label>
-                            <button class="color-btn" style="background-color: #000000;"></button>
-                            <button class="color-btn" style="background-color: #ffffff;"></button>
-                            <button class="color-btn" style="background-color: #ff0000;"></button>
-                            <button class="color-btn" style="background-color: #0000ff;"></button>
-                        </div>
-                        <!-- Size and Color Options End -->
-                        <div class="d-flex align-items-center mb-4 pt-2"> Quantity:
-                            <div class="input-group quantity mr-3" style="width: 130px; margin-left: 10px;">
-                                <div class="input-group-prepend">
-                                    <button class="btn btn-primary btn-minus">
-                                        <i class="fa fa-minus"></i>
-                                    </button>
-                                </div>
-                                <c:choose>
-                                    <c:when test= "${param.fail == 3}">
-                                        <input id="quantityInput" type="text" class="form-control bg-secondary border-0 text-center" value="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                                    </c:when>
-                                    <c:otherwise>
-                                        <input id="quantityInput" type="text" class="form-control bg-secondary border-0 text-center" value="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                                    </c:otherwise> 
-                                </c:choose>                                
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary btn-plus">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="product-availability"><%= request.getAttribute("totalP")%> Product availability</p>
-                            <div class="button-container">
-                                <a id="addToCartBtn" class="btn btn-primary add-cart-btn px-5" href="${pageContext.request.contextPath}/cart?action=addToCart&pro_id=${pro_detail.pro_id}&">
-                                    <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
-                                </a>
-                                <a id="buyNowBtn" class="btn buy-now-btn px-5" href="/clothesstore/checkout">
-                                    <i class="fa fa-credit-card mr-1"></i> Buy Now
-                                </a>
+
+                            <input id="quantityInput" type="text" class="form-control bg-secondary border-0 text-center" value="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+
+                            <div class="input-group-append">
+                                <button class="btn btn-primary btn-plus">
+                                    <i class="fa fa-plus"></i>
+                                </button>
                             </div>
                         </div>
+                        <div id="quantity">
+                            <p style="padding-left: 50px; margin-top: 22px;"><%= request.getAttribute("totalP")%> Product availability</p>
+                        </div>
+                        <div class="button-container">
+                            <button class="btn btn-primary add-cart-btn px-5" onclick="getValuesToAdd()">
+                                <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
+                            </button>
+                            <button id="buyNowBtn" class="btn buy-now-btn px-5">
+                                <i class="fa fa-credit-card mr-1"></i> Buy Now
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -462,6 +532,7 @@
                             <small class="fas fa-star"></small>
                             <small class="far fa-star"></small>
                         </div>
+
                         <div class="text col-12"><%=orderdetail.getFeedback_details()%></div>
                     </div>
                 </div>
@@ -490,7 +561,8 @@
                                 %>
                                 <%= truncatedDescription %></div>
                         </div>
-                    </a>
+                    </a>  
+
                     <%}}%>
                 </div>
             </div>
@@ -500,25 +572,173 @@
         <jsp:include page="/shared/_footer.jsp" />
 </body>
 <script>
-        function getUrlParameter(name) {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            var results = regex.exec(location.search);
-            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-        }
-        const pro_id = getUrlParameter('pid');
-        function changeMainImage(newSrc) {
-            document.getElementById('mainImage').src = newSrc;
-        }
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('addToCartBtn').addEventListener('click', function (event) {
-                event.preventDefault();
-                var quantity = document.getElementById('quantityInput').value;
-                var href = this.getAttribute('href');
-                var newHref = href + 'quantity=' + quantity;
-                window.location.href = newHref;
-            });
-        });
+                                function getUrlParameter(name) {
+                                    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+                                    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                                    var results = regex.exec(location.search);
+                                    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+                                }
+                                const pro_id = getUrlParameter('pid');
+                                function changeMainImage(newSrc) {
+                                    document.getElementById('mainImage').src = newSrc;
+                                }
 
-    </script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    document.getElementById('addToCartBtn').addEventListener('click', function (event) {
+                                        event.preventDefault();
+                                        var quantity = document.getElementById('quantityInput').value;
+                                        var href = this.getAttribute('href');
+                                        var newHref = href + 'quantity=' + quantity;
+                                        window.location.href = newHref;
+                                    });
+                                });
+                                document.querySelectorAll('.size-btn').forEach(button => {
+                                    button.addEventListener('click', function () {
+                                        document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
+                                        this.classList.add('active');
+                                        checkAndFetchTotalPrice();
+                                    });
+                                });
+
+                                function checkAndFetchTotalPrice() {
+                                    const activeColor = document.querySelector('.color-options .color-btn.active');
+                                    const activeSize = document.querySelector('.size-options .size-btn.active');
+
+                                    if (activeColor && activeSize) {
+                                        fetchTotalPrice(activeColor.getAttribute('data-color'), activeSize.getAttribute('data-size'));
+                                    }
+                                }
+
+
+
+                                function selectColor(color) {
+
+                                    document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+
+
+                                    var activeButton = document.querySelector('.color-btn[data-color="' + color + '"]');
+                                    if (activeButton) {
+                                        activeButton.classList.add('active');
+
+                                    }
+
+
+                                    var activeSize = document.querySelector('.size-options .size-btn.active');
+                                    if (activeSize) {
+                                        var size = activeSize.getAttribute('data-size');
+                                        checkAndFetchTotalPrice();
+                                        fetchSizeAndQuantities(color, size);
+                                    }
+                                }
+                                function attachClickEvents() {
+                                    document.querySelectorAll('.size-btn').forEach(button => {
+                                        button.addEventListener('click', function () {
+
+                                            document.querySelectorAll('.size-btn').forEach(btn => {
+                                                btn.classList.remove('active');
+
+                                            });
+                                            this.classList.add('active');
+                                            checkAndFetchTotalPrice();
+                                            if (!this.classList.contains('hintSize')) {
+                                                document.querySelectorAll('.size-btn').forEach(btn => {
+                                                    btn.classList.remove('hintSize');
+                                                });
+                                            }
+                                        });
+                                    });
+                                }
+                                function fetchTotalPrice(color, size) {
+                                    $.ajax({
+                                        url: "/clothesstore/getQuantityBySizeAndColor",
+                                        method: "get",
+                                        data: {
+                                            color: color,
+                                            size: size,
+                                            pro_id: pro_id
+                                        },
+                                        success: function (data) {
+                                            var quantityDiv = document.getElementById("quantity");
+                                            quantityDiv.innerHTML = data;
+                                        },
+                                        error: function (xhr) {
+                                            console.error('Error fetching total price:', error);
+                                        }
+                                    });
+                                }
+                                function fetchColorsAndQuantities(size) {
+                                    var activeColor = document.querySelector('.color-options .color-btn.active');
+                                    var color = '';
+                                    if (activeColor) {
+                                        color = activeColor.getAttribute('data-color');
+                                    }
+                                    $.ajax({
+                                        url: "/clothesstore/getColorBySize",
+                                        type: "get",
+                                        data: {
+                                            pro_id: pro_id,
+                                            size: size,
+                                            color: color
+                                        },
+                                        success: function (data) {
+                                            var colorOptionsDiv = document.getElementById("colorOptions");
+                                            colorOptionsDiv.innerHTML = data;
+
+                                        },
+                                        error: function (xhr) {
+                                            console.error("Error fetching colors and quantities");
+                                        }
+                                    });
+                                }
+                                function fetchSizeAndQuantities(color) {
+                                    var activeSize = document.querySelector('.size-options .size-btn.active');
+                                    var size = '';
+                                    if (activeSize) {
+                                        size = activeSize.getAttribute('data-size');
+                                    }
+                                    $.ajax({
+                                        url: "/clothesstore/getSizeByColor",
+                                        type: "get",
+                                        data: {
+                                            pro_id: pro_id,
+                                            color_name: color,
+                                            size: size
+                                        },
+                                        success: function (data) {
+                                            var sizeOptionsDiv = document.getElementById("sizeOptions");
+                                            sizeOptionsDiv.innerHTML = data;
+                                            attachClickEvents();
+
+                                        },
+                                        error: function (xhr) {
+                                            console.error("Error fetching colors and quantities");
+                                        }
+                                    });
+                                }
+                                ///func for add to cart ( Check size, color, quantity )
+                                function getValuesToAdd() {
+
+                                    var buttonSize = document.querySelector('.size-btn.active');
+                                    var buttonColor = document.querySelector('.color-btn.active');
+
+
+                                    var size = buttonSize.getAttribute('data-size');
+                                    var color = buttonColor.getAttribute('data-color');
+
+                                    console.log(`get values to add: ${buttonSize}, ${buttonColor}, ${size}, ${color}`);
+                                    var quantity = document.getElementById('quantityInput').value;
+                                    if (size && color && quantity) {
+                                        var url = '${pageContext.request.contextPath}/cart?action=addToCart&size=' + encodeURIComponent(size) + '&color=' + encodeURIComponent(color) + '&quantity=' + encodeURIComponent(quantity) + "&pro_id=${param.pid}";
+                                        window.location.href = url;
+                                    } else {
+                                        alert("Vui lòng chọn kích thước, màu và nhập số lượng.");
+                                    }
+
+                                    console.log("Size: " + size + ", Color: " + color + ", Quantity: " + quantity);
+                                }
+
+                                document.getElementById("buyNowBtn").addEventListener("click", function () {
+                                    window.location.href = "/clothesstore/checkout";
+                                });
+</script>
 </html>
