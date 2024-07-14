@@ -45,7 +45,7 @@ public class MainCreateProductController extends HttpServlet {
             return;
         }
         Account acc = (Account) session.getAttribute("account");
-        if (acc.getRole() != Role.Customer) {
+        if (acc.getRole() != Role.Staff) {
             response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
@@ -68,7 +68,7 @@ public class MainCreateProductController extends HttpServlet {
             return;
         }
         Account acc = (Account) session.getAttribute("account");
-        if (acc.getRole() != Role.Customer) {
+        if (acc.getRole() != Role.Staff) {
             response.sendRedirect(request.getContextPath() + "/home");
             return;
         }

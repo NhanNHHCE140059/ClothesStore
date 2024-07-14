@@ -31,7 +31,7 @@ public class ProductManageController extends HttpServlet {
             return;
         }
         Account acc = (Account) session.getAttribute("account");
-        if(acc.getRole() == Role.Customer ) {
+        if(acc.getRole() == Role.Staff ) {
                   resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }

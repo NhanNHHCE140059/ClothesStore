@@ -4,6 +4,7 @@
     Author     : Huenh
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -88,14 +89,10 @@
                         <div class="choose-size">
                             <fieldset>
                                 <legend>Choose Sizes</legend>
-                                <input type="checkbox" name="size" value="S"> S<br>
-                                <input type="checkbox" name="size" value="M"> M<br>
-                                <input type="checkbox" name="size" value="L"> L<br>
-                                <input type="checkbox" name="size" value="XL"> XL<br>
-                                <input type="checkbox" name="size" value="XXL"> XXL<br>
-                                <input type="checkbox" name="size" value="3XL"> 3XL<br>
-                                <input type="checkbox" name="size" value="4XL"> 4XL<br>
-                                <input type="checkbox" name="size" value="5XL"> 5XL
+                                <c:forEach var='size' items='${ProductSizeType.values()}'>
+                                <input type="checkbox" name="size" value="${size.size_name}"> S<br>
+                                </c:forEach>
+                             
                             </fieldset>
                         </div>
                         <div class="choose-color">

@@ -185,13 +185,13 @@
                 <i class="fas fa-solid fa-check check"></i>
                 <div class="message">
                     <span class="text text-1">Success</span>
-                    <span class="text text-2">Add product susscessfully!!!</span>
+                    <span class="text text-2">Add product successfully!!!</span>
                 </div>
             </div>
             <span class="close">&times;</span>
             <div class="progress active"></div>
         </div>
-        
+
         <div class="content">
             <div class="card">
                 <div class="card-header">Create New Product</div>
@@ -199,9 +199,10 @@
                     <form action="main-create-product" method="post" enctype="multipart/form-data">
                         <div class="input-group form-group">
                             <label>Product name:</label>
-                            <input type="text" name="name_product" value="" class="form-control" required placeholder="Product name">
+                            <input type="text" name="name_product" value="" class="form-control" required placeholder="Product name" onblur="validateProductName()">
+                            <span id="productNameError" class="error-message"></span>
                             <c:if test="${param.error!=null && param.error.equals('duplicateName')}">
-                                <p id="error-message" class="error">Product name already exists</p>
+                                <p id="error-message" class="error text-danger">Product name already exists</p>
                             </c:if>
                         </div>
                         <div class="input-group form-group">
@@ -213,11 +214,13 @@
                         <button type="button" id="add-more-images" class="btn">Add More Image</button>
                         <div class="input-group form-group">
                             <label>Price:</label>
-                            <input type="text" name="pro_price" id="amount" value="" class="form-control" required placeholder="Price">
+                            <input type="text" name="pro_price" id="amount" value="" class="form-control" required placeholder="Price" onblur="validatePrice()">
+                            <span id="priceError" class="error-message text-danger"></span>
                         </div>
                         <div class="input-group form-group">
                             <label>Description:</label>
-                            <input type="text" name="description" value="" class="form-control" required placeholder="Description">
+                            <input type="text" name="description" value="" class="form-control" required placeholder="Description" onblur="validateDescription()">
+                            <span id="descriptionError" class="error-message text-danger"></span>
                         </div>
                         <div class="select">
                             <label>Choose category name:</label>
@@ -245,83 +248,130 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var errorMessage = document.getElementById('error-message');
-                if (errorMessage) {
-                    setTimeout(function () {
-                        errorMessage.style.display = 'none';
-                    }, 4000);
-                }
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    var errorMessage = document.getElementById('error-message');
+                                    if (errorMessage) {
+                                        setTimeout(function () {
+                                            errorMessage.style.display = 'none';
+                                        }, 4000);
+                                    }
+
+                                    var urlParams = new URLSearchParams(window.location.search);
+                                    if (urlParams.get('success') === 'true') {
+                                        var toast = document.getElementById('toast');
+                                        toast.classList.add('active');
+                                        setTimeout(function () {
+                                            toast.classList.remove('active');
+                                        }, 5000);
+                                    }
+
+                                    function handleFileSelect(input, previewImageId) {
+                                        input.addEventListener('change', function (event) {
+                                            var inputFile = event.target;
+                                            if (inputFile.files && inputFile.files[0]) {
+                                                var reader = new FileReader();
+                                                reader.onload = function (e) {
+                                                    var previewImage = document.getElementById(previewImageId);
+                                                    previewImage.src = e.target.result;
+                                                    previewImage.style.display = 'block';
+                                                };
+                                                reader.readAsDataURL(inputFile.files[0]);
+                                            }
+                                        });
+                                    }
+
+                                    handleFileSelect(document.getElementById('img_product'), 'previewImage');
+
+                                    var amountInput = document.getElementById("amount");
+                                    amountInput.addEventListener("input", function (e) {
+                                        var value = e.target.value.replace(/\D/g, "");
+                                        var formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                                        if (value) {
+                                            e.target.value = formattedValue + " VND";
+                                        } else {
+                                            e.target.value = "";
+                                        }
+                                        setTimeout(function () {
+                                            var position = e.target.selectionStart;
+                                            var length = e.target.value.length;
+                                            if (position > length - 4) {
+                                                e.target.selectionStart = e.target.selectionEnd = length - 4;
+                                            }
+                                        }, 0);
+                                    });
+
+                                    var imageIndex = 0;
+                                    document.getElementById('add-more-images').addEventListener('click', function () {
+                                        imageIndex++;
+                                        var newImageDiv = document.createElement('div');
+                                        newImageDiv.classList.add('input-group', 'form-group');
+                                        var previewImageId = 'previewImage_' + imageIndex;
+                                        newImageDiv.innerHTML =
+                                                "<label>Additional Image URL:</label>" +
+                                                "<input type='file' name='img_product' class='form-control' required multiple placeholder='Image URL'>" +
+                                                "<img id='" + previewImageId + "' class='preview-image' />" +
+                                                "<button type='button' class='remove-button'>Remove</button>"
+                                                ;
+                                        document.getElementById('additional-images').appendChild(newImageDiv);
+
+                                        handleFileSelect(newImageDiv.querySelector('input[type="file"]'), previewImageId);
+
+                                        newImageDiv.querySelector('.remove-button').addEventListener('click', function () {
+                                            newImageDiv.remove();
+                                        });
+                                    });
+
+                                    var pathname = window.location.pathname;
+                                    window.history.pushState({}, "", pathname);
+                                });
+
+                                function validateProductName() {
+                                    const productName = document.querySelector('input[name="name_product"]');
+                                    const namePattern = /^[A-Za-z ]+$/;
+                                    const productNameError = document.getElementById('productNameError');
+
+                                    if (!namePattern.test(productName.value)) {
+                                        productNameError.textContent = "Product name can only contain letters and spaces.";
+                                        productName.value = "";
+                                    } else {
+                                        productNameError.textContent = "";
+                                    }
+                                }
+
+                                function validatePrice() {
+                                    const price = document.querySelector('input[name="pro_price"]');
+                                    const priceError = document.getElementById('priceError');
 
 
-                var urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.get('success') === 'true') {
-                    var toast = document.getElementById('toast');
-                    toast.classList.add('active');
-                    setTimeout(function () {
-                        toast.classList.remove('active');
-                    }, 5000);
-                }
+                                    let priceValue = price.value.replace(" VND", "").replace(/\./g, "");
 
-                function handleFileSelect(input, previewImageId) {
-                    input.addEventListener('change', function (event) {
-                        var inputFile = event.target;
-                        if (inputFile.files && inputFile.files[0]) {
-                            var reader = new FileReader();
-                            reader.onload = function (e) {
-                                var previewImage = document.getElementById(previewImageId);
-                                previewImage.src = e.target.result;
-                                previewImage.style.display = 'block';
-                            };
-                            reader.readAsDataURL(inputFile.files[0]);
-                        }
-                    });
-                }
 
-                handleFileSelect(document.getElementById('img_product'), 'previewImage');
+                                    priceValue = Number(priceValue);
 
-                var amountInput = document.getElementById("amount");
-                amountInput.addEventListener("input", function (e) {
-                    var value = e.target.value.replace(/\D/g, "");
-                    var formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                    if (value) {
-                        e.target.value = formattedValue + " VND";
-                    } else {
-                        e.target.value = "";
-                    }
-                    setTimeout(function () {
-                        var position = e.target.selectionStart;
-                        var length = e.target.value.length;
-                        if (position > length - 4) {
-                            e.target.selectionStart = e.target.selectionEnd = length - 4;
-                        }
-                    }, 0);
-                });
 
-                var imageIndex = 0;
-                document.getElementById('add-more-images').addEventListener('click', function () {
-                    imageIndex++;
-                    var newImageDiv = document.createElement('div');
-                    newImageDiv.classList.add('input-group', 'form-group');
-                    var previewImageId = 'previewImage_' + imageIndex;
-                    newImageDiv.innerHTML =
-                            "<label>Additional Image URL:</label>" +
-                            "<input type='file' name='img_product' class='form-control' required multiple placeholder='Image URL'>" +
-                            "<img id='" + previewImageId + "' class='preview-image' />" +
-                            "<button type='button' class='remove-button'>Remove</button>"
-                            ;
-                    document.getElementById('additional-images').appendChild(newImageDiv);
+                                    if (isNaN(priceValue) || priceValue <= 0) {
+                                        priceError.textContent = "Price must be greater than zero.";
+                                        price.value = "";
+                                    } else {
+                                        priceError.textContent = "";
+                                        price.value = priceValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VND";
+                                    }
+                                }
+                                function validateDescription() {
+                                    const description = document.querySelector('input[name="description"]');
+                                    const descriptionError = document.getElementById('descriptionError');
 
-                    handleFileSelect(newImageDiv.querySelector('input[type="file"]'), previewImageId);
+                                    if (description.value.trim() === "") {
+                                        descriptionError.textContent = "Description cannot be empty.";
+                                        description.value = "";
+                                    } else {
+                                        descriptionError.textContent = "";
+                                    }
+                                }
 
-                    newImageDiv.querySelector('.remove-button').addEventListener('click', function () {
-                        newImageDiv.remove();
-                    });
-                });
-
-                var pathname = window.location.pathname;
-                window.history.pushState({}, "", pathname);
-            });
+                                document.querySelector('input[name="name_product"]').addEventListener('blur', validateProductName);
+                                document.querySelector('input[name="pro_price"]').addEventListener('blur', validatePrice);
+                                document.querySelector('input[name="description"]').addEventListener('blur', validateDescription);
         </script>
     </body>
 </html>
