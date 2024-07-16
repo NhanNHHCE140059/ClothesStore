@@ -27,5 +27,18 @@ public class ImportBillDetailInfor {
     private ProductSizeType size_name;
     private String color_name;
     private String imageURL;
-    
+    @Override
+public String toString() {
+    return "ImportBillDetailInfor{" +
+            "detailBill_id=" + detailBill_id +
+            ", bill_id=" + bill_id +
+            ", pro_name='" + pro_name + '\'' +
+            ", quantity=" + quantity +
+            ", import_price=" + import_price +
+            ", size_name=" + size_name +
+            ", color_name='" + color_name + '\'' +
+            ", imageURL='" + imageURL + '\'' +
+            '}';
+}
+
 }

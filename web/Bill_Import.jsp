@@ -2,7 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
+<%@page import="model.Account"%>
+    <%@page import="helper.Role"%>
 
+    <% Account account = (Account) session.getAttribute("account"); %>
     <head>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/feedbackManagement.css" />
         <meta charset="UTF-8">
@@ -227,6 +230,14 @@
                 text-decoration: none;
                 cursor: pointer;
             }
+            .not-found-row {
+    height: 200px; /* Tùy ch?nh chi?u cao theo ý mu?n */
+    font-weight: bold; /* In ??m ch? */
+
+    justify-content: center;
+
+    text-align: center; /* C?n gi?a n?i dung */
+}
         </style>
     </head>
 
@@ -281,7 +292,7 @@
             <div class="header">
 
                 <div class="role-info">
-                    <span>Admin</span><span>Admin</span>
+                       <span><%= account.getRole()%> :</span><span><%= account.getName()%></span>
                 </div>
             </div>
             <div class="container">
@@ -352,6 +363,11 @@
                                     </td>
                                 </tr>
                             </c:forEach>
+                                                               <c:if test="${empty lstBill}">
+                            <tr class="not-found-row">
+                                <td class="not-found-cell col-5 " style=" text-align: center" colspan="11">Not Found</td>
+                            </tr>
+                        </c:if>
                         </tbody>
                     </table>
                     <c:if test="${not empty aaa}"> 

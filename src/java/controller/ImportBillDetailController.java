@@ -75,10 +75,16 @@ public class ImportBillDetailController extends HttpServlet {
 
              ImportBillDetailService ibds = new ImportBillDetailService();
              Set<String> colorInBill = new HashSet<>();
+             Set<String> sizeInBill = new HashSet<>();
             List<ImportBillDetailInfor> count = ibds.getImportBillDetailByBillI(Integer.parseInt(billId));
             for (ImportBillDetailInfor billDT :count ){
                 colorInBill.add(billDT.getColor_name());
             }
+for (ImportBillDetailInfor billSZ : count) {
+    sizeInBill.add(billSZ.getSize_name().toString()); // Sử dụng toString() để chuyển đổi ProductSizeType thành String
+}
+
+
                       int orderPerPage = 5;
             int starCountList = (indexPage - 1) * orderPerPage;
             int endCountList = Math.min(starCountList + orderPerPage, count.size());
@@ -90,7 +96,8 @@ public class ImportBillDetailController extends HttpServlet {
             int endPage = (int) Math.ceil((double) count.size() / orderPerPage);
             request.setAttribute("prvlst", count1);
             request.setAttribute("colorInBill", colorInBill);
-                  request.setAttribute("billid", billId);
+              request.setAttribute("sizesInBill", sizeInBill);
+                  request.setAttribute("billId", billId);
              request.setAttribute("endPage", endPage);
             RequestDispatcher dispatcher = request.getRequestDispatcher("/Bill_ImportDetail.jsp");
             dispatcher.forward(request, response);

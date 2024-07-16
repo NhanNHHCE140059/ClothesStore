@@ -167,7 +167,11 @@ public List<ImportBillDetailInfor> searchImportBillDetails(Integer bill_id, Inte
         if (pro_name != null && !pro_name.isEmpty()) {
             ps.setString(paramIndex++, "%" + pro_name + "%");
         }
+        
+        
         if (size_id != null) {
+            
+           
             ps.setInt(paramIndex++, size_id);
         }
         if (color_name != null && !color_name.isEmpty()) {
@@ -219,10 +223,32 @@ public List<ImportBillDetailInfor> searchImportBillDetails(Integer bill_id, Inte
     }
 }
 
-    public static void main(String[] args) {
-        ImportBillDetailService j = new ImportBillDetailService();
-        System.out.println(j.getImportBillDetailByBillI(5).size());
+public static void main(String[] args) {
+    ImportBillDetailService service = new ImportBillDetailService();
+
+    // Các tham số cho phương thức searchImportBillDetails
+    Integer bill_id = null;
+    Integer detailBill_id =null ;
+    String pro_name = "";
+    Integer size_id = 1;
+    String color_name = "";
+    Integer quantityFrom = null;
+    Integer quantityTo = null;
+    Double import_priceFrom = null;
+    Double import_priceTo = null;
+
+    // Gọi phương thức searchImportBillDetails và lưu kết quả
+    List<ImportBillDetailInfor> results = service.searchImportBillDetails(
+            bill_id, detailBill_id, pro_name, size_id, color_name,
+            quantityFrom, quantityTo, import_priceFrom, import_priceTo
+    );
+
+    // In ra kết quả
+    for (ImportBillDetailInfor info : results) {
+        System.out.println(info.toString());
     }
+}
+
 }
 //    private int detailBill_id;
 //    private int bill_id;

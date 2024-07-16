@@ -29,17 +29,33 @@ public class OrderDetailCustomerControl extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-
+     int indexPage;
+            if (request.getParameter("indexPage") != null && !request.getParameter("indexPage").isEmpty()) {
+                indexPage = Integer.parseInt(request.getParameter("indexPage"));
+            } else {
+                indexPage = 1;
+            }
+            if (request.getParameter("indexPageback") != null && !request.getParameter("indexPageback").isEmpty()) {
+                indexPage = Integer.parseInt(request.getParameter("indexPageback"));
+            }
+            
         String orderId = request.getParameter("orderId");
         OrderDetailService dao = new OrderDetailService();
 
         List<OrderDetailCustomer> prv = dao.getOrderDetailByOrderIDCustomer(Integer.parseInt(orderId));
+          List<OrderDetailCustomer> count = dao.getOrderDetailByOrderIDCustomer(Integer.parseInt(orderId));
+            int orderPerPage = 5;
+            int starCountList = (indexPage - 1) * orderPerPage;
+            int endCountList = Math.min(starCountList + orderPerPage, count.size());
+              List<OrderDetailCustomer> count1 = count.subList(starCountList, endCountList);
+            int endPage = (int) Math.ceil((double) count.size() / orderPerPage);
         if (request.getParameter("feedbackid") != null) {
             String order_detail_id = (request.getParameter("feedbackid"));
             request.setAttribute("order_detail_id", order_detail_id);
         }
-        request.setAttribute("prvlst", prv);
-        System.out.println(prv);
+        request.setAttribute("prvlst", count1);
+            request.setAttribute("endPage", endPage);
+        System.out.println(count);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/OrderDetail.jsp");
         dispatcher.forward(request, response);
 

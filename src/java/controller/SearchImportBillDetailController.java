@@ -5,6 +5,7 @@
 
 package controller;
 
+import helper.ProductSizeType;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -70,17 +71,19 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
         }
 
         // Initialize variables before using them
-        String billIdStr = request.getParameter("bill_id");
+   
+
+        String billIdStr = request.getParameter("billId");
         String detailBillIdStr = request.getParameter("detailBill_id");
         String pro_name = request.getParameter("pro_name");
         String sizeIdStr = request.getParameter("size_id");
         String color_name = request.getParameter("color_name");
         String quantityFromStr = request.getParameter("quantityFrom");
         String quantityToStr = request.getParameter("quantityTo");
-        String import_priceFromStr = request.getParameter("import_priceFrom");
-        String import_priceToStr = request.getParameter("import_priceTo");
+        String import_priceFromStr = request.getParameter("import_priceFrom").replaceAll("[^\\d]", "");
+        String import_priceToStr = request.getParameter("import_priceTo").replaceAll("[^\\d]", "");
 
-        Integer bill_id = null;
+        Integer billId = null;
         Integer detailBill_id = null;
         Integer size_id = null;
         Integer quantityFrom = null;
@@ -90,13 +93,15 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
 
         try {
             if (billIdStr != null && !billIdStr.isEmpty()) {
-                bill_id = Integer.parseInt(billIdStr);
+                billId = Integer.parseInt(billIdStr);
             }
             if (detailBillIdStr != null && !detailBillIdStr.isEmpty()) {
                 detailBill_id = Integer.parseInt(detailBillIdStr);
             }
             if (sizeIdStr != null && !sizeIdStr.isEmpty()) {
-                size_id = Integer.parseInt(sizeIdStr);
+//                size_id = Integer.parseInt(sizeIdStr);
+                         ProductSizeType pt = ProductSizeType.valueOf(sizeIdStr);
+         size_id=pt.ordinal();
             }
             if (quantityFromStr != null && !quantityFromStr.isEmpty()) {
                 quantityFrom = Integer.parseInt(quantityFromStr);
@@ -114,19 +119,22 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
             e.printStackTrace(); // Or log the error
         }
 
+
         List<ImportBillDetailInfor> count = importBillDetailService.searchImportBillDetails(
-                bill_id, detailBill_id, pro_name, size_id, color_name,
+                billId, detailBill_id, pro_name, size_id, color_name,
                 quantityFrom, quantityTo, import_priceFrom, import_priceTo
         );
-        
-                    List<ImportBillDetailInfor> count3 = importBillDetailService.getImportBillDetailByBillI((bill_id));
+        System.out.println(billId);
+                    List<ImportBillDetailInfor> count3 = importBillDetailService.getImportBillDetailByBillI((billId));
         System.out.println(count3);
                  Set<String> colorInBill = new HashSet<>();
-     
+      Set<String> sizeInBill = new HashSet<>();
             for (ImportBillDetailInfor billDT :count3){
                 colorInBill.add(billDT.getColor_name());
             }
-                   
+             for (ImportBillDetailInfor billSZ : count3) {
+    sizeInBill.add(billSZ.getSize_name().toString()); // Sử dụng toString() để chuyển đổi ProductSizeType thành String
+}      
    
         int orderPerPage = 5;
         int startCountList = (indexPage - 1) * orderPerPage;
@@ -142,8 +150,11 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
 
         request.setAttribute("prvlst", count1);
         request.setAttribute("endPage", endPage);
+           request.setAttribute("selectedColor", color_name);
            request.setAttribute("colorInBill", colorInBill);
-                      request.setAttribute("bill_id", bill_id);
+             request.setAttribute("selectedSize", sizeIdStr);
+           request.setAttribute("sizesInBill", sizeInBill);
+                      request.setAttribute("billId", billId);
 
         System.out.println(endPage);
         request.getRequestDispatcher("Bill_ImportDetail.jsp").forward(request, response);
