@@ -264,220 +264,189 @@
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script>
-                            var selectedOptions = [];
-                            var allOptions = [];
-                            function validateImage(input) {
-                                const file = input.files[0];
-                                const validImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/webp'];
+                           var selectedOptions = [];
+var allOptions = [];
 
-                                if (file && validImageTypes.includes(file.type)) {
-                                    readURL(input);
-                                } else {
-                                    alert('Please upload a valid image file (gif, jpeg, png, webp).');
-                                    input.value = '';
-                                    $('#imagePreview').hide();
-                                }
-                            }
+function validateImage(input) {
+    const file = input.files[0];
+    const validImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/webp'];
 
+    if (file && validImageTypes.includes(file.type)) {
+        readURL(input);
+    } else {
+        alert('Please upload a valid image file (gif, jpeg, png, webp).');
+        input.value = '';
+        $('#imagePreview').hide();
+    }
+}
 
-                            function closeOverlay() {
-                                document.getElementById('overlay').style.display = 'none';
-                            }
+function closeOverlay() {
+    document.getElementById('overlay').style.display = 'none';
+}
 
-                            function removeOption(optionValue) {
-                                $('#productV option').each(function () {
-                                    if ($(this).val() === optionValue) {
-                                        allOptions.push({
-                                            value: $(this).val(),
-                                            index: $(this).index()
-                                        });
-                                        $(this).remove();
-                                        selectedOptions.push(optionValue);
-                                    }
-                                });
-                            }
+function validateProductType(input) {
+    var value = $(input).val();
+    var datalistOptions = $('#productV option');
+    var isValid = false;
 
-                            function restoreOption(optionValue) {
-                                var optionData = allOptions.find(function (option) {
-                                    return option.value === optionValue;
-                                });
-                                if (optionData) {
-                                    var newOption = $('<option></option>').val(optionData.value);
-                                    if (optionData.index === 0) {
-                                        $('#productV').prepend(newOption);
-                                    } else {
-                                        $('#productV option').eq(optionData.index - 1).after(newOption);
-                                    }
-                                    allOptions = allOptions.filter(function (option) {
-                                        return option.value !== optionValue;
-                                    });
-                                    selectedOptions = selectedOptions.filter(function (item) {
-                                        return item !== optionValue;
-                                    });
-                                }
-                            }
+    datalistOptions.each(function () {
+        if (value === $(this).val() && !selectedOptions.includes(value)) {
+            isValid = true;
+            selectedOptions.push(value);
+            return false; // break loop
+        }
+    });
 
-                            function validateProductType(input) {
-                                var value = $(input).val();
-                                var datalistOptions = $('#productV option');
-                                var isValid = false;
+    if (!isValid) {
+        alert('Please select a valid product type from the list.');
+        $(input).val(''); // Clear the invalid input
+    } else {
+        $(input).removeClass('invalid');
+    }
 
-                                datalistOptions.each(function () {
-                                    if (value === $(this).val()) {
-                                        isValid = true;
-                                        removeOption(value);
-                                        return false; // break loop
-                                       
-                                    }
-                                });
+    return isValid;
+}
 
-                                if (!isValid) {
-         
-                                    $(input).val(''); // Clear the invalid input
-                                } else {
-                                    $(input).removeClass('invalid');
-                                }
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
 
-                                return isValid;
-                            }
+        reader.onload = function (e) {
+            $('#imagePreview').attr('src', e.target.result);
+            $('#imagePreview').show();
+        };
 
-                            function readURL(input) {
-                                if (input.files && input.files[0]) {
-                                    var reader = new FileReader();
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
-                                    reader.onload = function (e) {
-                                        $('#imagePreview').attr('src', e.target.result);
-                                        $('#imagePreview').show();
-                                    };
+function formatPrice(input) {
+    var value = input.value.replace(/\D/g, '');
+    value = parseInt(value, 10);
+    if (isNaN(value)) {
+        value = 0;
+    }
+    input.value = value.toLocaleString('vi-VN') + ' VND';
+    setTimeout(function () {
+        setCaretPosition(input);
+    }, 0);
+}
 
-                                    reader.readAsDataURL(input.files[0]);
-                                }
-                            }
+function setCaretPosition(input) {
+    var position = input.value.length - 4; // Move caret before " VND"
+    input.setSelectionRange(position, position);
+}
 
-                            function formatPrice(input) {
-                                var value = input.value.replace(/\D/g, '');
-                                value = parseInt(value, 10);
-                                if (isNaN(value)) {
-                                    value = 0;
-                                }
-                                input.value = value.toLocaleString('vi-VN') + ' VND';
-                                setTimeout(function () {
-                                    setCaretPosition(input);
-                                }, 0);
-                            }
+$(document).ready(function () {
+    $('#file-upload').change(function () {
+        readURL(this);
+    });
 
-                            function setCaretPosition(input) {
-                                var position = input.value.length - 4; // Move caret before " VND"
-                                input.setSelectionRange(position, position);
-                            }
+    $('#addMoreDetail').on('click', function () {
+        var newDetail = `
+            <div class="product-detail form-row align-items-center">
+                <div class="col-md-4">
+                    <label for="productType">Product Type</label>
+                    <input list="productV" id="productType" class="form-control w-100 productType" name="productVariant">
+                </div>
+                <div class="col-md-3">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" name="quantity" class="form-control w-100 quantity" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="importPrice">Import Price</label>
+                    <input type="text" name="importPrice" class="form-control w-100 importPrice" required oninput="formatPrice(this)" onblur="setCaretPosition(this)">
+                </div>
+                <div class="col-md-2 mt-4">
+                    <button type="button" class="btn btn-danger remove-btn">Remove</button>
+                </div>
+            </div>`;
+        $('#productDetails').append(newDetail);
+    });
 
-                            $(document).ready(function () {
-                                $('#file-upload').change(function () {
-                                    readURL(this);
-                                });
+    $(document).on('click', '.remove-btn', function () {
+        var productType = $(this).closest('.product-detail').find('.productType').val();
+        selectedOptions = selectedOptions.filter(function(item) {
+            return item !== productType;
+        });
+        $(this).closest('.product-detail').remove();
+    });
 
-                                $('#addMoreDetail').on('click', function () {
-                                    var newDetail = `
-                        <div class="product-detail form-row align-items-center">
-                            <div class="col-md-4">
-                                <label for="productType">Product Type</label>
-                                <input list="productV" id="productType" class="form-control w-100 productType"  name="productVariant" onblur="validateProductType(this)">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="quantity">Quantity</label>
-                                <input type="number" name="quantity" class="form-control w-100 quantity" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="importPrice">Import Price</label>
-                                <input type="text" name="importPrice" class="form-control w-100 importPrice" required oninput="formatPrice(this)" onblur="setCaretPosition(this)">
-                            </div>
-                            <div class="col-md-2 mt-4">
-                                <button type="button" class="btn btn-danger remove-btn">Remove</button>
-                            </div>
-                        </div>`;
-                                    $('#productDetails').append(newDetail);
-                                });
+    $('#previewBill').on('click', function (event) {
+        event.preventDefault();
 
-                                $(document).on('click', '.remove-btn', function () {
-                                    var productType = $(this).closest('.product-detail').find('.productType').val();
-                                    restoreOption(productType);
-                                    $(this).closest('.product-detail').remove();
-                                });
+        let isValid = true;
+        let errorMsg = '';
+        let importDate = $('#importDate').val();
+        let fileUpload = $('#file-upload').val();
 
-                                $('#previewBill').on('click', function (event) {
-                                    event.preventDefault();
+        if (!importDate) {
+            isValid = false;
+            errorMsg += 'Please select a date.\n';
+        }
+        if (!fileUpload) {
+            isValid = false;
+            errorMsg += 'Please upload an image.\n';
+        }
 
-                                    let isValid = true;
-                                    let errorMsg = '';
-                                    let importDate = $('#importDate').val();
-                                    let fileUpload = $('#file-upload').val();
+        let productDetailsCount = $('.product-detail').length;
+        if (productDetailsCount === 0) {
+            isValid = false;
+            errorMsg += 'Please add at least one product.\n';
+        } else {
+            $('.product-detail').each(function () {
+                let productType = $(this).find('.productType');
+                let quantity = $(this).find('.quantity').val();
+                let importPrice = $(this).find('.importPrice').val();
+                if (!validateProductType(productType)) {
+                    isValid = false;
+                    errorMsg += 'Please select a valid product type for each product.\n';
+                    return false;
+                }
+                if (!quantity || !importPrice) {
+                    isValid = false;
+                    errorMsg += 'Please fill in all product details.\n';
+                    return false;
+                }
+            });
+        }
 
-                                    if (!importDate) {
-                                        isValid = false;
-                                        errorMsg += 'Please select a date.\n';
-                                    }
-                                    if (!fileUpload) {
-                                        isValid = false;
-                                        errorMsg += 'Please upload an image.\n';
-                                    }
+        if (!isValid) {
+            alert(errorMsg);
+            return;
+        }
 
-                                    let productDetailsCount = $('.product-detail').length;
-                                    if (productDetailsCount === 0) {
-                                        isValid = false;
-                                        errorMsg += 'Please add at least one product.\n';
-                                    } else {
-                                        $('.product-detail').each(function () {
-                                            let productType = $(this).find('.productType');
-                                            let quantity = $(this).find('.quantity').val();
-                                            let importPrice = $(this).find('.importPrice').val();
-                                            if (!validateProductType(productType)) {
-                                                isValid = false;
-                                                errorMsg += 'Please select a valid product type for each product.\n';
-                                                return false;
-                                            }
-                                            if (!quantity || !importPrice) {
-                                                isValid = false;
-                                                errorMsg += 'Please fill in all product details.\n';
-                                                return false;
-                                            }
-                                        });
-                                    }
+        let totalQuantity = 0;
+        let totalPrice = 0;
+        let invoiceBody = '';
+        $('.product-detail').each(function () {
+            let productType = $(this).find('.productType').val();
+            let quantity = parseInt($(this).find('.quantity').val(), 10);
+            let importPrice = parseFloat($(this).find('.importPrice').val().replace(/[^0-9]/g, ''));
+            let total = quantity * importPrice;
+            totalQuantity += quantity;
+            totalPrice += total;
+            let importPriceFormatted = importPrice.toLocaleString('vi-VN');
+            let totalFormatted = total.toLocaleString('vi-VN') + ' VND';
 
-                                    if (!isValid) {
-                                        alert(errorMsg);
-                                        return;
-                                    }
+            invoiceBody +=
+                '<tr>' +
+                '<td>' + productType + '</td>' +
+                '<td>' + importPriceFormatted + ' VND</td>' +
+                '<td>' + quantity + '</td>' +
+                '<td>' + totalFormatted + '</td>' +
+                '</tr>';
+        });
 
-                                    let totalQuantity = 0;
-                                    let totalPrice = 0;
-                                    let invoiceBody = '';
-                                    $('.product-detail').each(function () {
-                                        let productType = $(this).find('.productType').val();
-                                        let quantity = parseInt($(this).find('.quantity').val(), 10);
-                                        let importPrice = parseFloat($(this).find('.importPrice').val().replace(/[^0-9]/g, ''));
-                                        let total = quantity * importPrice;
-                                        totalQuantity += quantity;
-                                        totalPrice += total;
-                                        let importPriceFormatted = importPrice.toLocaleString('vi-VN');
-                                        let totalFormatted = total.toLocaleString('vi-VN') + ' VND';
+        let totalPriceFormatted = totalPrice.toLocaleString('vi-VN') + ' VND';
+        $('#invoiceBody').html(invoiceBody);
+        $('#totalQuantity').text(totalQuantity);
+        $('#totalPrice').text(totalPriceFormatted);
+        $('#importDateDisplay').text(importDate);
+        $('#overlay').show();
+    });
+});
 
-                                        invoiceBody +=
-                                                '<tr>' +
-                                                '<td>' + productType + '</td>' +
-                                                '<td>' + importPriceFormatted + ' VND</td>' +
-                                                '<td>' + quantity + '</td>' +
-                                                '<td>' + totalFormatted + '</td>' +
-                                                '</tr>';
-                                    });
-
-                                    let totalPriceFormatted = totalPrice.toLocaleString('vi-VN') + ' VND';
-                                    $('#invoiceBody').html(invoiceBody);
-                                    $('#totalQuantity').text(totalQuantity);
-                                    $('#totalPrice').text(totalPriceFormatted);
-                                    $('#importDateDisplay').text(importDate);
-                                    $('#overlay').show();
-                                });
-                            });
         </script>
     </body>
 </html>
