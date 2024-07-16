@@ -25,10 +25,10 @@ public class ImportBillService {
     ResultSet rs = null;
     DBContext dbcontext = new DBContext();
 
-        public List<ImportBill> getTop5ImportBill(int indexPage) {
-        String query = "with x as (select ROW_NUMBER() over (order by bill_id desc) as r \n" +
-"                              , * from [dbo].[Import_Bill] )\n" +
-"                  select * from x where r between ?*5-4 and ?*5;";
+    public List<ImportBill> getTop5ImportBill(int indexPage) {
+        String query = "with x as (select ROW_NUMBER() over (order by bill_id desc) as r \n"
+                + "                              , * from [dbo].[Import_Bill] )\n"
+                + "                  select * from x where r between ?*5-4 and ?*5;";
         try {
             List<ImportBill> as = new ArrayList<>();
             connection = dbcontext.getConnection();
@@ -43,10 +43,10 @@ public class ImportBillService {
                         rs.getString(3),
                         rs.getDouble(4),
                         rs.getString(5)
-//                    private int bill_id;
-//    private String create_date;
-//    private double total_amount;
-//    private String image_bill;
+                //                    private int bill_id;
+                //    private String create_date;
+                //    private double total_amount;
+                //    private String image_bill;
                 ));
             }
             return as;
@@ -72,83 +72,105 @@ public class ImportBillService {
         }
         return count;
     }
-public List<ImportBill> searchImportBills(String billId, String createDateFrom, String createDateTo, Double totalAmountFrom, Double totalAmountTo) {
-    // Bao gồm cột image_bill trong câu truy vấn
-    String baseQuery = "SELECT bill_id, create_date, total_amount, image_bill FROM [ClothesStore].[dbo].[Import_Bill] WHERE 1=1";
 
-    if (billId != null && !billId.isEmpty()) {
-        baseQuery += " AND bill_id LIKE ?";
-    }
-    if (createDateFrom != null && !createDateFrom.isEmpty()) {
-        baseQuery += " AND create_date >= ?";
-    }
-    if (createDateTo != null && !createDateTo.isEmpty()) {
-        baseQuery += " AND create_date <= ?";
-    }
-    if (totalAmountFrom != null) {
-        baseQuery += " AND total_amount >= ?";
-    }
-    if (totalAmountTo != null) {
-        baseQuery += " AND total_amount <= ?";
-    }
-
-    try {
-        List<ImportBill> bills = new ArrayList<>();
-        connection = dbcontext.getConnection();
-        ps = connection.prepareStatement(baseQuery);
-
-        int paramIndex = 1;
+    public List<ImportBill> searchImportBills(String billId, String createDateFrom, String createDateTo, Double totalAmountFrom, Double totalAmountTo) {
+        // Bao gồm cột image_bill trong câu truy vấn
+        String baseQuery = "SELECT bill_id, create_date, total_amount, image_bill FROM [ClothesStore].[dbo].[Import_Bill] WHERE 1=1";
 
         if (billId != null && !billId.isEmpty()) {
-            ps.setString(paramIndex++, "%" + billId + "%");
+            baseQuery += " AND bill_id LIKE ?";
         }
         if (createDateFrom != null && !createDateFrom.isEmpty()) {
-            ps.setDate(paramIndex++, Date.valueOf(createDateFrom));
+            baseQuery += " AND create_date >= ?";
         }
         if (createDateTo != null && !createDateTo.isEmpty()) {
-            ps.setDate(paramIndex++, Date.valueOf(createDateTo));
+            baseQuery += " AND create_date <= ?";
         }
         if (totalAmountFrom != null) {
-            ps.setDouble(paramIndex++, totalAmountFrom);
+            baseQuery += " AND total_amount >= ?";
         }
         if (totalAmountTo != null) {
-            ps.setDouble(paramIndex++, totalAmountTo);
+            baseQuery += " AND total_amount <= ?";
         }
 
-        rs = ps.executeQuery();
-
-        while (rs.next()) {
-            bills.add(new ImportBill(
-                rs.getInt("bill_id"),          // bill_id
-                rs.getString("create_date"),   // create_date
-                rs.getDouble("total_amount"),  // total_amount
-                rs.getString("image_bill")     // image_bill
-            ));
-        }
-        return bills;
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
         try {
-            if (rs != null) {
-                rs.close();
+            List<ImportBill> bills = new ArrayList<>();
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(baseQuery);
+
+            int paramIndex = 1;
+
+            if (billId != null && !billId.isEmpty()) {
+                ps.setString(paramIndex++, "%" + billId + "%");
             }
-            if (ps != null) {
-                ps.close();
+            if (createDateFrom != null && !createDateFrom.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(createDateFrom));
             }
-            if (connection != null) {
-                connection.close();
+            if (createDateTo != null && !createDateTo.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(createDateTo));
             }
-        } catch (SQLException e) {
+            if (totalAmountFrom != null) {
+                ps.setDouble(paramIndex++, totalAmountFrom);
+            }
+            if (totalAmountTo != null) {
+                ps.setDouble(paramIndex++, totalAmountTo);
+            }
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                bills.add(new ImportBill(
+                        rs.getInt("bill_id"), // bill_id
+                        rs.getString("create_date"), // create_date
+                        rs.getDouble("total_amount"), // total_amount
+                        rs.getString("image_bill") // image_bill
+                ));
+            }
+            return bills;
+        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+        return null;
     }
-    return null;
+
+    public int createImportBill(Date date, float totalAmount, String imageBill) {
+        String query = "INSERT INTO Import_Bill (create_date, total_amount, image_bill) VALUES (?, ?, ?)";
+        String getIdQuery = "SELECT @@IDENTITY AS id";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setDate(1, date);
+            ps.setFloat(2, totalAmount);
+            ps.setString(3, imageBill);
+            ps.executeUpdate();
+
+            ps = connection.prepareStatement(getIdQuery);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return -1;
+    }
 }
 
-
-
-    public static void main(String[] args) {
+public static void main(String[] args) {
         // Khởi tạo đối tượng ImportBillService
         ImportBillService importBillService = new ImportBillService();
 

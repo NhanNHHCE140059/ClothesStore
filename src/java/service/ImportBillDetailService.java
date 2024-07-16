@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import model.ImportBillDetail;
 import model.ImportBillDetailInfor;
-import model.OrderDetail;
 
 /**
  *
@@ -46,6 +45,24 @@ public class ImportBillDetailService {
                 ));
             }
             return li;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addImportBillDetails(int billId, List<ImportBillDetail> details) {
+        String query = "INSERT INTO Import_Bill_Details (bill_id, variant_id, quantity, import_price) VALUES (?, ?, ?, ?)";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            for (ImportBillDetail detail : details) {
+                ps.setInt(1, billId);
+                ps.setInt(2, detail.getVariant_id());
+                ps.setInt(3, detail.getQuantity());
+                ps.setDouble(4, detail.getImport_price());
+                ps.addBatch();
+            }
+            ps.executeBatch();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -99,155 +116,154 @@ public class ImportBillDetailService {
             throw new RuntimeException(e);
         }
     }
-public List<ImportBillDetailInfor> searchImportBillDetails(Integer bill_id, Integer detailBill_id, String pro_name, Integer size_id, String color_name, Integer quantityFrom, Integer quantityTo, Double import_priceFrom, Double import_priceTo) {
-    String baseQuery = "SELECT \n"
-            + "    ib.bill_id,\n"
-            + "    ibd.detailBill_id,\n"
-            + "    p.pro_name,\n"
-            + "    pv.size_id,\n"
-            + "    c.color_name,\n"
-            + "    ibd.quantity,\n"
-            + "    ibd.import_price,\n"
-            + "    m.imageURL\n"
-            + "FROM \n"
-            + "    Import_Bill ib\n"
-            + "JOIN \n"
-            + "    Import_Bill_Details ibd ON ib.bill_id = ibd.bill_id\n"
-            + "JOIN \n"
-            + "    ProductVariants pv ON ibd.variant_id = pv.variant_id\n"
-            + "JOIN \n"
-            + "    Products p ON pv.pro_id = p.pro_id\n"
-            + "JOIN \n"
-            + "    ProductColors c ON pv.color_id = c.color_id\n"
-            + "JOIN \n"
-            + "    [dbo].[ProductImages] m ON pv.color_id = m.image_id\n"
-            + "WHERE 1=1 ";
 
-    if (bill_id != null) {
-        baseQuery += " AND ib.bill_id = ?";
-    }
-    if (detailBill_id != null) {
-        baseQuery += " AND ibd.detailBill_id = ?";
-    }
-    if (pro_name != null && !pro_name.isEmpty()) {
-        baseQuery += " AND p.pro_name LIKE ?";
-    }
-    if (size_id != null) {
-        baseQuery += " AND pv.size_id = ?";
-    }
-    if (color_name != null && !color_name.isEmpty()) {
-        baseQuery += " AND c.color_name LIKE ?";
-    }
-    if (quantityFrom != null) {
-        baseQuery += " AND ibd.quantity >= ?";
-    }
-    if (quantityTo != null) {
-        baseQuery += " AND ibd.quantity <= ?";
-    }
-    if (import_priceFrom != null) {
-        baseQuery += " AND ibd.import_price >= ?";
-    }
-    if (import_priceTo != null) {
-        baseQuery += " AND ibd.import_price <= ?";
-    }
-
-    try {
-        List<ImportBillDetailInfor> li = new ArrayList<>();
-        connection = dbcontext.getConnection();
-        ps = connection.prepareStatement(baseQuery);
-
-        int paramIndex = 1;
+    public List<ImportBillDetailInfor> searchImportBillDetails(Integer bill_id, Integer detailBill_id, String pro_name, Integer size_id, String color_name, Integer quantityFrom, Integer quantityTo, Double import_priceFrom, Double import_priceTo) {
+        String baseQuery = "SELECT \n"
+                + "    ib.bill_id,\n"
+                + "    ibd.detailBill_id,\n"
+                + "    p.pro_name,\n"
+                + "    pv.size_id,\n"
+                + "    c.color_name,\n"
+                + "    ibd.quantity,\n"
+                + "    ibd.import_price,\n"
+                + "    m.imageURL\n"
+                + "FROM \n"
+                + "    Import_Bill ib\n"
+                + "JOIN \n"
+                + "    Import_Bill_Details ibd ON ib.bill_id = ibd.bill_id\n"
+                + "JOIN \n"
+                + "    ProductVariants pv ON ibd.variant_id = pv.variant_id\n"
+                + "JOIN \n"
+                + "    Products p ON pv.pro_id = p.pro_id\n"
+                + "JOIN \n"
+                + "    ProductColors c ON pv.color_id = c.color_id\n"
+                + "JOIN \n"
+                + "    [dbo].[ProductImages] m ON pv.color_id = m.image_id\n"
+                + "WHERE 1=1 ";
 
         if (bill_id != null) {
-            ps.setInt(paramIndex++, bill_id);
+            baseQuery += " AND ib.bill_id = ?";
         }
         if (detailBill_id != null) {
-            ps.setInt(paramIndex++, detailBill_id);
+            baseQuery += " AND ibd.detailBill_id = ?";
         }
         if (pro_name != null && !pro_name.isEmpty()) {
-            ps.setString(paramIndex++, "%" + pro_name + "%");
+            baseQuery += " AND p.pro_name LIKE ?";
         }
-        
-        
         if (size_id != null) {
-            
-           
-            ps.setInt(paramIndex++, size_id);
+            baseQuery += " AND pv.size_id = ?";
         }
         if (color_name != null && !color_name.isEmpty()) {
-            ps.setString(paramIndex++, "%" + color_name + "%");
+            baseQuery += " AND c.color_name LIKE ?";
         }
         if (quantityFrom != null) {
-            ps.setInt(paramIndex++, quantityFrom);
+            baseQuery += " AND ibd.quantity >= ?";
         }
         if (quantityTo != null) {
-            ps.setInt(paramIndex++, quantityTo);
+            baseQuery += " AND ibd.quantity <= ?";
         }
         if (import_priceFrom != null) {
-            ps.setDouble(paramIndex++, import_priceFrom);
+            baseQuery += " AND ibd.import_price >= ?";
         }
         if (import_priceTo != null) {
-            ps.setDouble(paramIndex++, import_priceTo);
+            baseQuery += " AND ibd.import_price <= ?";
         }
 
-        rs = ps.executeQuery();
-        while (rs.next()) {
-            li.add(new ImportBillDetailInfor(
-                    rs.getInt("detailBill_id"),
-                    rs.getInt("bill_id"),
-                    rs.getString("pro_name"),
-                    rs.getInt("quantity"),
-                    rs.getDouble("import_price"),
-                    ProductSizeType.values()[rs.getInt("size_id")],
-                    rs.getString("color_name"),
-                    rs.getString("imageURL")
-            ));
-        }
-        return li;
-    } catch (Exception e) {
-        throw new RuntimeException(e);
-    } finally {
         try {
-            if (rs != null) {
-                rs.close();
+            List<ImportBillDetailInfor> li = new ArrayList<>();
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(baseQuery);
+
+            int paramIndex = 1;
+
+            if (bill_id != null) {
+                ps.setInt(paramIndex++, bill_id);
             }
-            if (ps != null) {
-                ps.close();
+            if (detailBill_id != null) {
+                ps.setInt(paramIndex++, detailBill_id);
             }
-            if (connection != null) {
-                connection.close();
+            if (pro_name != null && !pro_name.isEmpty()) {
+                ps.setString(paramIndex++, "%" + pro_name + "%");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+            if (size_id != null) {
+
+                ps.setInt(paramIndex++, size_id);
+            }
+            if (color_name != null && !color_name.isEmpty()) {
+                ps.setString(paramIndex++, "%" + color_name + "%");
+            }
+            if (quantityFrom != null) {
+                ps.setInt(paramIndex++, quantityFrom);
+            }
+            if (quantityTo != null) {
+                ps.setInt(paramIndex++, quantityTo);
+            }
+            if (import_priceFrom != null) {
+                ps.setDouble(paramIndex++, import_priceFrom);
+            }
+            if (import_priceTo != null) {
+                ps.setDouble(paramIndex++, import_priceTo);
+            }
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                li.add(new ImportBillDetailInfor(
+                        rs.getInt("detailBill_id"),
+                        rs.getInt("bill_id"),
+                        rs.getString("pro_name"),
+                        rs.getInt("quantity"),
+                        rs.getDouble("import_price"),
+                        ProductSizeType.values()[rs.getInt("size_id")],
+                        rs.getString("color_name"),
+                        rs.getString("imageURL")
+                ));
+            }
+            return li;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
-}
 
-public static void main(String[] args) {
-    ImportBillDetailService service = new ImportBillDetailService();
+    public static void main(String[] args) {
+        ImportBillDetailService service = new ImportBillDetailService();
 
-    // Các tham số cho phương thức searchImportBillDetails
-    Integer bill_id = null;
-    Integer detailBill_id =null ;
-    String pro_name = "";
-    Integer size_id = 1;
-    String color_name = "";
-    Integer quantityFrom = null;
-    Integer quantityTo = null;
-    Double import_priceFrom = null;
-    Double import_priceTo = null;
+        // Các tham số cho phương thức searchImportBillDetails
+        Integer bill_id = null;
+        Integer detailBill_id = null;
+        String pro_name = "";
+        Integer size_id = 1;
+        String color_name = "";
+        Integer quantityFrom = null;
+        Integer quantityTo = null;
+        Double import_priceFrom = null;
+        Double import_priceTo = null;
 
-    // Gọi phương thức searchImportBillDetails và lưu kết quả
-    List<ImportBillDetailInfor> results = service.searchImportBillDetails(
-            bill_id, detailBill_id, pro_name, size_id, color_name,
-            quantityFrom, quantityTo, import_priceFrom, import_priceTo
-    );
+        // Gọi phương thức searchImportBillDetails và lưu kết quả
+        List<ImportBillDetailInfor> results = service.searchImportBillDetails(
+                bill_id, detailBill_id, pro_name, size_id, color_name,
+                quantityFrom, quantityTo, import_priceFrom, import_priceTo
+        );
 
-    // In ra kết quả
-    for (ImportBillDetailInfor info : results) {
-        System.out.println(info.toString());
+        // In ra kết quả
+        for (ImportBillDetailInfor info : results) {
+            System.out.println(info.toString());
+        }
     }
-}
 
 }
 //    private int detailBill_id;
