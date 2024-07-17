@@ -212,7 +212,6 @@ public class ProductService {
         }
     }
 
-    <<<<<<< HEAD
     public int createProduct(String pro_name, double pro_price, String description, String imageURL, int cat_id, int status) {
         String query = "INSERT INTO Products (pro_name, pro_price, description, imageURL, cat_id, status_product) VALUES (?, ?, ?, ?, ?, ?)";
         int productId = -1;

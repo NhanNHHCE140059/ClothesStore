@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.util.*;
+import model.ProductVariantInfo;
+import service.ProductVariantService;
 
 /**
  *

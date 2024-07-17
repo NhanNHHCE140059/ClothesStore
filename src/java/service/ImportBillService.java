@@ -43,10 +43,6 @@ public class ImportBillService {
                         rs.getString(3),
                         rs.getDouble(4),
                         rs.getString(5)
-                //                    private int bill_id;
-                //    private String create_date;
-                //    private double total_amount;
-                //    private String image_bill;
                 ));
             }
             return as;
@@ -168,37 +164,4 @@ public class ImportBillService {
         }
         return -1;
     }
-}
-
-public static void main(String[] args) {
-        // Khởi tạo đối tượng ImportBillService
-        ImportBillService importBillService = new ImportBillService();
-
-        // Thông báo bắt đầu tìm kiếm
-        System.out.println("Searching for Import Bills...");
-
-        // Các tham số tìm kiếm (không cần nhập totalAmountFrom và totalAmountTo)
-        String billId = "19";                   // ID hóa đơn (sử dụng % để tìm kiếm theo mẫu)
-        String createDateFrom = "";  // Ngày bắt đầu tìm kiếm
-        String createDateTo = "";    // Ngày kết thúc tìm kiếm
-        Double totalAmountFrom = null;         // Số tiền tối thiểu (null để bỏ qua)
-        Double totalAmountTo = null;           // Số tiền tối đa (null để bỏ qua)
-
-        // Tìm kiếm hóa đơn dựa trên các tiêu chí
-        List<ImportBill> searchResults = importBillService.searchImportBills(
-                billId, createDateFrom, createDateTo, totalAmountFrom, totalAmountTo
-        );
-
-        // Kiểm tra và hiển thị kết quả tìm kiếm
-        if (searchResults != null && !searchResults.isEmpty()) {
-            System.out.println("Search Results for Import Bills:");
-            for (ImportBill bill : searchResults) {
-                System.out.println(bill);
-            }
-        } else {
-            System.out.println("No Import Bills found matching the criteria.");
-        }
-    }
-
-
 }
