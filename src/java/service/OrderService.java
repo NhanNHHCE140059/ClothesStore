@@ -187,9 +187,74 @@ public class OrderService {
             }
             return ls;
         } catch (Exception e) {
+            System.out.println("Error: " + e);
         }
         return null;
     }
+    
+     public Order getOrderByIdAndUser(int orderId, int userId) {
+        String query = "SELECT * from [Orders] where acc_id = ? and order_id=?";
+        try {
+            List<Order> ls = new ArrayList<>();
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, userId);
+            ps.setInt(2, orderId);
+            rs = ps.executeQuery();//chay cau lenh query, nhan ket qua tra ve
+
+            while (rs.next()) {
+                return new Order(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getDate(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getInt(6),
+                        rs.getString(7),
+                        rs.getDouble(8),
+                        OrderStatus.values()[rs.getInt(9)],
+                        PayStatus.values()[rs.getInt(10)],
+                        ShipStatus.values()[rs.getInt(11)]
+                );
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+        return null;
+    }
+     
+     public Order getOrderById(int orderId) {
+        String query = "SELECT * from [Orders] where order_id=?";
+        try {
+            List<Order> ls = new ArrayList<>();
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, orderId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                return new Order(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getDate(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getInt(6),
+                        rs.getString(7),
+                        rs.getDouble(8),
+                        OrderStatus.values()[rs.getInt(9)],
+                        PayStatus.values()[rs.getInt(10)],
+                        ShipStatus.values()[rs.getInt(11)]
+                );
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+        return null;
+    }
+    
 
     public List<Order> getTop5OrderHistory(int indexPage) {
         String query = "with x as (select ROW_NUMBER() over (order by order_id desc) as r \n"
@@ -240,6 +305,62 @@ public class OrderService {
             System.out.println("Loi");
         }
         return count;
+    }
+    
+    public int feedback(Order order) {
+        String sql = "update [Orders] set feedback_order=? where order_id=?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, order.getFeedback_order());
+            ps.setInt(2, order.getOrder_id());
+            return ps.executeUpdate();
+        }catch(Exception e) {
+            System.out.println("Eror: " + e);
+        }
+        return 0;
+    }
+    
+    public int changeStatusOrder(int status, int orderId) {
+        String sql = "update [Orders] set order_status=? where order_id=?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, status);
+            ps.setInt(2,orderId);
+            return ps.executeUpdate();
+        }catch(Exception e) {
+            System.out.println("Eror: " + e);
+        }
+        return 0;
+    }
+    
+    public int changeStatusShip(int ship, int orderId) {
+        String sql = "update [Orders] set shipping_status=? where order_id=?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, ship);
+            ps.setInt(2,orderId);
+            return ps.executeUpdate();
+        }catch(Exception e) {
+            System.out.println("Eror: " + e);
+        }
+        return 0;
+    }
+    
+    public int changeStatusPay(int pay, int orderId) {
+        String sql = "update [Orders] set pay_status=? where order_id=?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, pay);
+            ps.setInt(2,orderId);
+            return ps.executeUpdate();
+        }catch(Exception e) {
+            System.out.println("Eror: " + e);
+        }
+        return 0;
     }
 
     public void placeOrder(Account account, String shippingAddress, String shippingPhone) {

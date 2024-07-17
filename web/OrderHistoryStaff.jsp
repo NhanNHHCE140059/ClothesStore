@@ -7,6 +7,9 @@
         <jsp:include page="/shared/_head.jsp" />
         <link rel="stylesheet" type="text/css" href="assets/css/orderhistory.css" />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <style>
             /* CSS để căn giữa bảng order */
             .section-padding-100 {
@@ -53,7 +56,7 @@
                 background-color: #6ab04c; /* Màu xanh dương */
                 color: #fff;
             }
-            
+
             .pagination {
                 display: flex;
                 justify-content: center;
@@ -78,7 +81,15 @@
                 color: white;
                 border: 1px solid #4CAF50;
             }
+            .bg-primary {
+                background-color: #FFD333 !important;
+                border-color: #FFD333 !important;
+            }
+            .text-primary {
+                color: #FFD333 !important;
+            }
         </style>
+
     </head>
     <body>
 
@@ -87,6 +98,24 @@
 
         <!-- Header Area -->
         <div class="section-padding-100">
+            <div class="container">
+                <c:if test="${param.error != null}">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        ${param.error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </c:if>
+                <c:if test="${param.success != null}">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        ${param.success}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </c:if>
+            </div>
             <div class="cart-title mt-50">
                 <h2>Order History (Staff)</h2>
             </div>
@@ -113,16 +142,24 @@
                                 <td>${o.username}</td>
                                 <td><fmt:formatNumber value="${o.totalPrice}" type="number" pattern="#,##0" /></td>
                                 <td>${o.order_status}</td>
-                                <td>${o.pay_status}</td>
-                                <td>${o.ship_status}</td>
+                                <td>
+                                    <span onclick="showPopup('${o.pay_status}', ${o.order_id})" style="cursor:pointer;">
+                                        ${o.pay_status}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span onclick="showPopupShip('${o.shipping_status}', ${o.order_id})" style="cursor:pointer;">
+                                        ${o.shipping_status}
+                                    </span>
+                                </td>
                                 <td class="actions">
                                     <a href="OrderDetailControl?orderId=${o.order_id}" class="detail" title="Detail Order ${o.order_id}">
                                         <i class="material-icons">visibility</i>
                                     </a>
-                                    <a href="CancelOrderControl?orderId=${o.order_id}" class="cancel" title="Cancel Order ${o.order_id}">
+                                    <a onclick="return confirm('Are you sure to cancel this order?')" href="CancelOrderControl?orderId=${o.order_id}" class="cancel" title="Cancel Order ${o.order_id}">
                                         <i class="material-icons">cancel</i>
                                     </a>
-                                    <a href="ConfirmOrderControl?orderId=${o.order_id}" class="confirm" title="Confirm Order ${o.order_id}">
+                                    <a onclick="return confirm('Are you sure to confirm this order?')" href="ConfirmOrderControl?orderId=${o.order_id}" class="confirm" title="Confirm Order ${o.order_id}">
                                         <i class="material-icons">check_circle</i>
                                     </a>
                                 </td>
@@ -139,11 +176,83 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="statusModalLabel">Update Status payment</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form id="statusForm" action="change-payment" method="post">
+                            <input type="hidden" name="orderId" id="orderId">
+                            <div class="form-group">
+                                <label for="currentStatus">Current Status</label>
+                                <span id="currentStatus" class="form-control-plaintext"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="newStatus">New status payment</label>
+                                <select class="form-control" name="status" id="status">
+                                    <option value="0">SUCCESS</option>
+                                    <option value="1">NOT_YET</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="$('#statusForm').submit();">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="statusShipModalLabel" tabindex="-1" role="dialog" aria-labelledby="statusShipModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="statusModalLabel">Update Status shipping</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form id="statusFormShip" action="change-shipping" method="post">
+                            <input type="hidden" name="orderId" id="orderIdShip">
+                            <div class="form-group">
+                                <label for="currentStatus">Current ship status</label>
+                                <span id="currentStatusShip" class="form-control-plaintext"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="newStatus">New Status payment</label>
+                                <select class="form-control" name="newStatus" id="newStatus">
+                                    <option value="0">SUCCESS</option>
+                                    <option value="1">SHIPPING</option>
+                                    <option value="2">NOT_YET</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="$('#statusFormShip').submit();">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Footer Area -->
         <jsp:include page="/shared/_footer.jsp" />
         <!-- End of Footer Area -->
         <script>
+            function showPopup(status, orderId) {
+                $('#currentStatus').text(status);
+                $('#orderId').val(orderId);
+                $('#statusModal').modal('show');
+            }
+        </script>
+        <script>
+            function showPopupShip(status, orderId) {
+                $('#currentStatusShip').text(status);
+                $('#orderIdShip').val(orderId);
+                $('#statusShipModalLabel').modal('show');
+            }
+        </script>
+        <script>
+
             function getQueryParameter(name) {
                 var urlParams = new URLSearchParams(window.location.search);
                 return urlParams.get(name);
@@ -151,7 +260,7 @@
 
             function setActivePage(pageIndex) {
                 var links = document.querySelectorAll('.page-link');
-                links.forEach(function(link) {
+                links.forEach(function (link) {
                     link.classList.remove('active');
                     if (link.textContent == pageIndex) {
                         link.classList.add('active');
@@ -159,7 +268,7 @@
                 });
             }
 
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 var pageIndex = getQueryParameter('indexPage');
                 if (pageIndex) {
                     setActivePage(pageIndex);
@@ -171,7 +280,7 @@
                 }
             });
 
-            window.addEventListener('beforeunload', function() {
+            window.addEventListener('beforeunload', function () {
                 localStorage.removeItem('activePage');
             });
         </script>

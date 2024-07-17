@@ -42,6 +42,9 @@ quantityPro++;
 
                         <c:if test="${sessionScope.account.role == 'Staff'}">
                             <a href="OrderHistoryStaffControl" class="nav-item nav-link">Order History(Staff)</a>
+                            <a href="manage-color" class="nav-item nav-link">Manage color</a>
+                            <a href="manage-size" class="nav-item nav-link">Manage size</a>
+                            <a href="manage-category" class="nav-item nav-link">Manage-category</a>
                         </c:if>
 
 

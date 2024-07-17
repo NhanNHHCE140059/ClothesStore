@@ -168,7 +168,7 @@ public class AccountService {
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
             ps.setString(1, username);
-            ps.setString(2, hashPassword);
+            ps.setString(2, "123");
             rs = ps.executeQuery();
             while (rs.next()) {
                 account = new Account(

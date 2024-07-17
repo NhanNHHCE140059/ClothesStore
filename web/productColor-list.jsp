@@ -61,54 +61,26 @@
                     </div>
                 </c:if>
             </div>
-            <div class="cart-title mt-50">
-                <h2>Order History</h2>
-            </div>
-            <div>
-                <table>
+            <div class="container">
+                <h2>Product color List</h2>
+                <table class="table">
                     <thead>
                         <tr>
-                            <th>Order ID</th>
-                            <th>Recipient's Name</th>
-                            <th>Order Date</th>
-                            <th>Address Received</th>
-                            <th>Phone Number</th>
-                            <th>Total Price</th>
-                            <th>Ship Status</th>
-                            <th>Order Status</th>
-                            <th>Pay Status</th>
-                            <th>Detail</th>
+                            <th>No.</th>
+                            <th>Name</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach items="${lstOrder}" var="o">
+                        <c:forEach var="productColor" items="${listProductColor}" varStatus="index">
                             <tr>
-                                <td class="id"><span>${o.order_id}</span></td>
-                                <td class="name"><span>${sessionScope.account.name}</span></td>
-                                <td class="date"><span>${o.orderDate}</span></td>
-                                <td class="address"><span>${o.addressReceive}</span></td>
-                                <td class="sdt"><span>${o.phone}</span></td>
-                                <td class="totalPrice"><span><fmt:formatNumber value="${o.totalPrice}" type="number" pattern="#,##0" /></span></td>
-                                <td class="order_status"><span>${o.order_status}</span></td>
-                                <td class="pay_status"><span>${o.pay_status}</span></td>
-                                <td class="ship_status"><span>${o.shipping_status}</span></td>
-                                <td>
-                                    <c:if test="${o.order_status == 'SUCCESS'}">
-                                        <a href="feedback?orderId=${o.order_id}">
-                                            Feedback
-                                        </a>
-                                    </c:if>
-                                    <a href="OrderDetailControl?orderId=${o.order_id}">
-                                        <i class="material-icons" data-toggle="tooltip" title="Detail">visibility</i>
-                                    </a>
-                                </td>
+                                <td>${index.index + 1}</td>
+                                <td>${productColor.color_name}</td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
             </div>
         </div>
-
         <!-- Footer Area -->
 
         <jsp:include page="/shared/_footer.jsp" />
