@@ -14,10 +14,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-/**
- *
- * @author My Computer
- */
 public class ProductVariantInfo {
 
     int variant_id;

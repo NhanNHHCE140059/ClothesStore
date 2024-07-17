@@ -13,10 +13,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-/**
- *
- * @author HP
- */
 public class ImportBillDetailInfor {
     private int detailBill_id;
     private int bill_id;
