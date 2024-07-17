@@ -304,7 +304,6 @@ input[type="number"] {
     width: 20%;
     box-sizing: border-box;
 }
-<<<<<<< HEAD
 
 .back-home {
     background-color: #ebedec; /* Màu nền mới */
@@ -316,16 +315,6 @@ input[type="number"] {
     text-decoration: none;
     border: 1px solid #000; /* Thêm viền đen */
     transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền */
-=======
-.back-home {
-    background-color: #ebedec; /* Màu nền mới */
-    color: #000; /* Thay đổi màu chữ nếu cần */
-    text-align: center;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 0.9em;
-    text-decoration: none;
->>>>>>> f927cfe (feat: Product management)
 }
 
 .btn-create {
