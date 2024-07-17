@@ -15,7 +15,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import model.Account;
 import model.Order;
+import model.OrderDetail;
 
 /**
  *
@@ -240,7 +242,97 @@ public class OrderService {
         return count;
     }
 
-   public static void main(String[] args) {
-    OrderService orderService = new OrderService();
-   }
+    public void placeOrder(Account account, String shippingAddress, String shippingPhone) {
+        String getCartItemsQuery = "SELECT variant_id, pro_quantity, pro_price FROM Carts WHERE acc_id = ?";
+        String insertOrderQuery = "INSERT INTO Orders (feedback_order, orderDate, addressReceive, phone, acc_id, username, totalPrice, order_status, pay_status, shipping_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertOrderDetailQuery = "INSERT INTO OrderDetails (order_id, variant_id, UnitPrice, Quantity, feedback_details) VALUES (?, ?, ?, ?, ?)";
+        String deleteCartQuery = "DELETE FROM Carts WHERE acc_id = ?";
+
+        try {
+            connection = dbcontext.getConnection();
+            connection.setAutoCommit(false);
+
+          
+            ps = connection.prepareStatement(getCartItemsQuery);
+            ps.setInt(1, account.getAcc_id());
+            rs = ps.executeQuery();
+
+            List<OrderDetail> orderDetails = new ArrayList<>();
+            double totalPrice = 0.0;
+
+            while (rs.next()) {
+                int variantId = rs.getInt("variant_id");
+                int quantity = rs.getInt("pro_quantity");
+                double price = rs.getDouble("pro_price");
+                double unitPrice = price * quantity;
+                totalPrice += unitPrice;
+
+                orderDetails.add(new OrderDetail(0, 0, variantId, price, quantity, null));
+            }
+
+     
+            Order order = new Order(
+                    0,
+                    null,
+                    new java.sql.Date(System.currentTimeMillis()),
+                    shippingAddress,
+                    shippingPhone,
+                    account.getAcc_id(),
+                    account.getUsername(),
+                    totalPrice,
+                    OrderStatus.NOT_YET,
+                    PayStatus.NOT_YET,
+                    ShipStatus.NOT_YET);
+
+            ps = connection.prepareStatement(insertOrderQuery, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setString(1, order.getFeedback_order());
+            ps.setDate(2, order.getOrderDate());
+            ps.setString(3, order.getAddressReceive());
+            ps.setString(4, order.getPhone());
+            ps.setInt(5, order.getAcc_id());
+            ps.setString(6, order.getUsername());
+            ps.setDouble(7, order.getTotalPrice());
+            ps.setInt(8, order.getOrder_status().ordinal());
+            ps.setInt(9, order.getPay_status().ordinal());
+            ps.setInt(10, order.getShipping_status().ordinal());
+            ps.executeUpdate();
+
+            rs = ps.getGeneratedKeys();
+            int orderId = 0;
+            if (rs.next()) {
+                orderId = rs.getInt(1);
+            }
+
+            ps = connection.prepareStatement(insertOrderDetailQuery);
+            for (OrderDetail detail : orderDetails) {
+                ps.setInt(1, orderId);
+                ps.setInt(2, detail.getVariant_id());
+                ps.setDouble(3, detail.getUnitPrice());
+                ps.setInt(4, detail.getQuantity());
+                ps.setString(5, detail.getFeedback_details());
+                ps.addBatch();
+            }
+            ps.executeBatch();
+
+            ps = connection.prepareStatement(deleteCartQuery);
+            ps.setInt(1, account.getAcc_id());
+            ps.executeUpdate();
+
+            connection.commit();
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                System.out.println("Rollback failed: " + ex.getMessage());
+            }
+            System.out.println("SQL error occurred while placing order: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+        }
+        System.out.println("Susscessfully di ngu thoai");
+    }
+
+    public static void main(String[] args) {
+        OrderService orderService = new OrderService();
+    }
 }
