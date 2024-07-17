@@ -903,26 +903,4 @@ public class OrderService {
         }
         return 0;
     }
-
-    public static void main(String[] args) {
-        OrderService orderDAO = new OrderService();
-
-        // Test searchOrdersStaff method with various search parameters
-        List<Order> orders = orderDAO.searchOrdersStaff(
-                "", // orderId
-                "", // username
-                "2024-07-03", // orderDateFrom
-                "", // orderDateTo
-                "", // orderStatus
-                "", // shippingStatus
-                "", // payStatus
-                0.0, // totalPriceFrom
-                1.0 // totalPriceTo
-        );
-
-        // Print out the orders to verify the results
-        for (Order order : orders) {
-            System.out.println(order);
-        }
-    }
 }
