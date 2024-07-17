@@ -53,42 +53,7 @@
 
         </div>
 
-        <div class="content">
-            <a href="${pageContext.request.contextPath}/home" class=" back-home">Back to Home</a>
-            <div class="header">
-                <input oninput="searchByPhone(this)" value="${phoneSearch}" type="number" id="autoSubmitInput" name="searchText" placeholder="Enter phone to search...">
 
-                <div class="role-info">
-                    <span><%= account.getRole()%> :</span><span><%= account.getName()%></span>
-                </div>
-                <a href="#" class="menu-item">Category Management</a>
-                <div class="separator"></div>
-                <div class="submenu">
-                    <a href="#">Create Category</a>
-                    <a href="#">Update Category</a>
-                    <a href="#">Delete Category</a>
-                </div>
-                <a href="#" class="menu-item">Feedback Management</a>
-                <div class="separator"></div>
-                <div class="submenu">
-                    <a href="#">View Feedback</a>
-                </div>
-                <a href="#" class="menu-item">Orders Management</a>
-                <div class="separator"></div>
-                <div class="submenu">
-                    <a href="#">Confirm Orders</a>
-                    <a href="#">Cancel Orders</a>
-                    <a href="#">Change Ship Status</a>
-                </div>
-                <a href="#" class="menu-item">Warehouse Management</a>
-                <div class="separator"></div>
-                <div class="submenu">
-                    <!--                    <a href="#">Create New Product (Warehouse)</a>
-                                        <a href="#">Update Product (Warehouse)</a>-->
-                    <a href="${pageContext.request.contextPath}/ViewWarehouse">Manage Warehouse </a>
-                </div>
-
-            </div>
 
             <div class="content">
                 <a href="${pageContext.request.contextPath}/home" class=" back-home">Back to Home</a>
