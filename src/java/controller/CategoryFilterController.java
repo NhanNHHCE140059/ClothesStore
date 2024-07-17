@@ -86,7 +86,7 @@ public class CategoryFilterController extends HttpServlet {
             cid[i] = Integer.parseInt(categoryIds[i]);
         }
 
-        List<Product> filteredProducts = ps.filterCategory(cid);
+        List<Product> filteredProducts = ps.filterCategory(cid[0], cid[1]);
 
         int page = 1;
         int productsPerPage = 6;
@@ -139,7 +139,7 @@ public class CategoryFilterController extends HttpServlet {
             return;
         }
 
-        List<Product> filteredProducts = ps.filterCategory(cid);
+        List<Product> filteredProducts = ps.filterCategory(cid[0], cid[1]);
 
         int page = 1;
         int productsPerPage = 6;

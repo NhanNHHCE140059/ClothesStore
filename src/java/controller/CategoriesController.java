@@ -37,7 +37,7 @@ public class CategoriesController extends HttpServlet {
 
         }
         CategoryService cateSv = new CategoryService();
-        request.setAttribute("listCate", cateSv.getAllCate());
+        request.setAttribute("listCate", cateSv.getAllCategories());
         request.getRequestDispatcher("addnewCate.jsp").forward(request, response);
     }
 

@@ -35,7 +35,7 @@ public class UpdateProductController extends HttpServlet {
             CategoryService cateService = new CategoryService();
             ProductColorService prColor = new ProductColorService();
             List<ProductColor> listAllColor = prColor.getALLProductColor();
-            List<Category> listcate = cateService.getAllCate();
+            List<Category> listcate = cateService.getAllCategories();
             Product product = productService.GetProById(idPro);
             request.setAttribute("product", product);
             request.setAttribute("listcate", listcate);
