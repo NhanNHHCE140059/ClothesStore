@@ -7,6 +7,7 @@ package service;
 import db.DBContext;
 import helper.OrderStatus;
 import helper.PayStatus;
+import helper.ProductSizeType;
 import helper.ShipStatus;
 import java.sql.Connection;
 import java.sql.Date;
@@ -14,10 +15,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import model.Account;
 import model.Order;
 import model.OrderDetail;
+import model.StaticTopBillValue;
+import model.TopProduct;
 
 /**
  *
@@ -29,6 +33,196 @@ public class OrderService {
     PreparedStatement ps = null;
     ResultSet rs = null;
     DBContext dbcontext = new DBContext();
+
+    public List<Order> getAllOrders() {
+        List<Order> orders = new ArrayList<>();
+        try {
+            String query = "select * from orders";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Order order = new Order(
+                        rs.getInt("order_id"),
+                        rs.getString("feedback_order"),
+                        rs.getDate("orderDate"),
+                        rs.getString("addressReceive"),
+                        rs.getString("phone"),
+                        rs.getInt("acc_id"),
+                        rs.getString("username"),
+                        rs.getFloat("totalPrice"),
+                        OrderStatus.values()[rs.getInt("order_status")],
+                        PayStatus.values()[rs.getInt("pay_status")],
+                        ShipStatus.values()[rs.getInt("shipping_status")]
+                );
+                orders.add(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL error occurred while fetching orders.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("An unexpected error occurred.");
+        }
+        return orders;
+    }
+
+    public List<StaticTopBillValue> getTop10OrdersByValue() {
+        List<StaticTopBillValue> topOrders = new ArrayList<>();
+        try {
+
+            String query = "SELECT TOP 10 o.order_id, a.username, o.totalPrice, o.orderDate "
+                    + "FROM orders o "
+                    + "JOIN accounts a ON o.acc_id = a.acc_id "
+                    + "ORDER BY o.totalPrice DESC";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                StaticTopBillValue order = new StaticTopBillValue(
+                        rs.getInt("order_id"),
+                        rs.getString("username"),
+                        rs.getDouble("totalPrice"),
+                        rs.getDate("orderDate")
+                );
+                topOrders.add(order);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL error occurred while fetching top 10 orders by value.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("An unexpected error occurred.");
+        }
+        return topOrders;
+    }
+
+    public double[] getMonthlyRevenue() {
+        double[] monthlyRevenue = new double[12];
+        try {
+
+            Calendar calendar = Calendar.getInstance();
+            int currentYear = calendar.get(Calendar.YEAR);
+
+            String query = "SELECT MONTH(orderDate) AS month, SUM(totalPrice) AS revenue "
+                    + "FROM orders "
+                    + "WHERE YEAR(orderDate) = ? "
+                    + "GROUP BY MONTH(orderDate)";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, currentYear);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int month = rs.getInt("month");
+                double revenue = rs.getDouble("revenue");
+                monthlyRevenue[month - 1] = revenue;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL error occurred while fetching monthly revenue.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("An unexpected error occurred.");
+        }
+        return monthlyRevenue;
+    }
+
+    public double calculateTodayProfit() {
+        double totalProfit = 0.0;
+        try {
+
+            java.util.Date utilDate = new java.util.Date();
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+            String getOrdersQuery = "SELECT order_id, totalPrice FROM orders WHERE orderDate = ?";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(getOrdersQuery);
+            ps.setDate(1, sqlDate);
+            rs = ps.executeQuery();
+
+            List<Integer> orderIds = new ArrayList<>();
+            double totalSalePrice = 0.0;
+
+            while (rs.next()) {
+                int orderId = rs.getInt("order_id");
+                double orderTotalPrice = rs.getDouble("totalPrice");
+                orderIds.add(orderId);
+                totalSalePrice += orderTotalPrice;
+            }
+
+            double totalCostPrice = 0.0;
+
+            for (int orderId : orderIds) {
+                String getOrderDetailsQuery = "SELECT od.variant_id, od.Quantity, ibd.import_price FROM OrderDetails od "
+                        + "JOIN import_bill_details ibd ON od.variant_id = ibd.variant_id "
+                        + "JOIN import_bill ib ON ibd.bill_id = ib.bill_id "
+                        + "WHERE od.order_id = ?";
+                ps = connection.prepareStatement(getOrderDetailsQuery);
+                ps.setInt(1, orderId);
+                ResultSet orderDetailsRs = ps.executeQuery();
+
+                while (orderDetailsRs.next()) {
+                    int quantity = orderDetailsRs.getInt("Quantity");
+                    double importPrice = orderDetailsRs.getDouble("import_price");
+                    totalCostPrice += (quantity * importPrice);
+                }
+                orderDetailsRs.close();
+            }
+
+            totalProfit = totalSalePrice - totalCostPrice;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL error occurred while calculating today's profit.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("An unexpected error occurred.");
+        }
+        return totalProfit;
+    }
+
+    public List<TopProduct> getTop20Products() {
+        List<TopProduct> topProducts = new ArrayList<>();
+        try {
+
+            String query = "SELECT TOP 20 p.imageURL, p.pro_name AS name, pc.color_name, ps.size_name, p.pro_price AS price, "
+                    + "SUM(od.Quantity) AS quantity "
+                    + "FROM products p "
+                    + "JOIN ProductVariants pv ON p.pro_id = pv.pro_id "
+                    + "JOIN ProductColors pc ON pv.color_id = pc.color_id "
+                    + "JOIN ProductSizes ps ON pv.size_id = ps.size_id "
+                    + "JOIN OrderDetails od ON pv.variant_id = od.variant_id "
+                    + "GROUP BY p.imageURL, p.pro_name, pc.color_name, ps.size_name, p.pro_price "
+                    + "ORDER BY quantity DESC";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                TopProduct product = new TopProduct(
+                        rs.getString("imageURL"),
+                        rs.getString("name"),
+                        rs.getString("color_name"),
+                        ProductSizeType.valueOf(rs.getString("size_name")),
+                        rs.getDouble("price"),
+                        rs.getDouble("quantity")
+                );
+                topProducts.add(product);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL error occurred while fetching top 20 products.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("An unexpected error occurred.");
+        }
+        return topProducts;
+    }
 
     public List<Order> listAllOrdersShipped() {
         List<Order> listOrderShipped = new ArrayList<>();
@@ -365,10 +559,6 @@ public class OrderService {
             System.out.println("An unexpected error occurred: " + e.getMessage());
         }
         System.out.println("Susscessfully di ngu thoai");
-    }
-
-    public static void main(String[] args) {
-        OrderService orderService = new OrderService();
     }
 
     public int countPageOrderCustomer(String username) {

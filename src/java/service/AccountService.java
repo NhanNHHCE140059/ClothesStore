@@ -8,9 +8,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import misc.Hash;
+import model.StaticAccountPaid;
 
 /**
  *
@@ -23,6 +26,79 @@ public class AccountService {
     ResultSet rs = null;
     DBContext dbcontext = new DBContext();
     Hash hash = new Hash();
+
+    public List<StaticAccountPaid> getTop10AccountPaid() {
+        List<StaticAccountPaid> topAccounts = new ArrayList<>();
+        try {
+
+            String query = "SELECT TOP 10 a.username, a.name, a.email, a.address, "
+                    + "COUNT(o.order_id) AS totalBill, SUM(o.totalPrice) AS TotalAmount "
+                    + "FROM accounts a "
+                    + "JOIN orders o ON a.acc_id = o.acc_id "
+                    + "GROUP BY a.username, a.name, a.email, a.address "
+                    + "ORDER BY TotalAmount DESC";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                StaticAccountPaid account = new StaticAccountPaid(
+                        rs.getString("username"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("address"),
+                        rs.getInt("totalBill"),
+                        rs.getDouble("TotalAmount")
+                );
+                topAccounts.add(account);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL error occurred while fetching top 10 account paid.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("An unexpected error occurred.");
+        }
+        return topAccounts;
+    }
+
+    public List<Account> getAllAccounts(Integer status) {
+        List<Account> accounts = new ArrayList<>();
+        try {
+            String query = "select * from accounts";
+            if (status != null) {
+                query += " where acc_status=?";
+            }
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            if (status != null) {
+                ps.setInt(1, status);
+            }
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Account account = new Account(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getString(6),
+                        rs.getString(7),
+                        rs.getString(8),
+                        Role.values()[rs.getInt(9)],
+                        AccountStatus.values()[rs.getInt(10)]);
+                accounts.add(account);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL error occurred while fetching accounts.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("An unexpected error occurred.");
+        }
+        return accounts;
+    }
 
     // Lay account ra tu Username
     public Account getAccountByUsername(String username) {
@@ -306,7 +382,8 @@ public class AccountService {
 //    }
     public static void main(String[] args) {
         AccountService acsv = new AccountService();
-          
-       
+        for (StaticAccountPaid acp : acsv.getTop10AccountPaid()) {
+            System.out.println(acp.getTotalAmount());
+        }
     }
 }
