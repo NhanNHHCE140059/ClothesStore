@@ -59,7 +59,6 @@ public class ProductColorService {
         }
         return proColor;
     }
-
     public ProductColor GetProColorByID(int id) {
         ProductColor pro = null;
         String sql = "select * from ProductColors where color_id =?";

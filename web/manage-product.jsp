@@ -1,40 +1,58 @@
 <%-- 
     Document   : manage-product
     Created on : Jun 30, 2024, 9:17:04 PM
-    Author     : Huenh
+    Author     : DuyNK
 --%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
-    <%@page import="model.Account"%>
-    <%@page import="helper.Role"%>
-    <%@page import="model.Product" %>
-    <%@page import="model.Category" %>
-    <%@page import="model.ProductsVariant"%>
-    <%@page import="service.ProductService" %>
-    <%@page import="service.CategoryService" %>
-    <%@page import="model.ProductColor"%>
-    <%@page import="service.ProductColorService"%>
-    <%@page import="service.ProductImageService"%>
-    <%@page import="java.util.*"%>
-    <%ProductColorService color = new ProductColorService(); %>
-    <%ProductImageService img = new ProductImageService(); %>
-    <%ProductService product = new ProductService(); %>
-    <%CategoryService cate = new CategoryService(); %>
-    <%Integer quantity = (Integer) session.getAttribute("quantity");%>
-    <% Account account = (Account) request.getAttribute("account"); %>
-    <% List<ProductsVariant> list = (List<ProductsVariant>) request.getAttribute("list"); %>
-    <% Integer endPage = (Integer) request.getAttribute("endPage");%>
-    <% String searchText = (String) request.getAttribute("searchText"); %>
-    <% Integer currentPage =(Integer) request.getAttribute("currentPage"); %>
+
     <head>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/manage-product.css"/>
+
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Shop Management</title>
     </head>
+    <style>
+        .image_product img {
+            width: 20%;
+            height: 20%;
+        }
+        .pagination-container {
+            display: flex;
+            position: absolute;
+            bottom:40px;
+            left: 0;
+            right: 0;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .page-link {
+            margin: 0 5px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #000;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .page-link:hover {
+            background-color: #f0f0f0;
+        }
+
+        .page-link.active {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+        }
+        .three-doc {
+            margin-top: 18px;
+        }
+
+    </style>
     <body>
         <div class="sidebar">
             <div class="sidebar-header">Dashboard For Staff</div>
@@ -118,21 +136,49 @@
                 <nav>
                     <ul class="pagination justify-content-center">
                         <%if (currentPage > 1){%>
-                            <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage - 1}">Previous</a></li>
-                        <%}%>
-                        <%int pageRange = 5; 
-                          int startPage = Math.max(1, currentPage - pageRange);
-                          int end = Math.min(endPage, currentPage + pageRange);%>
-                        
-                        <%for (int i = startPage; i <= end; i++){%>
-                        <li><a class="page-link" href="manage-product?indexPage=<%=i%>"><%=i%></a></li>
+                        <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage - 1}">Previous</a></li>
                             <%}%>
-                        <%if(currentPage < endPage){%>
-                            <li class="page-item"><a class="page-link" href="manage-product?indexPage=${currentPage + 1}">Next</a></li>
-                        <%}%>
-                    </ul>
-                </nav>
+                            <%int pageRange = 5; 
+                              int startPage = Math.max(1, currentPage - pageRange);
+                              int end = Math.min(endPage, currentPage + pageRange);%>
+
             </div>
+            <a syle="margin-top: 10px ;" href="${pageContext.request.contextPath}/home" class=" add-new">ADD NEW</a>
+            <div class="table-container" id="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID Product</th>
+                            <th>Image</th>
+                            <th>Product name</th>
+                            <th>Product price</th>
+                            <th>Description</th>
+                            <th>Category name</th>
+                            <th>Sizes</th>
+                            <th>Colors</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manage-product">
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><button class="btn-edit">Edit</button></td>
+
+
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <img src="">
         </div>
         <%if(session.getAttribute("quantity") != null){%>
         <div id="myModal" class="modal">
@@ -147,5 +193,35 @@
         <%}%>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
+        <script>
+
+            function sendGetRequest(indexPage, param = null) {
+                var searchName = "";
+                if (param !== null) {
+                    console.log("input không trống nhé");
+                    searchName = param.value.trim();
+                }
+                console.log("GO ajax");
+                $.ajax({
+                    url: "/clothesstore/manage-product",
+                    type: "get",
+                    data: {
+                        indexPage: indexPage,
+                        searchName: searchName
+
+                    },
+                    success: function (data) {
+                        var row = document.getElementById("table-container");
+                        row.innerHTML = data;
+                    },
+                    error: function (xhr) {
+
+                    }
+                });
+            }
+            sendGetRequest(1);
+
+        </script>
+
     </body>
 </html>

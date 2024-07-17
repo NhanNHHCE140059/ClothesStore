@@ -1,4 +1,3 @@
-
 <%-- 
     Document   : update-product
     Created on : Jul 1, 2024, 9:01:58 AM
@@ -93,7 +92,7 @@
                                 </c:forEach>
                             </select>
                         </div>               
-                        <div>                     
+                        <div>
                         </div>
                         <div class="form-group d-flex justify-content-center">
                             <input type="submit" value="Update" class="btn-update">

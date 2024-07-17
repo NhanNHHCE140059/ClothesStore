@@ -28,49 +28,41 @@ public class ProductService {
                 + "SET pro_name = ?, "
                 + "    pro_price = ?, "
                 + "    description = ?, "
+                + "    imageURL = ?, "
                 + "    cat_id = ? "
                 + "WHERE pro_id = ?;";
-        if (image != null) {
-            updateProductQuery = "UPDATE Products "
-                    + "SET pro_name = ?, "
-                    + "    pro_price = ?, "
-                    + "    description = ?, "
-                    + "    imageURL = ?, "
-                    + "    cat_id = ? "
-                    + "WHERE pro_id = ?;";
 
-            String updateCartQuery = "UPDATE c "
-                    + "SET c.pro_price = p.pro_price, "
-                    + "    c.Total_price = p.pro_price * c.pro_quantity "
-                    + "FROM Carts c "
-                    + "INNER JOIN ProductVariants pv ON c.variant_id = pv.variant_id "
-                    + "INNER JOIN Products p ON pv.pro_id = p.pro_id "
-                    + "WHERE p.pro_id = ?;";
+        String updateCartQuery = "UPDATE c "
+                + "SET c.pro_price = p.pro_price, "
+                + "    c.Total_price = p.pro_price * c.pro_quantity "
+                + "FROM Carts c "
+                + "INNER JOIN ProductVariants pv ON c.variant_id = pv.variant_id "
+                + "INNER JOIN Products p ON pv.pro_id = p.pro_id "
+                + "WHERE p.pro_id = ?;";
 
-            try {
-                connection = dbcontext.getConnection();
+        try {
+            connection = dbcontext.getConnection();
 
-                // Update Produc
-                ps = connection.prepareStatement(updateProductQuery);
-                ps.setString(1, pro_name);
-                ps.setDouble(2, pro_price);
-                ps.setString(3, des);
-                ps.setString(4, image);
-                ps.setInt(5, cat_id);
-                ps.setInt(6, pro_id);
-                ps.executeUpdate();
-                ps.close();
+            // Update Produc
+            ps = connection.prepareStatement(updateProductQuery);
+            ps.setString(1, pro_name);
+            ps.setDouble(2, pro_price);
+            ps.setString(3, des);
+            ps.setString(4, image);
+            ps.setInt(5, cat_id);
+            ps.setInt(6, pro_id);
+            ps.executeUpdate();
+            ps.close();
 
-                // Update Cart
-                ps = connection.prepareStatement(updateCartQuery);
-                ps.setInt(1, pro_id);
-                ps.executeUpdate();
-                ps.close();
+            // Update Cart
+            ps = connection.prepareStatement(updateCartQuery);
+            ps.setInt(1, pro_id);
+            ps.executeUpdate();
+            ps.close();
 
-            } catch (Exception e) {
-                System.out.println("loiloiloi");
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            System.out.println("loiloiloi");
+            e.printStackTrace();
         }
     }
 

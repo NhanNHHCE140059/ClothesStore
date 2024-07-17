@@ -6,7 +6,6 @@ package service;
 
 import db.DBContext;
 import helper.ProductSizeType;
-import helper.ProductStatus;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import model.Product;
+import model.ProductVariantInfo;
 import model.ProductsVariant;
 
 /**
@@ -30,6 +29,106 @@ public class ProductVariantService {
     PreparedStatement ps = null;
     ResultSet rs = null;
     DBContext dbcontext = new DBContext();
+   public List<ProductVariantInfo> searchByName(String name) {
+        List<ProductVariantInfo> listAll = new ArrayList<>();
+        try {
+            String query = "SELECT \n"
+                    + "    pv.variant_id,\n"
+                    + "    p.pro_id,\n"
+                    + "    p.pro_name,\n"
+                    + "    p.pro_price,\n"
+                    + "    pc.color_id,\n"
+                    + "    pc.color_name,\n"
+                    + "    ps.size_id,\n"
+                    + "    pi.imageURL,\n"
+                    + "    c.cat_id,\n"
+                    + "    c.cat_name\n"
+                    + "FROM \n"
+                    + "    ProductVariants pv\n"
+                    + "JOIN \n"
+                    + "    Products p ON pv.pro_id = p.pro_id\n"
+                    + "JOIN \n"
+                    + "    ProductColors pc ON pv.color_id = pc.color_id\n"
+                    + "JOIN \n"
+                    + "    ProductSizes ps ON pv.size_id = ps.size_id\n"
+                    + "JOIN \n"
+                    + "    ProductImages pi ON pv.image_id = pi.image_id\n"
+                    + "JOIN\n"
+                    + "    Categories c ON p.cat_id = c.cat_id\n"
+                    + "WHERE pro_name LIKE ?";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setString(1,"%" + name + "%");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                listAll.add(
+                        new ProductVariantInfo(
+                                rs.getInt(1),
+                                rs.getInt(2),
+                                rs.getString(3),
+                                rs.getDouble(4),
+                                rs.getInt(5),
+                                rs.getString(6),
+                                ProductSizeType.values()[rs.getInt(7)],
+                                rs.getString(8),
+                                rs.getInt(9),
+                                rs.getString(10)
+                        )
+                );
+            }
+        } catch (Exception e) {
+        }
+        return listAll;
+    }
+    public List<ProductVariantInfo> getAllVariantInfo() {
+        List<ProductVariantInfo> listAll = new ArrayList<>();
+        try {
+            String query = "SELECT \n"
+                    + "    pv.variant_id,\n"
+                    + "    p.pro_id,\n"
+                    + "    p.pro_name,\n"
+                    + "    p.pro_price,\n"
+                    + "    pc.color_id,\n"
+                    + "    pc.color_name,\n"
+                    + "    ps.size_id,\n"
+                    + "    pi.imageURL,\n"
+                    + "    c.cat_id,\n"
+                    + "    c.cat_name\n"
+                    + "FROM \n"
+                    + "    ProductVariants pv\n"
+                    + "JOIN \n"
+                    + "    Products p ON pv.pro_id = p.pro_id\n"
+                    + "JOIN \n"
+                    + "    ProductColors pc ON pv.color_id = pc.color_id\n"
+                    + "JOIN \n"
+                    + "    ProductSizes ps ON pv.size_id = ps.size_id\n"
+                    + "JOIN \n"
+                    + "    ProductImages pi ON pv.image_id = pi.image_id\n"
+                    + "JOIN\n"
+                    + "    Categories c ON p.cat_id = c.cat_id;";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                listAll.add(
+                        new ProductVariantInfo(
+                                rs.getInt(1),
+                                rs.getInt(2),
+                                rs.getString(3),
+                                rs.getDouble(4),
+                                rs.getInt(5),
+                                rs.getString(6),
+                                ProductSizeType.values()[rs.getInt(7)],
+                                rs.getString(8),
+                                rs.getInt(9),
+                                rs.getString(10)
+                        )
+                );
+            }
+        } catch (Exception e) {
+        }
+        return listAll;
+    }
 
     public ProductsVariant getVariantByID(int variant_id) {
         ProductsVariant productV = null;
@@ -95,7 +194,7 @@ public class ProductVariantService {
         return variants;
     }
 
-    public List<ProductsVariant> getAllProductsVra() {
+    public List<ProductsVariant> getAllProducts() {
         List<ProductsVariant> list = new ArrayList<>();
         String query = "SELECT * FROM ProductVariants";
 
@@ -108,7 +207,8 @@ public class ProductVariantService {
                         rs.getInt("pro_id"),
                         ProductSizeType.values()[rs.getInt("size_id")],
                         rs.getInt("color_id"),
-                        rs.getInt("image_id")));
+                        rs.getInt("image_id"))
+                );
             }
         } catch (Exception e) {
             System.out.println("An error occurred while fetching products: " + e.getMessage());
@@ -157,6 +257,27 @@ public class ProductVariantService {
         } catch (Exception e) {
         }
         return null;
+    }
+
+    public List<ProductsVariant> getAllProductsVra() {
+        List<ProductsVariant> list = new ArrayList<>();
+        String query = "SELECT * FROM ProductVariants";
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new ProductsVariant(rs.getInt("variant_id"),
+                        rs.getInt("pro_id"),
+                        ProductSizeType.values()[rs.getInt("size_id")],
+                        rs.getInt("color_id"),
+                        rs.getInt("image_id")));
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred while fetching products: " + e.getMessage());
+        }
+        return list;
     }
 
     public ProductsVariant getPVbyColorAndSize(int pro_id, String size_name, String color_name) {

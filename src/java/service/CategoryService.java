@@ -70,4 +70,9 @@ public class CategoryService {
         }
         return list;
     }
+
+    public static void main(String[] args) {
+        CategoryService cate = new CategoryService();
+
+    }
 }
