@@ -34,6 +34,28 @@ public class ProductVariantService {
     ResultSet rs = null;
     DBContext dbcontext = new DBContext();
 
+    public List<ProductsVariant> getAllProductsVra() {
+        List<ProductsVariant> listAll = new ArrayList<>();
+        try {
+            String query = "Select * from ProductVariants ";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                listAll.add(new ProductsVariant(
+                        rs.getInt(1),
+                        rs.getInt(2),
+                        ProductSizeType.values()[rs.getInt(3)],
+                        rs.getInt(4),
+                        rs.getInt(5)
+                ));
+            }
+        } catch (Exception e) {
+
+        }
+        return listAll;
+    }
+
     public List<ProductVariantInfo> searchByName(String name) {
         List<ProductVariantInfo> listAll = new ArrayList<>();
         try {

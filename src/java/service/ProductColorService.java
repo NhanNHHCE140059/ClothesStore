@@ -125,7 +125,6 @@ public class ProductColorService {
         return list;
     }
 
-<<<<<<< HEAD
     public boolean addNewColor(String color_name) {
         boolean isAdded = false;
         String sql = "INSERT INTO ProductColors (color_name) VALUES (?)";
@@ -143,6 +142,4 @@ public class ProductColorService {
         }
         return isAdded;
     }
-=======
->>>>>>> 877535d (Update view chua xong ...)
 }
