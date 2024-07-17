@@ -23,6 +23,22 @@ public class ProductService {
     ResultSet rs = null;
     DBContext dbcontext = new DBContext();
 
+    public Product GetProByName(String name) {
+        Product product = null;
+        try {
+            String query = "Select * from products where pro_name=?";
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setString(1, name);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                product = new Product(rs.getInt(1), rs.getString(2), rs.getDouble(3), rs.getString(4), rs.getString(5), rs.getInt(6), ProductStatus.values()[rs.getInt(7)]);
+            }
+        } catch (Exception e) {
+        }
+        return product;
+    }
+
     public void updateProduct(String pro_name, double pro_price, String des, String image, int cat_id, int pro_id) {
         String updateProductQuery = "UPDATE Products "
                 + "SET pro_name = ?, "
