@@ -2,8 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller;
 
+package controller;
 import java.io.IOException;
 
 import jakarta.servlet.ServletException;
@@ -14,16 +14,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Account;
-import model.Order;
-import service.OrderService;
+import model.ImportBill;
+
+import service.ImportBillService;
+
 
 /**
  *
  * @author HP
  */
-@WebServlet(value ="/OrderHistoryStaffControl")
+@WebServlet(value ="/ImportBillController")
 
-public class OrderHistoryStaffControl extends HttpServlet {
+public class ImportBillController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -49,26 +51,30 @@ public class OrderHistoryStaffControl extends HttpServlet {
                         response.sendRedirect(request.getContextPath()+"/index.jsp");
 
         }else{
-        OrderService ordersv = new OrderService();
+        ImportBillService billsv = new ImportBillService();
         int indexPage;
-        if (request.getParameter("indexPage") != null&& !request.getParameter("indexPage").isEmpty()) {
+        if (request.getParameter("indexPage") != null) {
 
             indexPage = Integer.parseInt(request.getParameter("indexPage"));
         } else {
             indexPage = 1;
         }
+        if(request.getParameter("indexPageback")!= null && !request.getParameter("indexPageback").isEmpty()){
+                indexPage = Integer.parseInt(request.getParameter("indexPageback"));
+                System.out.println(indexPage);
+        }
 
-        int count = ordersv.countPageOrderStaff();
+        int count = billsv.countPageBillService();
         int size = 5;
         int endPage = count / size;
         if (count % size != 0) {
             endPage++;
 
         }
-        List<Order> lstorder = ordersv.getTop5OrderHistory(indexPage);
+        List<ImportBill> lstBill = billsv.getTop5ImportBill(indexPage);
         request.setAttribute("endPage", endPage);
-        request.setAttribute("lstOrder", lstorder);
-        request.getRequestDispatcher("/OrderHistoryStaff.jsp").forward(request, response);
+        request.setAttribute("lstBill", lstBill);
+        request.getRequestDispatcher("/Bill_Import.jsp").forward(request, response);
 
     }
     }

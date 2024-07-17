@@ -94,8 +94,8 @@ public class ProductVariantService {
         variants.put("ALL_COLORS", uniqueColors);
         return variants;
     }
-    
-    public List<ProductsVariant> getAllProducts() {
+
+    public List<ProductsVariant> getAllProductsVra() {
         List<ProductsVariant> list = new ArrayList<>();
         String query = "SELECT * FROM ProductVariants";
 
@@ -108,15 +108,14 @@ public class ProductVariantService {
                         rs.getInt("pro_id"),
                         ProductSizeType.values()[rs.getInt("size_id")],
                         rs.getInt("color_id"),
-                        rs.getInt("image_id"))
-                );
+                        rs.getInt("image_id")));
             }
         } catch (Exception e) {
             System.out.println("An error occurred while fetching products: " + e.getMessage());
         }
         return list;
     }
-    
+
     // Xu li phan trang cho order da ship ( for feedbackManager) 
     // Dem so luong trang can xu li 
     public int countPageforProduct() {
@@ -134,7 +133,7 @@ public class ProductVariantService {
         }
         return countPage;
     }
-    
+
     public List<ProductsVariant> getTop5Pro(int indexPage) {
         List<ProductsVariant> listTop5ProVar = new ArrayList<>();
         try {

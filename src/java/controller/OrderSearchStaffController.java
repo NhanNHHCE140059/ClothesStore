@@ -17,14 +17,12 @@ import model.Account;
 import model.Order;
 import service.OrderService;
 
-
 /**
  *
  * @author HP
  */
-@WebServlet(value = "/OrderHistoryControl")
-
-public class OrderHistoryControl extends HttpServlet {
+@WebServlet(value = "/OrderSearchStaffController")
+public class OrderSearchStaffController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -52,47 +50,73 @@ public class OrderHistoryControl extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
+        processRequest(request, response);
         HttpSession session = request.getSession();
         if (session.getAttribute("account") == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
-
         } else {
             Account a = (Account) session.getAttribute("account");
-            if (a.getRole() != helper.Role.Customer) {
+            if (a.getRole() == helper.Role.Customer) {
                 response.sendRedirect(request.getContextPath() + "/index.jsp");
                 return;
             }
-            OrderService ordersv = new OrderService();
-            String username = a.getUsername();
-            int indexPage;
-            if (request.getParameter("indexPage") != null&& !request.getParameter("indexPage").isEmpty()) {
 
+            OrderService ordersv = new OrderService();
+
+            int indexPage;
+            if (request.getParameter("indexPage") != null && !request.getParameter("indexPage").isEmpty()) {
                 indexPage = Integer.parseInt(request.getParameter("indexPage"));
             } else {
                 indexPage = 1;
             }
 
-            int count = ordersv.countPageOrderCustomer(username);
-            int size = 5;
-            int endPage = count / size;
-            if (count % size != 0) {
-                endPage++;
+            // Initialize variables before using them
+            String orderId = request.getParameter("orderId");
+            String username = request.getParameter("username");
+            String orderDateFrom = request.getParameter("orderDateFrom");
+            String orderDateTo = request.getParameter("orderDateTo");
+            String orderStatus = request.getParameter("orderStatus");
+            String shippingStatus = request.getParameter("shippingStatus");
+            String payStatus = request.getParameter("payStatus");
+            String totalPriceFromStr = request.getParameter("totalPriceFrom");
+            String totalPriceToStr = request.getParameter("totalPriceTo");
+            Double totalPriceFrom = null;
+            Double totalPriceTo = null;
+            try {
+                if (totalPriceFromStr != null && !totalPriceFromStr.isEmpty()) {
+                    totalPriceFrom = Double.parseDouble(totalPriceFromStr);
+                }
+                if (totalPriceToStr != null && !totalPriceToStr.isEmpty()) {
+                    totalPriceTo = Double.parseDouble(totalPriceToStr);
+                }
+            } catch (NumberFormatException e) {
+                // Handle the case where totalPriceFromStr or totalPriceToStr is not a valid Double
+                e.printStackTrace(); // Or log the error
+            }
+// Calculate count after initializing variables
+            List<Order> count = ordersv.searchOrdersStaff(orderId, username, orderDateFrom, orderDateTo, orderStatus, shippingStatus, payStatus, totalPriceFrom, totalPriceTo);
+            int orderPerPage = 5;
+            int starCountList = (indexPage - 1) * orderPerPage;
+            int endCountList = Math.min(starCountList + orderPerPage, count.size());
+            //trang1 0_ 5
+            // trang 2 5  10
+//            /trang 3 10  11
+
+            List<Order> count1 = count.subList(starCountList, endCountList);
+            int endPage = (int) Math.ceil((double) count.size() / orderPerPage);
+
+            if (count1.size() != 0) {
+                int aaa = 1;
+                request.setAttribute("aaa", aaa);
 
             }
-            if(request.getParameter("feedbackid")!= null){
-                String orderid = (request.getParameter("feedbackid"));
-                request.setAttribute("orderid", orderid);
-            }
-            List<Order> lstOrder = ordersv.getTop50OrderHistoryByAccountID(a.getUsername(), indexPage);
 
-            
-            
-            request.setAttribute("lstOrder", lstOrder);
+//            List<Order> orders = ordersv.searchOrders(orderId, a.getUsername(), orderDateFrom, orderDateTo, orderStatus, shippingStatus, payStatus);
+            request.setAttribute("lstOrder", count1);
+
             request.setAttribute("endPage", endPage);
-            System.out.println(lstOrder.toString());
-            request.getRequestDispatcher("/orderHistory.jsp").forward(request, response);
+            System.out.println(endPage);
+            request.getRequestDispatcher("OrderHistoryStaff.jsp").forward(request, response);
         }
     }
 
@@ -107,18 +131,7 @@ public class OrderHistoryControl extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-             String feedback = request.getParameter("feedback");
-               int orderid =Integer.parseInt( request.getParameter("orderid"));
-                       int indexPage =Integer.parseInt( request.getParameter("indexPage"));
-             OrderService ordersv = new OrderService();
-             if(feedback== null || feedback.trim().length()==0){
-                              response.sendRedirect(request.getContextPath()+"/OrderHistoryControl?indexPage="+indexPage);
-return;
-             }
-             ordersv.updateFbCustomer(feedback, orderid);
-             response.sendRedirect(request.getContextPath()+"/OrderHistoryControl?indexPage="+indexPage);
-             
+        processRequest(request, response);
     }
 
     /**

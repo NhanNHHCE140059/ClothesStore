@@ -5,12 +5,17 @@
 package service;
 
 import db.DBContext;
+import helper.OrderStatus;
+import helper.PayStatus;
+import helper.ShipStatus;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import model.OrderDetail;
+import model.OrderDetailCustomer;
+import model.OrderDetailStaff;
 
 /**
  * Service class for handling OrderDetails.
@@ -82,12 +87,171 @@ public class OrderDetailService {
         }
     }
 
-    /**
-     * Main method for testing getOrderDetailByOrderID.
-     */
-    public static void main(String[] args) {
-        OrderDetailService service = new OrderDetailService();
-        service.getTop10FeedbackNotNullByID(1);
-        System.out.println(service.getTop10FeedbackNotNullByID(1).size());
+    public List<OrderDetailCustomer> getOrderDetailByOrderIDCustomer(int order_id) {
+        String query = "SELECT \n"
+                + "    o.order_id,\n"
+                + "    o.orderDate,\n"
+                + "    o.order_status,\n"
+                + "    o.shipping_status,\n"
+                + "    od.order_detail_id,\n" // Thêm cột này
+                + "    p.pro_name,\n"
+                + "    od.UnitPrice,\n"
+                + "    od.Quantity,\n"
+                + "    pc.color_name,\n"
+                + "    ps.size_name,\n"
+                + "    pi.imageURL,\n"
+                + "    od.feedback_details,\n"
+                + "    o.addressReceive,\n"
+                + "    o.phone\n"
+                + "FROM Orders o\n"
+                + "JOIN OrderDetails od ON o.order_id = od.order_id\n"
+                + "JOIN ProductVariants pv ON od.variant_id = pv.variant_id\n"
+                + "JOIN Products p ON pv.pro_id = p.pro_id\n"
+                + "JOIN ProductColors pc ON pv.color_id = pc.color_id\n"
+                + "JOIN ProductSizes ps ON pv.size_id = ps.size_id\n"
+                + "JOIN ProductImages pi ON pv.image_id = pi.image_id\n"
+                + "WHERE o.order_id = ?;";
+
+        List<OrderDetailCustomer> li = new ArrayList<>();
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, order_id);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                li.add(new OrderDetailCustomer(
+                        rs.getInt(1), // order_id
+                        rs.getDate(2), // orderDate
+                        OrderStatus.values()[rs.getInt(3)], // order_status
+                        ShipStatus.values()[rs.getInt(4)], // shipping_status
+                        rs.getInt(5), // order_detail_id
+                        rs.getString(6), // pro_name
+                        rs.getDouble(7), // UnitPrice
+                        rs.getInt(8), // Quantity
+                        rs.getString(9), // color_name
+                        rs.getString(10), // size_name
+                        rs.getString(11), // imageURL
+                        rs.getString(12), // feedback_details
+                        rs.getString(13), // addressReceive
+                        rs.getString(14) // phone
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return li;
+    }
+
+    public void updateFbDetailCustomer(String feedback_details, int order_detail_id) {
+        String query = "     update [OrderDetails] set [feedback_details] = ? where [order_detail_id] = ? ";
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setString(1, feedback_details);
+            ps.setInt(2, order_detail_id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println("Loi");
+        }
+
+    }
+
+    public List<OrderDetailStaff> getOrderDetailByOrderIDCustomerForStaff(int order_id) {
+        String query = "SELECT \n"
+                + "    o.order_id,\n"
+                + "    o.orderDate,\n"
+                + "    o.order_status,\n"
+                + "    o.pay_status,\n"
+                + "    o.shipping_status,\n"
+                + "    p.pro_name,\n"
+                + "    od.UnitPrice,\n"
+                + "    od.Quantity,\n"
+                + "    pc.color_name,\n"
+                + "    ps.size_name,\n"
+                + "    pi.imageURL,\n"
+                + "    o.username,\n"
+                + "    o.acc_id,\n"
+                + "    od.feedback_details,\n"
+                + "    o.feedback_order,\n"
+                + "    o.phone,\n"
+                + "    o.addressReceive\n"
+                + "FROM Orders o\n"
+                + "JOIN OrderDetails od ON o.order_id = od.order_id\n"
+                + "JOIN ProductVariants pv ON od.variant_id = pv.variant_id\n"
+                + "JOIN Products p ON pv.pro_id = p.pro_id\n"
+                + "JOIN ProductColors pc ON pv.color_id = pc.color_id\n"
+                + "JOIN ProductSizes ps ON pv.size_id = ps.size_id\n"
+                + "JOIN ProductImages pi ON pv.image_id = pi.image_id\n"
+                + "WHERE o.order_id = ?;";
+
+        List<OrderDetailStaff> li = new ArrayList<>();
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, order_id);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                li.add(new OrderDetailStaff(
+                        rs.getInt(1), // order_id
+                        rs.getDate(2), // orderDate
+                        OrderStatus.values()[rs.getInt(3)], // order_status
+                        PayStatus.values()[rs.getInt(4)], // pay_status
+                        ShipStatus.values()[rs.getInt(5)], // shipping_status
+                        rs.getString(6), // pro_name
+                        rs.getDouble(7), // UnitPrice
+                        rs.getInt(8), // Quantity
+                        rs.getString(9), // color_name
+                        rs.getString(10), // size_name
+                        rs.getString(11), // imageURL
+                        rs.getString(12), // username
+                        rs.getInt(13), // acc_id
+                        rs.getString(14), // feedback_details
+                        rs.getString(15), // feedback_order
+                        rs.getString(16), // phone
+                        rs.getString(17) // addressReceive
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return li;
     }
 }

@@ -4,6 +4,7 @@
  */
 package controller;
 
+import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 
 import jakarta.servlet.ServletException;
@@ -12,19 +13,20 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import model.Account;
-import model.Order;
-import service.OrderService;
+import model.ImportBillDetailInfor;
 
+import service.ImportBillDetailService;
 
 /**
  *
  * @author HP
  */
-@WebServlet(value = "/OrderHistoryControl")
-
-public class OrderHistoryControl extends HttpServlet {
+@WebServlet(value = "/ImportBillDetailController")
+public class ImportBillDetailController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -52,47 +54,51 @@ public class OrderHistoryControl extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
         HttpSession session = request.getSession();
         if (session.getAttribute("account") == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
-
         } else {
             Account a = (Account) session.getAttribute("account");
-            if (a.getRole() != helper.Role.Customer) {
+            if (a.getRole() == helper.Role.Customer) {
                 response.sendRedirect(request.getContextPath() + "/index.jsp");
                 return;
             }
-            OrderService ordersv = new OrderService();
-            String username = a.getUsername();
-            int indexPage;
-            if (request.getParameter("indexPage") != null&& !request.getParameter("indexPage").isEmpty()) {
 
+            int indexPage;
+            if (request.getParameter("indexPage") != null && !request.getParameter("indexPage").isEmpty()) {
                 indexPage = Integer.parseInt(request.getParameter("indexPage"));
             } else {
                 indexPage = 1;
             }
+            String billId = request.getParameter("billId");
 
-            int count = ordersv.countPageOrderCustomer(username);
-            int size = 5;
-            int endPage = count / size;
-            if (count % size != 0) {
-                endPage++;
-
+            ImportBillDetailService ibds = new ImportBillDetailService();
+            Set<String> colorInBill = new HashSet<>();
+            Set<String> sizeInBill = new HashSet<>();
+            List<ImportBillDetailInfor> count = ibds.getImportBillDetailByBillI(Integer.parseInt(billId));
+            for (ImportBillDetailInfor billDT : count) {
+                colorInBill.add(billDT.getColor_name());
             }
-            if(request.getParameter("feedbackid")!= null){
-                String orderid = (request.getParameter("feedbackid"));
-                request.setAttribute("orderid", orderid);
+            for (ImportBillDetailInfor billSZ : count) {
+                sizeInBill.add(billSZ.getSize_name().toString()); // Sử dụng toString() để chuyển đổi ProductSizeType thành String
             }
-            List<Order> lstOrder = ordersv.getTop50OrderHistoryByAccountID(a.getUsername(), indexPage);
 
-            
-            
-            request.setAttribute("lstOrder", lstOrder);
+            int orderPerPage = 5;
+            int starCountList = (indexPage - 1) * orderPerPage;
+            int endCountList = Math.min(starCountList + orderPerPage, count.size());
+            //trang1 0_ 5
+            // trang 2 5  10
+//            /trang 3 10  11
+
+            List<ImportBillDetailInfor> count1 = count.subList(starCountList, endCountList);
+            int endPage = (int) Math.ceil((double) count.size() / orderPerPage);
+            request.setAttribute("prvlst", count1);
+            request.setAttribute("colorInBill", colorInBill);
+            request.setAttribute("sizesInBill", sizeInBill);
+            request.setAttribute("billId", billId);
             request.setAttribute("endPage", endPage);
-            System.out.println(lstOrder.toString());
-            request.getRequestDispatcher("/orderHistory.jsp").forward(request, response);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/Bill_ImportDetail.jsp");
+            dispatcher.forward(request, response);
         }
     }
 
@@ -107,18 +113,7 @@ public class OrderHistoryControl extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-             String feedback = request.getParameter("feedback");
-               int orderid =Integer.parseInt( request.getParameter("orderid"));
-                       int indexPage =Integer.parseInt( request.getParameter("indexPage"));
-             OrderService ordersv = new OrderService();
-             if(feedback== null || feedback.trim().length()==0){
-                              response.sendRedirect(request.getContextPath()+"/OrderHistoryControl?indexPage="+indexPage);
-return;
-             }
-             ordersv.updateFbCustomer(feedback, orderid);
-             response.sendRedirect(request.getContextPath()+"/OrderHistoryControl?indexPage="+indexPage);
-             
+        processRequest(request, response);
     }
 
     /**

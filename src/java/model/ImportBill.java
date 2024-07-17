@@ -14,4 +14,14 @@ public class ImportBill {
     private String create_date;
     private double total_amount;
     private String image_bill;
+    
+    @Override
+public String toString() {
+    return "ImportBill{" +
+            "bill_id=" + bill_id +
+            ", create_date='" + create_date + '\'' +
+            ", total_amount=" + total_amount +
+            ", image_bill='" + image_bill + '\'' +
+            '}';
+}
 }
