@@ -8,6 +8,11 @@ import db.DBContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.ProductColor;
 
 /**
@@ -55,9 +60,63 @@ public class ProductColorService {
         return proColor;
     }
 
-    public static void main(String[] args) {
-        ProductColorService ps = new ProductColorService();
-        ps.getProductColorByID(1);
-        System.out.println(ps.getProductColorByID(2));
+    public ProductColor GetProColorByID(int id) {
+        ProductColor pro = null;
+        String sql = "select * from ProductColors where color_id =?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                pro = new ProductColor(
+                        rs.getInt("color_id"),
+                        rs.getString("color_name")
+                );
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return pro;
+    }
+
+    public List<ProductColor> getALLProductColor() {
+        List<ProductColor> list = new ArrayList<>();
+        String sql = "Select * from ProductColors";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new ProductColor(
+                        rs.getInt("color_id"),
+                        rs.getString("color_name")
+                ));
+            }
+        } catch (Exception e) {
+        }
+        return list;
+    }
+
+    public boolean addNewColor(String color_name) {
+        boolean isAdded = false;
+        String sql = "INSERT INTO ProductColors (color_name) VALUES (?)";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, color_name);
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                isAdded = true;
+            }
+        } catch (Exception e) {
+         
+        }
+        return isAdded;
     }
 }
