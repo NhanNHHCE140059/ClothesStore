@@ -336,6 +336,8 @@
     <div class="search-form-container">
         <h2>Search Import Bill Details</h2>
         <form action="SearchImportBillDetailController" method="get" id="searchForm">
+            <input type="hidden" name="indexPageback" value="${param.indexPageback != null ?  param.indexPageback : indexPageback}">
+       
             <label for="detailBill_id">Detail Bill ID:</label>
             <input type="text" id="detailBill_id" name="detailBill_id" pattern="\d+" title="Detail Bill ID must be a positive number" value="${param.detailBill_id}"><br><br>
 

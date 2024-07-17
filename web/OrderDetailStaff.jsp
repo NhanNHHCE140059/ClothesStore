@@ -200,11 +200,41 @@
                     </tbody>
                 </table>
             </div>
+            
+            
+                <c:if  test ="${not empty aaa}">
+                <div class="pagination" id="pagination">
+                    <c:if test="${endPage != 0}">
+                        <a href="#" class="page-link prev" title="Previous Page">&#9664;</a>
+                        <div class="page-numbers">
+                            <c:forEach var="i" begin="1" end="${endPage}">
+                                <a href="OrderSearchStaffController?orderId=${param.orderId}&orderDateFrom=${param.orderDateFrom}&orderDateTo=${param.orderDateTo}&orderStatus=${param.orderStatus}&shippingStatus=${param.shippingStatus}&payStatus=${param.payStatus}&indexPage=${i}&feedbackid=${o.order_id}&totalPriceTo=${param.totalPriceTo}&totalPriceFrom=${param.totalPriceFrom}" class="page-link" title="Go to page ${i}">${i}</a>
+                            </c:forEach>
+                        </div>
+                        <a href="#" class="page-link next" title="Next Page">&#9654;</a>
+                    </c:if>
+                </div>
+                                    </c:if>
+ <c:if  test ="${ empty aaa}">
+                                <div class="pagination" id="pagination">
+                    <c:if test="${endPage != 0}">
+                        <a href="#" class="page-link prev" title="Previous Page">&#9664;</a>
+                        <div class="page-numbers">
+                            <c:forEach var="i" begin="1" end="${endPage}">
+                                <a href="OrderDetailStaffControl?indexPage=${i}&orderIds=${param.orderIds}" class="page-link" title="Go to page ${i}">${i}</a>
+                            </c:forEach>
+                        </div>
+                        <a href="#" class="page-link next" title="Next Page">&#9654;</a>
+                    </c:if>
+                </div>
+            </div>
+        </div>
+           </c:if>
      <c:if  test ="${not empty param.search}">
-            <a href="${pageContext.request.contextPath}/OrderSearchStaffController?orderId=${param.orderId}&orderDateFrom=${param.orderDateFrom}&orderDateTo=${param.orderDateTo}&orderStatus=${param.orderStatus}&shippingStatus=${param.shippingStatus}&payStatus=${param.payStatus}&indexPage=${param.indexPage}&feedbackid=${o.order_id}&totalPriceTo=${param.totalPriceTo}&totalPriceFrom=${param.totalPriceFrom}" class="back-button">Back to Order Management</a>
+<!--            <a href="${pageContext.request.contextPath}/OrderSearchStaffController?orderId=${param.orderId}&orderDateFrom=${param.orderDateFrom}&orderDateTo=${param.orderDateTo}&orderStatus=${param.orderStatus}&shippingStatus=${param.shippingStatus}&payStatus=${param.payStatus}&indexPage=${param.indexPage}&feedbackid=${o.order_id}&totalPriceTo=${param.totalPriceTo}&totalPriceFrom=${param.totalPriceFrom}" class="back-button">Back to Order Management</a>-->
                                                     </c:if>
      <c:if  test ="${ empty param.search}">
-            <a href="${pageContext.request.contextPath}/OrderHistoryStaffControl?indexPage=${param.indexPage}" class="back-button">Back to Order Management</a>
+<!--            <a href="${pageContext.request.contextPath}/OrderHistoryStaffControl?indexPage=${param.indexPage}" class="back-button">Back to Order Management</a>-->
                                                     </c:if>
 
         </div>
@@ -237,28 +267,107 @@
         <jsp:include page="/shared/_footer.jsp" />
         <!-- End of Footer Area -->
 
-        <script>
-            // Image Modal functionality
-            document.querySelectorAll('.image-link').forEach(item => {
-                item.addEventListener('click', event => {
-                    event.preventDefault();
-                    let imageUrl = event.target.closest('.image-link').getAttribute('data-image-url');
-                    document.getElementById('modalImage').src = imageUrl;
-                    document.getElementById('imageModal').style.display = 'block';
-                });
-            });
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var pageIndex = getQueryParameter('indexPage');
+        var links = document.querySelectorAll('.page-numbers .page-link');
+        var prevButton = document.querySelector('.page-link.prev');
+        var nextButton = document.querySelector('.page-link.next');
+        var currentPage = pageIndex ? parseInt(pageIndex) : 1;
+        var totalPages = links.length;
+        var maxVisiblePages = 5;
+        var startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 1);
+        var endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
 
-            // Close modal when clicking on close button
-            document.querySelector('.image-modal-content .close').addEventListener('click', () => {
-                document.getElementById('imageModal').style.display = 'none';
-            });
-
-            // Close modal when clicking outside of the modal
-            window.addEventListener('click', event => {
-                if (event.target === document.getElementById('imageModal')) {
-                    document.getElementById('imageModal').style.display = 'none';
+        function showPageNumbers() {
+            links.forEach(function(link, index) {
+                var pageNum = index + 1;
+                if (pageNum >= startPage && pageNum <= endPage) {
+                    link.style.display = 'inline-block';
+                } else {
+                    link.style.display = 'none';
                 }
             });
-        </script>
+            setActivePage(currentPage);
+        }
+
+        function setActivePage(pageIndex) {
+            links.forEach(function(link) {
+                link.classList.remove('active');
+                if (link.textContent == pageIndex) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        function updatePageNumbers(direction) {
+            if (direction === 'next' && endPage < totalPages) {
+                startPage++;
+                endPage++;
+            } else if (direction === 'prev' && startPage > 1) {
+                startPage--;
+                endPage--;
+            }
+            showPageNumbers();
+        }
+
+        prevButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (startPage > 1) {
+                updatePageNumbers('prev');
+            }
+        });
+
+        nextButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (endPage < totalPages) {
+                updatePageNumbers('next');
+            }
+        });
+
+        links.forEach(function(link) {
+            link.addEventListener('click', function() {
+                currentPage = parseInt(link.textContent);
+                startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 1);
+                endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+                showPageNumbers();
+                setActivePage(currentPage);
+            });
+        });
+
+        showPageNumbers();
+    });
+
+    function getQueryParameter(name) {
+        var urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+    
+    function searchByUsername(param) {
+    var Username = param.value.trim();
+    if (Username === "") {
+        location.reload();
+        document.getElementById('pagination').style.display = 'flex';
+        return;
+    }
+
+    document.getElementById('pagination').style.display = 'none';
+    $.ajax({
+        url: "/clothesstore/SearchOrderManagementController",
+        type: "get", //send it through get method
+        data: {
+            Username: Username
+        },
+        success: function (data) {
+            var row = document.getElementById("searchstf");
+            row.innerHTML = data;
+        },
+        error: function (xhr) {
+
+        }
+    });
+}
+</script>
+
     </body>
 </html>

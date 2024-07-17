@@ -6,14 +6,16 @@
 package controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
-import model.ImportBill;
+import model.Account;
+
 import model.OrderDetailStaff;
 import service.OrderDetailService;
 
@@ -34,16 +36,38 @@ public class OrderDetailStaffControl extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+                        HttpSession session = request.getSession();
+        if (session.getAttribute("account") == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+        } else {
+            Account a = (Account) session.getAttribute("account");
+            if (a.getRole() == helper.Role.Customer) {
+                response.sendRedirect(request.getContextPath() + "/index.jsp");
+                return;
+            }
+               int indexPage;
+            if (request.getParameter("indexPage") != null && !request.getParameter("indexPage").isEmpty()) {
+                indexPage = Integer.parseInt(request.getParameter("indexPage"));
+            } else {
+                indexPage = 1;
+            }
                 response.setContentType("text/html;charset=UTF-8");
                   String orderId = request.getParameter("orderIds");
                   OrderDetailService dao = new OrderDetailService();
-    List<OrderDetailStaff> lstof = dao.getOrderDetailByOrderIDCustomerForStaff(Integer.parseInt(orderId));
+    List<OrderDetailStaff> count = dao.getOrderDetailByOrderIDCustomerForStaff(Integer.parseInt(orderId));
 //        request.setAttribute("endPage", endPage);
-        request.setAttribute("lstof", lstof);
-        
+
+                      int orderPerPage = 5;
+            int starCountList = (indexPage - 1) * orderPerPage;
+            int endCountList = Math.min(starCountList + orderPerPage, count.size());
+            System.out.println(starCountList+"   "+endCountList+"  "+count.size());
+            List<OrderDetailStaff> count1 = count.subList(starCountList, endCountList);
+            int endPage = (int) Math.ceil((double) count.size() / orderPerPage);
+        request.setAttribute("lstof", count1);
+           request.setAttribute("endPage", endPage);
         request.getRequestDispatcher("/OrderDetailStaff.jsp").forward(request, response);
     } 
-
+    }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
      * Handles the HTTP <code>GET</code> method.

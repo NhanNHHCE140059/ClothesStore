@@ -165,7 +165,7 @@
 
                                     </c:when>
                                                                            <c:when test = "${o.shipping_status=='SUCCESS'&&o.feedback_details== null}">
-                                                                               <td class="Feed_Back"><span><a href="${pageContext.request.contextPath}/OrderDetailControl?feedbackid=${o.order_detail_id}&orderId=${param.orderId}"><button>Click to feedback</button></a></span></td>
+                                                                               <td class="Feed_Back"><span><a href="${pageContext.request.contextPath}/OrderDetailControl?feedbackid=${o.order_detail_id}&orderId=${param.orderId}&indexPage=${param.indexPage}"><button>Click to feedback</button></a></span></td>
 
                                     </c:when>
                                 </c:choose>
@@ -182,6 +182,7 @@
 <c:if test = "${not empty order_detail_id }">
     <div id="myModal" class="modal" >
         <form action="OrderDetailControl" method="post">
+            <input type = "hidden" name ="indexPage" value="${param.indexPage}">
             <input name="order_detail_id" value="${order_detail_id}" type="hidden">
             <input name="orderId" value="${param.orderId}" type="hidden">
             <div class="modal-content">
@@ -189,7 +190,7 @@
                 <input type="text" id="feedbackInput" name="feedback" placeholder="Enter your feedback here">
                 <div class="modal-footer">
                     <button type="submit" class="modal-button" id="submitFeedback">Submit Feedback</button>
-                    <a href="${pageContext.request.contextPath}/OrderDetailControl?orderId=${param.orderId}" class="modal-button cancel">Cancel</a>
+                    <a href="${pageContext.request.contextPath}/OrderDetailControl?orderId=${param.orderId}&indexPage=${param.indexPage}" class="modal-button cancel">Cancel</a>
                 </div>
             </div>
         </form>

@@ -460,12 +460,12 @@ input[type="text"] {
                         <td>${o.shipping_status}</td>
                         <td class="actions">
                             <c:if test="${not empty aaa}">
-                                <a href="OrderDetailStaffControl?orderIds=${o.order_id}&orderId=${param.orderId}&orderDateFrom=${param.orderDateFrom}&orderDateTo=${param.orderDateTo}&orderStatus=${param.orderStatus}&shippingStatus=${param.shippingStatus}&payStatus=${param.payStatus}&indexPage=${param.indexPage}&feedbackid=${o.order_id}&totalPriceTo=${param.totalPriceTo}&totalPriceFrom=${param.totalPriceFrom}&search=true" class="detail" title="Detail Order ${o.order_id}">
+                                <a href="OrderDetailStaffControl?orderIds=${o.order_id}&orderId=${param.orderId}&orderDateFrom=${param.orderDateFrom}&orderDateTo=${param.orderDateTo}&orderStatus=${param.orderStatus}&shippingStatus=${param.shippingStatus}&payStatus=${param.payStatus}&feedbackid=${o.order_id}&totalPriceTo=${param.totalPriceTo}&totalPriceFrom=${param.totalPriceFrom}&search=true" class="detail" title="Detail Order ${o.order_id}">
                                     <i class="material-icons">visibility</i>
                                 </a>
                             </c:if>
                             <c:if test="${empty aaa}">
-                                <a href="OrderDetailStaffControl?orderIds=${o.order_id}&indexPage=${param.indexPage}" class="detail" title="Detail Order ${o.order_id}">
+                                <a href="OrderDetailStaffControl?orderIds=${o.order_id}" class="detail" title="Detail Order ${o.order_id}">
                                     <i class="material-icons">visibility</i>
                                 </a>
                             </c:if>

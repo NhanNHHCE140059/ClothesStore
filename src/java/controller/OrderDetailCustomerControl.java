@@ -70,7 +70,6 @@ public class OrderDetailCustomerControl extends HttpServlet {
             String feedback_details = request.getParameter("feedback");
             String orderDetailIdStr = request.getParameter("order_detail_id");
             String orderIdStr = request.getParameter("orderId");
-
             // Kiểm tra và chuyển đổi tham số
             if (orderDetailIdStr == null || orderDetailIdStr.trim().isEmpty()
                     || orderIdStr == null || orderIdStr.trim().isEmpty()) {
@@ -92,9 +91,10 @@ public class OrderDetailCustomerControl extends HttpServlet {
 
             // Cập nhật phản hồi của khách hàng
             ordersv.updateFbDetailCustomer(feedback_details, order_detail_id);
-
+            System.out.println(request.getParameter("indexPage"));
             // Chuyển hướng về trang chi tiết đơn hàng với orderId
-            response.sendRedirect(request.getContextPath() + "/OrderDetailControl?orderId=" + orderId);
+            response.sendRedirect(request.getContextPath() + "/OrderDetailControl?orderId=" + orderId+"&indexPage="+request.getParameter("indexPage"));
+            
         } catch (NumberFormatException e) {
             // Xử lý lỗi chuyển đổi số
             response.sendRedirect(request.getContextPath() + "/OrderDetailControl");

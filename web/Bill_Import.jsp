@@ -350,7 +350,8 @@
                                     <td class="image"><img src="${o.image_bill}" alt="Bill Image" onclick="showImageModal(this)"></td>
                                     <td>
                                         <c:if test="${ empty aaa}">
-                                        <a href="ImportBillDetailController?billId=${o.bill_id}&indexPageback=${param.indexPage}">
+                                      <a href="ImportBillDetailController?billId=${o.bill_id}&indexPageback=${param.indexPage != null ? param.indexPage : param.indexPageback}">
+
                                             <i class="material-icons" data-toggle="tooltip" title="Detail">Detail</i>
                                         </a>
                                             </c:if>

@@ -155,8 +155,9 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
              request.setAttribute("selectedSize", sizeIdStr);
            request.setAttribute("sizesInBill", sizeInBill);
                       request.setAttribute("billId", billId);
-
+  request.setAttribute("indexPageback", request.getParameter("indexPageback"));//search roi quay ve dung trang 
         System.out.println(endPage);
+       
         request.getRequestDispatcher("Bill_ImportDetail.jsp").forward(request, response);
     }
 }
