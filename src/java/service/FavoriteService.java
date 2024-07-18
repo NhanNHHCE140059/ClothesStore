@@ -103,12 +103,13 @@ public class FavoriteService {
         }
     }
 
-    public void deleteAllFavoriteByAccID(int acc_id) {
+    public void deleteProductFavoriteByProId(int pro_id,int acc_id) {
         try {
-            String query = "DELETE FROM Favorites WHERE acc_id=?";
+            String query = "DELETE FROM Favorites WHERE pro_id=? and acc_id=?";
             connection = dbcontext.getConnection();
             ps = connection.prepareStatement(query);
-            ps.setInt(1, acc_id);
+            ps.setInt(1, pro_id);
+              ps.setInt(2, acc_id);
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace(); // Optional: log the error for debugging
@@ -129,5 +130,6 @@ public class FavoriteService {
             }
         }
     }
+    
 
 }

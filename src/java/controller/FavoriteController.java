@@ -74,4 +74,20 @@ public class FavoriteController extends HttpServlet {
             request.getRequestDispatcher("favorite.jsp").forward(request, response);
         }
     }
+    
+        @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+                HttpSession session = request.getSession();
+        Account acc = (Account) session.getAttribute("account");
+        FavoriteService p = new FavoriteService();
+        for(Favorite fv : p.getAllFavoriteByAccID(acc.getAcc_id())){
+            if(fv.getPro_id()== Integer.parseInt(request.getParameter("pro_id")) ){
+                p.deleteProductFavoriteByProId(fv.getPro_id(), acc.getAcc_id());
+            }
+        }
+        response.sendRedirect(request.getContextPath()+"/favorite?page="+request.getParameter("page"));
+        
+    }
 }
