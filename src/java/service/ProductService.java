@@ -280,4 +280,31 @@ public class ProductService {
         }
         return list;
     }
+      public List<Product> searchByNameforStaff(String txtSearch) {
+        List<Product> list = new ArrayList<>();
+        String query = "SELECT * FROM Products WHERE pro_name LIKE ?";
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setString(1, "%" + txtSearch + "%");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Product(
+                        rs.getInt("pro_id"),
+                        rs.getString("pro_name"),
+                        rs.getDouble("pro_price"),
+                        rs.getString("imageURL"),
+                        rs.getString("description"),
+                        rs.getInt("cat_id"),
+                        ProductStatus.values()[rs.getInt("status_product")]
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("loi roi ban oi");
+        } catch (Exception e) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return list;
+    }
 }

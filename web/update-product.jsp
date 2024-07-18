@@ -1,26 +1,12 @@
-<%-- 
-    Document   : update-product
-    Created on : Jul 1, 2024, 9:01:58 AM
-    Author     : Huenh
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@page import="service.*" %>
 <%@page import="model.*" %>
 <%@page import="helper.*" %>
 <%@page import="java.util.*" %>
 <!DOCTYPE html>
 <html lang="en">
-    <%@page import="model.Account"%>
-    <%@page import="helper.Role"%>
-    <%@page import="model.Order"%>
-    <%@page import="java.util.List"%>
-    <% Account account = (Account) request.getAttribute("account"); %>
-    <% List<Order> listOrderS = (List<Order>) request.getAttribute("listOrderShipped"); %>
-    <% Integer endPage = (Integer) request.getAttribute("endPage");%>
-    <% String searchText = (String) request.getAttribute("searchText"); %>
-    <% Integer indexPage =(Integer) request.getAttribute("indexPage"); %>
     <head>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/create-product.css"/>
         <meta charset="UTF-8">
@@ -66,37 +52,52 @@
             <div class="card">
                 <div class="card-header">Update Product</div>
                 <div class="card-body">
-                    <form action="update-product" method="post" enctype="multipart/form-data">
-                        <input name="product_id" value="${product.pro_id}" type ="hidden" >
-                        <div class="input-group form-group">
+                    <form action="update-product" method="post" id="form-update" enctype="multipart/form-data">
+                        <input name="product_id" value="${product.pro_id}" type="hidden">
+                        <div class="input-group form-group" style="margin-bottom: 30px;">
                             <label>Product name:</label>
                             <input type="text" name="name_product" value="${product.pro_name}" class="form-control" required placeholder="Product name">
                         </div>
-                        <div class="input-group form-group">
-                            <label>Image URL:</label>
-                            <input type="file" name="img_product" value="" class="form-control" required placeholder="Image URL">
+
+                        <label>Image Product:</label>
+                        <div class="input-group form-group" style="text-align: center; margin-bottom: 30px">
+
+                            <img style="width:30%; border:1px solid;" src="${product.imageURL}" alt="alt">
+                            <br>
+
                         </div>
-                        <div class="input-group form-group">
+                        <div style="margin-bottom: 30px">
+                            <label>New Image Product: (No require)</label>                            
+                            <input type="file" name="img_product" id="img_product" class="form-control" placeholder="Image URL">
+                            <img id="previewImage" style="display: none; width: 200px; margin-top: 10px;" />
+                        </div>
+                        <div class="input-group form-group" style="margin-bottom: 30px">
                             <label>Price:</label>
-                            <input type="text" name="pro_price" value="${product.pro_price}" class="form-control" required placeholder="Price">
+                            <input type="hidden" name="pro_price" value="${product.pro_price}">
+                            <fmt:formatNumber value="${product.pro_price}" type="number" pattern="#,##0"/> VND
+                            </br>
+                            <div style="margin-top:10px">
+                                <label>New Price:</label>
+                                <input style="padding:10px; border-radius:8px;overflow:hidden;" type="text" name="newPrice" id="amount" spellcheck="false" placeholder="(No require)"/>
+                            </div>
                         </div>
-                        <div class="input-group form-group">
+                        <div class="input-group form-group" style="margin-bottom: 30px">
                             <label>Description:</label>
                             <input type="text" name="description" value="${product.description}" class="form-control" required placeholder="Description">
                         </div>
-                        <div class="select">
+                        <div class="select" style="margin-bottom: 30px">
                             <label>Choose category name:</label>
                             <select name="category">
                                 <c:forEach var="cate" items="${listcate}">
-                                <option value="${cate.cat_id}">${cate.cat_name}</option>
+                                    <option value="${cate.cat_id}">${cate.cat_name}</option>
                                 </c:forEach>
                             </select>
                         </div>               
-                        <div>
+                        <div>                     
                         </div>
                         <div class="form-group d-flex justify-content-center">
                             <input type="submit" value="Update" class="btn-update">
-                            <a href="${pageContext.request.contextPath}/manage-product" class="back-home">Cancel</a>
+                            <a style="display: inline-block; margin-top: 0px; background-color: #939aa3; color: white; padding: 0 14px; padding-top: 5px; padding-bottom: 9px; text-align: center; border-radius: 5px; text-decoration: none;" href="${pageContext.request.contextPath}/main-manage-product?searchTxt=${param.searchTxt !=null ? param.searchTxt : ''}&page=${param.page}">Cancel</a>
                         </div>
                     </form>
                 </div>
