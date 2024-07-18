@@ -14,6 +14,7 @@ import service.*;
 import model.*;
 import helper.*;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.nio.file.Paths;
@@ -29,6 +30,17 @@ public class UpdateProductController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("account") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        Account acc = (Account) session.getAttribute("account");
+        if (acc.getRole() != Role.Staff) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
         if (request.getParameter("idPro") != null) {
             int idPro = Integer.parseInt(request.getParameter("idPro"));
             ProductService productService = new ProductService();
@@ -49,7 +61,18 @@ public class UpdateProductController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Lấy các tham số từ request
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("account") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        Account acc = (Account) session.getAttribute("account");
+        if (acc.getRole() != Role.Customer) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+
         String nameProduct = request.getParameter("name_product");
         String proPrice = request.getParameter("pro_price");
         String description = request.getParameter("description");
@@ -62,11 +85,11 @@ public class UpdateProductController extends HttpServlet {
         }
         proPrice = proPrice.replace(" VND", "").replace(".", "");
 
+        String filename = null;
         String relativeFilePath = null;
 
-        // Xử lý tệp hình ảnh nếu có
         if (part != null && part.getSize() > 0) {
-            String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+            filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
             String uploadDir = getServletContext().getRealPath("/") + "assets/img";
 
             File uploadDirFile = new File(uploadDir);
@@ -83,9 +106,8 @@ public class UpdateProductController extends HttpServlet {
             ProductService prdS = new ProductService();
             prdS.updateProduct(nameProduct, Double.parseDouble(proPrice), description, relativeFilePath, Integer.parseInt(categoryID), Integer.parseInt(productID));
         }
-        // Gọi phương thức updateProduct từ ProductService
 
-        // Chuyển hướng hoặc chuyển tiếp đến trang phù hợp
-        response.sendRedirect("main-manage-product"); // Thay "somewhere.jsp" bằng trang thực tế
+        response.sendRedirect("main-manage-product");
     }
+
 }
