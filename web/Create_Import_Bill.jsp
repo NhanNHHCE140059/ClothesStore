@@ -14,7 +14,7 @@
     
     
 
-    %>
+%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -180,55 +180,15 @@
                 text-decoration: none;
                 cursor: pointer;
             }
-            
+            .wrapAll{
+                display: flex;
+            }
         </style>
     </head>
 
     <body>
-
-  <div class="sidebar">
-            <div class="sidebar-header">Dashboard For Staff</div>
-            <a href="#" class="menu-item">Product Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">Create Product</a>
-                <a href="#">Update Product</a>
-                <a href="#">Delete Product</a>
-            </div>
-            <a href="#" class="menu-item">Category Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">Create Category</a>
-                <a href="#">Update Category</a>
-                <a href="#">Delete Category</a>
-            </div>
-            <a href="#" class="menu-item">Feedback Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">View Feedback</a>
-            </div>
-            <a href="#" class="menu-item">Orders Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">Confirm Orders</a>
-                <a href="#">Cancel Orders</a>
-                <a href="#">Change Ship Status</a>
-            </div>
-            <a href="#" class="menu-item">Warehouse Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">Create New Product (Warehouse)</a>
-                <a href="#">Update Product (Warehouse)</a>
-                <a href="#">Delete Product (Warehouse)</a>
-            </div>
-            <a href="#" class="menu-item">Import Bill Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">Create New Bill (Import Bill)</a>
-                <a href="#">View Bill (Import Bill)</a>
-            </div>
-       
-        </div>
+     
+        <jsp:include page="/shared/_slideBar.jsp" />
 
         <div class="content">
             <a href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
@@ -256,16 +216,16 @@
 
                     <div class="form-group">
                         <label for="select-variant">Variant</label>
-<select id="select-variant" name="variant" class="form-select" aria-label="Default select example" required>
-    <option value="">Select a variant...</option>
-    <% for(ProductsVariant p : prvlst) { %>
-        <option value="<%= p.getVariant_id() %>">
-            <span style="font-weight: bold; min-width: 300px;display: inline-block" >Name:</span>&nbsp;<%= prsv.GetProById(p.getPro_id()).getPro_name() %>&nbsp;&nbsp;|&nbsp;&nbsp; 
-            <span style="font-weight: bold;min-width: 300px;display: inline-block">Size:</span>&nbsp;<%= p.getSize_name() %>&nbsp;&nbsp;|&nbsp;&nbsp; 
-            <span style="font-weight: bold;min-width: 300px; margin-right: 10px;display: inline-block">Color:</span><%= prcsv.GetProColorByID(p.getColor_id()).getColor_name() %>
-        </option>
-    <% } %>
-</select>
+                        <select id="select-variant" name="variant" class="form-select" aria-label="Default select example" required>
+                            <option value="">Select a variant...</option>
+                            <% for(ProductsVariant p : prvlst) { %>
+                            <option value="<%= p.getVariant_id() %>">
+                            <span style="font-weight: bold; min-width: 300px;display: inline-block" >Name:</span>&nbsp;<%= prsv.GetProById(p.getPro_id()).getPro_name() %>&nbsp;&nbsp;|&nbsp;&nbsp; 
+                            <span style="font-weight: bold;min-width: 300px;display: inline-block">Size:</span>&nbsp;<%= p.getSize_name() %>&nbsp;&nbsp;|&nbsp;&nbsp; 
+                            <span style="font-weight: bold;min-width: 300px; margin-right: 10px;display: inline-block">Color:</span><%= prcsv.GetProColorByID(p.getColor_id()).getColor_name() %>
+                            </option>
+                            <% } %>
+                        </select>
 
 
                     </div>
@@ -275,7 +235,6 @@
                 </form>
             </div>
         </div>
-
         <script>
             $(document).ready(function () {
                 $('#select-variant').selectize({
@@ -283,24 +242,6 @@
                     sortField: 'text'
                 });
             });
-            document.querySelectorAll('.menu-item').forEach(item => {
-    item.addEventListener('click', () => {
-        const submenu = item.nextElementSibling.nextElementSibling;
-        const separator = item.nextElementSibling;
-        if (submenu.style.display === 'block') {
-            submenu.style.display = 'none';
-            separator.style.display = 'block';
-            item.classList.remove('active');
-        } else {
-            document.querySelectorAll('.submenu').forEach(sub => sub.style.display = 'none');
-            document.querySelectorAll('.separator').forEach(sep => sep.style.display = 'block');
-            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-            submenu.style.display = 'block';
-            separator.style.display = 'none';
-            item.classList.add('active');
-        }
-    });
-});
         </script>
     </body>
 
