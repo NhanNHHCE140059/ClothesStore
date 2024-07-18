@@ -1,10 +1,7 @@
-<%-- 
-    Document   : statistic
-    Created on : Jul 16, 2024, 4:46:12 PM
-    Author     : Nguyen Thanh Thien - CE171253
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page import="java.util.Arrays" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -51,9 +48,11 @@
             }
             .info-box p {
                 margin: 5px 0;
+                font-size: 20px;
+                font-weight: bold;
             }
             .info-box .number {
-                font-size: 24px;
+                font-size: 30px;
                 font-weight: bold;
                 color: #0275d8;
             }
@@ -92,7 +91,7 @@
             }
             h2 {
                 margin-bottom: 20px;
-                font-size: 20px;
+                font-size: 30px;
                 color: #333;
                 text-align: center;
             }
@@ -155,10 +154,6 @@
             ul li {
                 padding: 8px 0;
             }
-            img {
-                width: 100px; 
-                height: 100px;
-            }
         </style>
     </head>
     <body>
@@ -166,23 +161,19 @@
             <div class="header">
                 <div class="info-box">
                     <p>Customer</p>
-                    <p class="number">43</p>
-                    <p style="color: green">6% ↑</p>
+                    <p class="number">${totalAccount}</p>
                 </div>
                 <div class="info-box">
                     <p>Product</p>
-                    <p class="number">17</p>
-                    <p style="color: red">3% ↓</p>
+                    <p class="number">${totalProduct}</p>
                 </div>
                 <div class="info-box">
                     <p>Order</p>
-                    <p class="number">7</p>
-                    <p style="color: green">9% ↑</p>
+                    <p class="number">${totalOrder}</p>
                 </div>
                 <div class="info-box">
                     <p>Daily Earnings</p>
-                    <p class="number">27.3K</p>
-                    <p style="color: green">3% ↑</p>
+                    <p class="number"><fmt:formatNumber value="${daiLyErn}" type="number" pattern="#,##0" /> VND</p>
                 </div>
             </div>
             <div class="section">
@@ -200,10 +191,11 @@
                 </div>
             </div>
             <div class="user-list">
-                <h2>Top 10 Customers</h2>
+                <h2>Top 10 Customers Paid</h2>
                 <table>
                     <thead>
                         <tr>
+                            <th>No.</th>
                             <th>Username</th>
                             <th>Name</th>
                             <th>Email</th>
@@ -213,86 +205,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>tokuda1</td>
-                            <td>Tokuda</td>
-                            <td>tokuda@jav.com</td>
-                            <td>JAV HD</td>
-                            <td>10</td>
-                            <td>1.000.000 đ</td>
-                        </tr>
-                        <tr>
-                            <td>motocute</td>
-                            <td>Hashimoto</td>
-                            <td>hashimotocuteee@jav.com</td>
-                            <td>Osaka, Japan</td>
-                            <td>8</td>
-                            <td>800.000 đ</td>
-                        </tr>
-                        <tr>
-                            <td>hihi69</td>
-                            <td>Maria Ozawa</td>
-                            <td>mariaoki@porn.com</td>
-                            <td>Tokyo</td>
-                            <td>7</td>
-                            <td>700.000 đ</td>
-                        </tr>
-                        <tr>
-                            <td>user4</td>
-                            <td>Alice Brown</td>
-                            <td>alice@example.com</td>
-                            <td>101 Maple St</td>
-                            <td>6</td>
-                            <td>600.000 đ</td>
-                        </tr>
-                        <tr>
-                            <td>user5</td>
-                            <td>Charlie White</td>
-                            <td>charlie@example.com</td>
-                            <td>202 Birch St</td>
-                            <td>5</td>
-                            <td>500.000 đ</td>
-                        </tr>
-                        <tr>
-                            <td>user6</td>
-                            <td>David Black</td>
-                            <td>david@example.com</td>
-                            <td>303 Cedar St</td>
-                            <td>4</td>
-                            <td>400.000 đ</td>
-                        </tr>
-                        <tr>
-                            <td>user7</td>
-                            <td>Eva Green</td>
-                            <td>eva@example.com</td>
-                            <td>404 Elm St</td>
-                            <td>3</td>
-                            <td>300.000 đ</td>
-                        </tr>
-                        <tr>
-                            <td>user8</td>
-                            <td>Frank Blue</td>
-                            <td>frank@example.com</td>
-                            <td>505 Willow St</td>
-                            <td>2</td>
-                            <td>200.000 đ</td>
-                        </tr>
-                        <tr>
-                            <td>user9</td>
-                            <td>Grace Red</td>
-                            <td>grace@example.com</td>
-                            <td>606 Ash St</td>
-                            <td>1</td>
-                            <td>150.000 đ</td>
-                        </tr>
-                        <tr>
-                            <td>user10</td>
-                            <td>Henry Gold</td>
-                            <td>henry@example.com</td>
-                            <td>707 Fir St</td>
-                            <td>1</td>
-                            <td>100.000 đ</td>
-                        </tr>
+                        <c:forEach var="list10AccountPaid" items="${listAccountPaid}" varStatus="status">
+                            <tr>
+                                <td>${status.index + 1}</td>
+                                <td>${list10AccountPaid.username}</td>
+                                <td>${list10AccountPaid.name}</td>
+                                <td>${list10AccountPaid.email}</td>
+                                <td>${list10AccountPaid.address}</td>
+                                <td>${list10AccountPaid.totalBill}
+                                <td><fmt:formatNumber value="${list10AccountPaid.totalAmount}" type="number" pattern="#,##0" /> VND</td>
+                            </tr>
+                        </c:forEach>
                     </tbody>
                 </table>
             </div>
@@ -301,6 +224,7 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>No.</th>
                             <th>Bill ID</th>
                             <th>Customer Username</th>
                             <th>Amount</th>
@@ -308,66 +232,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>bill001</td>
-                            <td>tokuda1</td>
-                            <td>300.000 đ</td>
-                            <td>2024-01-15</td>
-                        </tr>
-                        <tr>
-                            <td>bill002</td>
-                            <td>motocute</td>
-                            <td>250.000 đ</td>
-                            <td>2024-02-10</td>
-                        </tr>
-                        <tr>
-                            <td>bill003</td>
-                            <td>hihi69</td>
-                            <td>200.000 đ</td>
-                            <td>2024-03-05</td>
-                        </tr>
-                        <tr>
-                            <td>bill004</td>
-                            <td>user4</td>
-                            <td>180.000 đ</td>
-                            <td>2024-04-18</td>
-                        </tr>
-                        <tr>
-                            <td>bill005</td>
-                            <td>user5</td>
-                            <td>160.000 đ</td>
-                            <td>2024-05-22</td>
-                        </tr>
-                        <tr>
-                            <td>bill006</td>
-                            <td>user6</td>
-                            <td>140.000 đ</td>
-                            <td>2024-06-15</td>
-                        </tr>
-                        <tr>
-                            <td>bill007</td>
-                            <td>user7</td>
-                            <td>130.000 đ</td>
-                            <td>2024-07-01</td>
-                        </tr>
-                        <tr>
-                            <td>bill008</td>
-                            <td>user8</td>
-                            <td>120.000 đ</td>
-                            <td>2024-07-07</td>
-                        </tr>
-                        <tr>
-                            <td>bill009</td>
-                            <td>user9</td>
-                            <td>110.000 đ</td>
-                            <td>2024-07-08</td>
-                        </tr>
-                        <tr>
-                            <td>bill010</td>
-                            <td>user10</td>
-                            <td>100.000 đ</td>
-                            <td>2024-07-08</td>
-                        </tr>
+                        <c:forEach var="list10Bill" items="${listBillTopValue}" varStatus="status">
+                            <tr>
+                                <td>${status.index + 1}</td>
+                                <td>${list10Bill.billID}</td>
+                                <td>${list10Bill.username}</td>
+                                <td><fmt:formatNumber value="${list10Bill.amount}" type="number" pattern="#,##0" /> VND</td>
+                                <td>${list10Bill.date}</td>
+                            </tr>
+                        </c:forEach>
                     </tbody>
                 </table>
             </div>
@@ -376,161 +249,124 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>No.</th>
                             <th>Product</th>
-                            <th>Name <div class="sort-buttons"><i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i></div></th>
-                            <th>Color <div class="sort-buttons"><i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i></div></th>
-                            <th>Size <div class="sort-buttons"><i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i></div></th>
-                            <th>Price <div class="sort-buttons"><i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i></div></th>
-                            <th>Qty <div class="sort-buttons"><i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i></div></th>
+                            <th>Name</th>
+                            <th>Color</th>
+                            <th>Size</th>
+                            <th>Price</th>
+                            <th>Qty Sold</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><img src="./ImageSWP/product10-1.jfif" alt="Product A Image" /></td>
-                            <td>Product AA</td>
-                            <td>Black</td>
-                            <td>M</td>
-                            <td>$1000</td>
-                            <td>150</td>
-                        </tr>
-                        <tr>
-                            <td><img src="./ImageSWP/product10-2.jfif" alt="Product B Image" /></td>
-                            <td>Product BB</td>
-                            <td>Brown</td>
-                            <td>S</td>
-                            <td>$900</td>
-                            <td>140</td>
-                        </tr>
-                        <tr>
-                            <td><img src="./ImageSWP/product10-3.jfif" alt="Product C Image" /></td>
-                            <td>Product C</td>
-                            <td>Gray</td>
-                            <td>L</td>
-                            <td>$1000</td>
-                            <td>130</td>
-                        </tr>
-                        <tr>
-                            <td><img src="product_image_url_4" alt="Product D Image" /></td>
-                            <td>Product D by Vicki M. Coleman</td>
-                            <td>Blue</td>
-                            <td>M</td>
-                            <td>$1000</td>
-                            <td>120</td>
-                        </tr>
-                        <tr>
-                            <td><img src="product_image_url_5" alt="Product E Image" /></td>
-                            <td>Product E by Erik L. Richards</td>
-                            <td>Orange</td>
-                            <td>M</td>
-                            <td>$100</td>
-                            <td>110</td>
-                        </tr>
-                        <!-- Add more rows as needed -->
+                        <c:forEach var="list20Product" items="${top20Product}" varStatus="status">
+                            <tr>
+                                <td>${status.index + 1}</td>
+                                <td><img src="${list20Product.imageURL}" alt="imgProduct" style="width: 100px; height: 100px; margin-left: 125px;"></td>
+                                <td>${list20Product.name}</td>
+                                <td>${list20Product.color_name}</td>
+                                <td>${list20Product.size_name}</td>
+                                <td><fmt:formatNumber value="${list20Product.price}" type="number" pattern="#,##0" /> VND</td>
+                                <td><fmt:formatNumber value="${list20Product.quantity}" type="number" pattern="#,##0" /></td>                               
+                            </tr>
+                        </c:forEach>
                     </tbody>
                 </table>
+
             </div>
-        </div>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            var ctx1 = document.getElementById("developmentChart").getContext("2d");
-            var developmentChart = new Chart(ctx1, {
-                type: "line",
-                data: {
-                    labels: [
-                        "Jan",
-                        "Feb",
-                        "Mar",
-                        "Apr",
-                        "May",
-                        "Jun",
-                        "Jul",
-                        "Aug",
-                        "Sep",
-                        "Oct",
-                        "Nov",
-                        "Dec",
-                    ],
-                    datasets: [
-                        {
-                            label: "Revenue",
-                            data: [10, 15, 9, 14, 20, 24, 19, 22, 18, 24, 28, 26],
-                            borderColor: "rgba(2, 117, 216, 1)",
-                            backgroundColor: "rgba(2, 117, 216, 0.2)",
-                            fill: true,
-                            lineTension: 0.1,
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <%
+            double[] revenueMonth = (double[]) request.getAttribute("revenueMonth");
+            int totalAcctive = (int) request.getAttribute("totalAcctive");
+            int totalDeacctive = (int) request.getAttribute("totalDeacctive");
+            int totalAccounts = totalAcctive + totalDeacctive;
+            double percentActive = ((double) totalAcctive / totalAccounts) * 100;
+            double percentDeactive = ((double) totalDeacctive / totalAccounts) * 100;
+            %>
+            <script>
+                var revenueMonth = <%= Arrays.toString(revenueMonth) %>;
+                var ctx1 = document.getElementById("developmentChart").getContext("2d");
+                var developmentChart = new Chart(ctx1, {
+                    type: "line",
+                    data: {
+                        labels: [
+                            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                        ],
+                        datasets: [
+                            {
+                                label: "Revenue",
+                                data: revenueMonth,
+                                borderColor: "rgba(2, 117, 216, 1)",
+                                backgroundColor: "rgba(2, 117, 216, 0.2)",
+                                fill: true,
+                                lineTension: 0.1,
+                            }
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                onClick: null,
+                            }
                         },
-                    ],
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        x: {
-                            display: true,
-                            title: {
+                        scales: {
+                            x: {
                                 display: true,
-                                text: "Month",
+                                title: {
+                                    display: true,
+                                    text: "Month",
+                                },
                             },
-                        },
-                        y: {
-                            display: true,
-                            title: {
+                            y: {
                                 display: true,
-                                text: "Revenue",
+                                title: {
+                                    display: true,
+                                    text: "Revenue",
+                                },
                             },
                         },
                     },
-                },
-            });
+                });
 
-            var ctx2 = document.getElementById("doughnutChart").getContext("2d");
-            var doughnutChart = new Chart(ctx2, {
-                type: "doughnut",
-                data: {
-                    labels: ["ACTIVATE", "DEACTIVATE"],
-                    datasets: [
-                        {
-                            data: [63, 37],
-                            backgroundColor: ["#5cb85c", "#d9534f"],
-                            hoverBackgroundColor: ["#4cae4c", "#d9534f"],
-                            borderWidth: 1,
-                        },
-                    ],
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: "top",
+
+                var totalAcctive = <%= totalAcctive %>;
+                var totalDeacctive = <%= totalDeacctive %>;
+                var totalAccounts = <%= totalAccounts %>;
+                var percentActive = <%= percentActive %>.toFixed(2);
+                var percentDeactive = <%= percentDeactive %>.toFixed(2);
+                var ctx2 = document.getElementById("doughnutChart").getContext("2d");
+                var doughnutChart = new Chart(ctx2, {
+                    type: "doughnut",
+                    data: {
+                        labels: ["ACTIVATE: " + totalAcctive + "/" + totalAccounts + " Customer", "DEACTIVATE: " + totalDeacctive + "/" + totalAccounts + " Customer"],
+                        datasets: [
+                            {
+                                data: [percentActive, percentDeactive],
+                                backgroundColor: ["#5cb85c", "#d9534f"],
+                                hoverBackgroundColor: ["#4cae4c", "#d9534f"],
+                                borderWidth: 1,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: "top",
+                                onClick: null
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        return tooltipItem.raw + '%';
+                                    }
+                                }
+                            }
                         },
                     },
-                },
-            });
-
-            // Sorting functionality
-            const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-
-            const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
-                v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
-                )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-
-            document.querySelectorAll('.top-products th').forEach(th => th.addEventListener('click', (() => {
-                const table = th.closest('table');
-                Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
-                    .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-                    .forEach(tr => table.appendChild(tr) );
-
-                // Update sort button styles
-                const sortButtons = th.querySelector('.sort-buttons');
-                if (sortButtons) {
-                    document.querySelectorAll('.sort-buttons i').forEach(icon => icon.classList.remove('active'));
-                    if (this.asc) {
-                        sortButtons.querySelector('.fa-sort-up').classList.add('active');
-                    } else {
-                        sortButtons.querySelector('.fa-sort-down').classList.add('active');
-                    }
-                }
-            })));
-        </script>
+                });
+            </script>
     </body>
 </html>
 

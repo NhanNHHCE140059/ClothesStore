@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author My Computer
  */
-@WebServlet(value = "/static")
+@WebServlet(value = "/statistic")
 public class StaticController extends HttpServlet {
 
     @Override
