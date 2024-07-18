@@ -79,7 +79,7 @@ public class Create_Import_Bill extends HttpServlet {
             System.out.println(variantId);
             int quantity = Integer.parseInt(quantities[i]);
             double importPrice = Double.parseDouble(importPrices[i].replaceAll("[^\\d]", ""));
-            totalPrice += importPrice;
+            totalPrice += importPrice * quantity;
             listIMD.add(new ImportBillDetail(-1, -1, variantId , quantity, importPrice));
         } 
         int bill_id = importBillSV.createImportBill(sqlDate, totalPrice, relativeFilePath);
