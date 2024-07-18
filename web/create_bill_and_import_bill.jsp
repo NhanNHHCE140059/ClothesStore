@@ -8,6 +8,7 @@
         <title>Invoice</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/feedbackManagement.css"/>
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css" rel="stylesheet">
         <style>
             /* Your existing CSS styles */
@@ -124,44 +125,13 @@
                 max-width: 200px;
                 max-height: 200px;
             }
+            .sidebar a {
+                text-decoration: none;
+            }
         </style>
     </head>
     <body>
-        <div class="sidebar">
-            <div class="sidebar-header">Dashboard For Staff</div>
-            <a href="#" class="menu-item">Product Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="/clothesstore/manage-product">Manage Product Variant</a>
-                <a href="/clothesstore/main-manage-product">Manage Product</a>
-            </div>
-            <a href="#" class="menu-item">Category Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">Create Category</a>
-                <a href="#">Update Category</a>
-                <a href="#">Delete Category</a>
-            </div>
-            <a href="#" class="menu-item">Feedback Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">View Feedback</a>
-            </div>
-            <a href="#" class="menu-item">Orders Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">Confirm Orders</a>
-                <a href="#">Cancel Orders</a>
-                <a href="#">Change Ship Status</a>
-            </div>
-            <a href="#" class="menu-item">Warehouse Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">Create New Product (Warehouse)</a>
-                <a href="#">Update Product (Warehouse)</a>
-                <a href="#">Delete Product (Warehouse)</a>
-            </div>  
-        </div>
+        <jsp:include page="/shared/_slideBar.jsp" />
         <div class="content">
             <a href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
             <div class="header" style="justify-content:right;">
@@ -263,87 +233,88 @@
         </form>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
         <script>
-                           var selectedOptions = [];
-var allOptions = [];
+                            var selectedOptions = [];
+                            var allOptions = [];
 
-function validateImage(input) {
-    const file = input.files[0];
-    const validImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/webp'];
+                            function validateImage(input) {
+                                const file = input.files[0];
+                                const validImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/webp'];
 
-    if (file && validImageTypes.includes(file.type)) {
-        readURL(input);
-    } else {
-        alert('Please upload a valid image file (gif, jpeg, png, webp).');
-        input.value = '';
-        $('#imagePreview').hide();
-    }
-}
+                                if (file && validImageTypes.includes(file.type)) {
+                                    readURL(input);
+                                } else {
+                                    alert('Please upload a valid image file (gif, jpeg, png, webp).');
+                                    input.value = '';
+                                    $('#imagePreview').hide();
+                                }
+                            }
 
-function closeOverlay() {
-    document.getElementById('overlay').style.display = 'none';
-}
+                            function closeOverlay() {
+                                document.getElementById('overlay').style.display = 'none';
+                            }
 
-function validateProductType(input) {
-    var value = $(input).val();
-    var datalistOptions = $('#productV option');
-    var isValid = false;
+                            function validateProductType(input) {
+                                var value = $(input).val();
+                                var datalistOptions = $('#productV option');
+                                var isValid = false;
 
-    datalistOptions.each(function () {
-        if (value === $(this).val() && !selectedOptions.includes(value)) {
-            isValid = true;
-            selectedOptions.push(value);
-            return false; // break loop
-        }
-    });
+                                datalistOptions.each(function () {
+                                    if (value === $(this).val() && !selectedOptions.includes(value)) {
+                                        isValid = true;
+                                        selectedOptions.push(value);
+                                        return false; // break loop
+                                    }
+                                });
 
-    if (!isValid) {
-        alert('Please select a valid product type from the list.');
-        $(input).val(''); // Clear the invalid input
-    } else {
-        $(input).removeClass('invalid');
-    }
+                                if (!isValid) {
+                                    alert('Please select a valid product type from the list.');
+                                    $(input).val(''); // Clear the invalid input
+                                } else {
+                                    $(input).removeClass('invalid');
+                                }
 
-    return isValid;
-}
+                                return isValid;
+                            }
 
-function readURL(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
+                            function readURL(input) {
+                                if (input.files && input.files[0]) {
+                                    var reader = new FileReader();
 
-        reader.onload = function (e) {
-            $('#imagePreview').attr('src', e.target.result);
-            $('#imagePreview').show();
-        };
+                                    reader.onload = function (e) {
+                                        $('#imagePreview').attr('src', e.target.result);
+                                        $('#imagePreview').show();
+                                    };
 
-        reader.readAsDataURL(input.files[0]);
-    }
-}
+                                    reader.readAsDataURL(input.files[0]);
+                                }
+                            }
 
-function formatPrice(input) {
-    var value = input.value.replace(/\D/g, '');
-    value = parseInt(value, 10);
-    if (isNaN(value)) {
-        value = 0;
-    }
-    input.value = value.toLocaleString('vi-VN') + ' VND';
-    setTimeout(function () {
-        setCaretPosition(input);
-    }, 0);
-}
+                            function formatPrice(input) {
+                                var value = input.value.replace(/\D/g, '');
+                                value = parseInt(value, 10);
+                                if (isNaN(value)) {
+                                    value = 0;
+                                }
+                                input.value = value.toLocaleString('vi-VN') + ' VND';
+                                setTimeout(function () {
+                                    setCaretPosition(input);
+                                }, 0);
+                            }
 
-function setCaretPosition(input) {
-    var position = input.value.length - 4; // Move caret before " VND"
-    input.setSelectionRange(position, position);
-}
+                            function setCaretPosition(input) {
+                                var position = input.value.length - 4; // Move caret before " VND"
+                                input.setSelectionRange(position, position);
+                            }
 
-$(document).ready(function () {
-    $('#file-upload').change(function () {
-        readURL(this);
-    });
+                            $(document).ready(function () {
+                                $('#file-upload').change(function () {
+                                    readURL(this);
+                                });
 
-    $('#addMoreDetail').on('click', function () {
-        var newDetail = `
+                                $('#addMoreDetail').on('click', function () {
+                                    var newDetail = `
             <div class="product-detail form-row align-items-center">
                 <div class="col-md-4">
                     <label for="productType">Product Type</label>
@@ -361,91 +332,91 @@ $(document).ready(function () {
                     <button type="button" class="btn btn-danger remove-btn">Remove</button>
                 </div>
             </div>`;
-        $('#productDetails').append(newDetail);
-    });
+                                    $('#productDetails').append(newDetail);
+                                });
 
-    $(document).on('click', '.remove-btn', function () {
-        var productType = $(this).closest('.product-detail').find('.productType').val();
-        selectedOptions = selectedOptions.filter(function(item) {
-            return item !== productType;
-        });
-        $(this).closest('.product-detail').remove();
-    });
+                                $(document).on('click', '.remove-btn', function () {
+                                    var productType = $(this).closest('.product-detail').find('.productType').val();
+                                    selectedOptions = selectedOptions.filter(function (item) {
+                                        return item !== productType;
+                                    });
+                                    $(this).closest('.product-detail').remove();
+                                });
 
-    $('#previewBill').on('click', function (event) {
-        event.preventDefault();
+                                $('#previewBill').on('click', function (event) {
+                                    event.preventDefault();
 
-        let isValid = true;
-        let errorMsg = '';
-        let importDate = $('#importDate').val();
-        let fileUpload = $('#file-upload').val();
+                                    let isValid = true;
+                                    let errorMsg = '';
+                                    let importDate = $('#importDate').val();
+                                    let fileUpload = $('#file-upload').val();
 
-        if (!importDate) {
-            isValid = false;
-            errorMsg += 'Please select a date.\n';
-        }
-        if (!fileUpload) {
-            isValid = false;
-            errorMsg += 'Please upload an image.\n';
-        }
+                                    if (!importDate) {
+                                        isValid = false;
+                                        errorMsg += 'Please select a date.\n';
+                                    }
+                                    if (!fileUpload) {
+                                        isValid = false;
+                                        errorMsg += 'Please upload an image.\n';
+                                    }
 
-        let productDetailsCount = $('.product-detail').length;
-        if (productDetailsCount === 0) {
-            isValid = false;
-            errorMsg += 'Please add at least one product.\n';
-        } else {
-            $('.product-detail').each(function () {
-                let productType = $(this).find('.productType');
-                let quantity = $(this).find('.quantity').val();
-                let importPrice = $(this).find('.importPrice').val();
-                if (!validateProductType(productType)) {
-                    isValid = false;
-                    errorMsg += 'Please select a valid product type for each product.\n';
-                    return false;
-                }
-                if (!quantity || !importPrice) {
-                    isValid = false;
-                    errorMsg += 'Please fill in all product details.\n';
-                    return false;
-                }
-            });
-        }
+                                    let productDetailsCount = $('.product-detail').length;
+                                    if (productDetailsCount === 0) {
+                                        isValid = false;
+                                        errorMsg += 'Please add at least one product.\n';
+                                    } else {
+                                        $('.product-detail').each(function () {
+                                            let productType = $(this).find('.productType');
+                                            let quantity = $(this).find('.quantity').val();
+                                            let importPrice = $(this).find('.importPrice').val();
+                                            if (!validateProductType(productType)) {
+                                                isValid = false;
+                                                errorMsg += 'Please select a valid product type for each product.\n';
+                                                return false;
+                                            }
+                                            if (!quantity || !importPrice) {
+                                                isValid = false;
+                                                errorMsg += 'Please fill in all product details.\n';
+                                                return false;
+                                            }
+                                        });
+                                    }
 
-        if (!isValid) {
-            alert(errorMsg);
-            return;
-        }
+                                    if (!isValid) {
+                                        alert(errorMsg);
+                                        return;
+                                    }
 
-        let totalQuantity = 0;
-        let totalPrice = 0;
-        let invoiceBody = '';
-        $('.product-detail').each(function () {
-            let productType = $(this).find('.productType').val();
-            let quantity = parseInt($(this).find('.quantity').val(), 10);
-            let importPrice = parseFloat($(this).find('.importPrice').val().replace(/[^0-9]/g, ''));
-            let total = quantity * importPrice;
-            totalQuantity += quantity;
-            totalPrice += total;
-            let importPriceFormatted = importPrice.toLocaleString('vi-VN');
-            let totalFormatted = total.toLocaleString('vi-VN') + ' VND';
+                                    let totalQuantity = 0;
+                                    let totalPrice = 0;
+                                    let invoiceBody = '';
+                                    $('.product-detail').each(function () {
+                                        let productType = $(this).find('.productType').val();
+                                        let quantity = parseInt($(this).find('.quantity').val(), 10);
+                                        let importPrice = parseFloat($(this).find('.importPrice').val().replace(/[^0-9]/g, ''));
+                                        let total = quantity * importPrice;
+                                        totalQuantity += quantity;
+                                        totalPrice += total;
+                                        let importPriceFormatted = importPrice.toLocaleString('vi-VN');
+                                        let totalFormatted = total.toLocaleString('vi-VN') + ' VND';
 
-            invoiceBody +=
-                '<tr>' +
-                '<td>' + productType + '</td>' +
-                '<td>' + importPriceFormatted + ' VND</td>' +
-                '<td>' + quantity + '</td>' +
-                '<td>' + totalFormatted + '</td>' +
-                '</tr>';
-        });
+                                        invoiceBody +=
+                                                '<tr>' +
+                                                '<td>' + productType + '</td>' +
+                                                '<td>' + importPriceFormatted + ' VND</td>' +
+                                                '<td>' + quantity + '</td>' +
+                                                '<td>' + totalFormatted + '</td>' +
+                                                '</tr>';
+                                    });
 
-        let totalPriceFormatted = totalPrice.toLocaleString('vi-VN') + ' VND';
-        $('#invoiceBody').html(invoiceBody);
-        $('#totalQuantity').text(totalQuantity);
-        $('#totalPrice').text(totalPriceFormatted);
-        $('#importDateDisplay').text(importDate);
-        $('#overlay').show();
-    });
-});
+                                    let totalPriceFormatted = totalPrice.toLocaleString('vi-VN') + ' VND';
+                                    $('#invoiceBody').html(invoiceBody);
+                                    $('#totalQuantity').text(totalQuantity);
+                                    $('#totalPrice').text(totalPriceFormatted);
+                                    $('#importDateDisplay').text(importDate);
+                                    $('#overlay').show();
+                                });
+                            });
 
         </script>
     </body>

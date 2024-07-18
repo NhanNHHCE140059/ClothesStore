@@ -293,7 +293,7 @@
         <body onload="updateTime()">
             <div class="sidebar">
                 <div class="sidebar-header">administrator</div>
-                <a href="#" class="menu-item">STATICAL</a>
+                <a href="/clothesstore/statistic" class="menu-item">STATICAL</a>
                 <a href="#" class="menu-item">ACCOUNT MANAGEMENT</a>
             </div>
             <div class="content">

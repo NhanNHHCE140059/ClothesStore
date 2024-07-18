@@ -491,43 +491,7 @@
     </head>
     <body>
 
-        <div class="sidebar">
-            <div class="sidebar-header">Dashboard For Staff</div>
-            <a href="#" class="menu-item">Product Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">Create Product</a>
-                <a href="#">Update Product</a>
-                <a href="#">Delete Product</a>
-            </div>
-            <a href="#" class="menu-item">Category Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">Create Category</a>
-                <a href="#">Update Category</a>
-                <a href="#">Delete Category</a>
-            </div>
-            <a href="#" class="menu-item">Feedback Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="${pageContext.request.contextPath}/managementfeedback">Feedback Order</a>
-                <a href="${pageContext.request.contextPath}/feedbackOrderDetails.jsp">Feedback Details</a>
-            </div>
-            <a href="#" class="menu-item">Orders Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">Confirm Orders</a>
-                <a href="#">Cancel Orders</a>
-                <a href="#">Change Ship Status</a>
-            </div>
-            <a href="#" class="menu-item">Warehouse Management</a>
-            <div class="separator"></div>
-            <div class="submenu">
-                <a href="#">Create New Product (Warehouse)</a>
-                <a href="#">Update Product (Warehouse)</a>
-                <a href="#">Delete Product (Warehouse)</a>
-            </div>
-        </div>
+       <jsp:include page="/shared/_slideBar.jsp" />
 
         <div class="content">
             <a href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
