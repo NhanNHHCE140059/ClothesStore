@@ -122,7 +122,12 @@
                                         <img class="img-fluid w-100" src="${o.imageURL}">
                                         <div class="product-action">
                                             <a class="btn btn-outline-dark btn-sm" href="/clothesstore/detail?pid=${o.pro_id}"><i class="fa fa-shopping-cart"></i> Add to Cart</a>
-                                            <a class="btn btn-outline-dark btn-sm" href="/clothesstore/detail?pid=${o.pro_id}"><i class="fa fa-trash"></i> Delete favorite product</a>
+                                            <form method="post" action="favorite">
+                                                <input  type="hidden" name = "pro_id" value="${o.pro_id}">
+                                                 <input  type="hidden" name = "page" value="${currentPage}">
+                                                       <button  type= "submit" class="btn btn-outline-dark btn-sm"><i class="fa fa-trash"></i> Delete favorite product</button>
+                                            </form>
+                                     
                                         </div>
                                     </div>
                                     <div class="text-center py-3">
