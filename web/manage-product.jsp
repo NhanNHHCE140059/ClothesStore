@@ -554,12 +554,29 @@
                 border-radius: 4px;
                 width: 100%;
             }
-
+            .header {
+                margin-top: 12px;
+                background-color: #fff;
+                padding: 15px 20px;
+                border-bottom: 1px solid #e9ecef;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                margin-bottom: 12px;
+            }
         </style>
-      <jsp:include page="/shared/_slideBar.jsp" />
+        <jsp:include page="/shared/_slideBar.jsp" />
 
         <div class="content">
             <a style="text-decoration: none;" href="${pageContext.request.contextPath}/home" class=" back-home">Back to Home</a>
+            <div class="header" >
+
+                <div class="role-info">
+                    <span> :</span><span></span>
+                </div>
+            </div>
+
             <a style="text-decoration: none;" href="/clothesstore/createVariants" class="btn-create">Add new product</a>
             <a style="text-decoration: none;"  href="/clothesstore/manage-product" class="btn-create">Show All</a>
             <form action="manage-product" method="get">
@@ -605,7 +622,7 @@
                         <th>Category name</th>
                         <th>Sizes</th>
                         <th>Colors</th>
-                 
+
                     </tr>
                 </thead>
                 <tbody id="manage-product">
@@ -640,7 +657,7 @@
                             <%int pageRange = 5; 
                               int startPage = Math.max(1, currentPage - pageRange);
                               int end = Math.min(endPage, currentPage + pageRange);%>
-                        <%for (int i = startPage; i <= end; i++){%>
+                            <%for (int i = startPage; i <= end; i++){%>
                         <li><a class="page-link" href="manage-product?indexPage=<%=i%>&color_Search=${color_Search}&size_Search=${size_Search}&name_Search=${name_Search}&cate_Search=${cate_Search}&search=${search}"><%=i%></a></li>
                             <%}%>
                             <%if(currentPage < endPage){%>
@@ -651,12 +668,12 @@
 
             </div>
         </div>
- 
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
-        <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
+            <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
         <script>
 
             function sendGetRequest(indexPage, param = null) {

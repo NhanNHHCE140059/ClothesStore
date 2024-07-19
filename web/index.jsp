@@ -3,11 +3,145 @@
 <!DOCTYPE html>
 <html>
     <jsp:include page="/shared/_head.jsp" />
-    <body>
+    <body style="overflow: hidden; position: relative">
         <jsp:include page="/shared/_header.jsp" />
 
         <jsp:include page="/shared/_nav.jsp" />
+        <style>
+            .toast{
+                position: fixed;
+                z-index: 99999;
+                width:400px;
+                top: 25px;
+                right: 30px;
+                border-radius: 12px;
+                background: #fff;
+                padding: 20px 35px 20px 25px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                border-left: 6px solid #4070f4;
+                overflow: hidden;
+                transform: translateX(calc(100% + 30px));
+                transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+                opacity: 1!important;
+            }
 
+            .toast.active{
+                transform: translateX(0%);
+                opacity: 1!important;
+            }
+
+            .toast .toast-content{
+                display: flex;
+                align-items: center;
+            }
+
+            .toast-content .check{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 35px;
+                width: 35px;
+                background-color: #4070f4;
+                color: #fff;
+                font-size: 20px;
+                border-radius: 50%;
+            }
+            .toast.logout-toast .check {
+                background-color: #ffc107;
+                      height: 35px;
+                width: 35px;
+            }
+            .toast-content .message{
+                display: flex;
+                flex-direction: column;
+                margin: 0 20px;
+            }
+
+            .message .text{
+                font-size: 20px;
+                font-weight: 400;
+                color: #666666;
+            }
+
+            .message .text.text-1{
+                font-weight: 600;
+                color: #333;
+            }
+
+            .toast .close{
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                padding: 5px;
+                cursor: pointer;
+                opacity: 0.7;
+            }
+
+            .toast .close:hover{
+                opacity: 1;
+            }
+
+            .toast .progress{
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: 3px;
+                width: 100%;
+                background: #ddd;
+            }
+
+            .toast .progress:before{
+                content: '';
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                height: 100%;
+                width: 100%;
+                background-color: #4070f4;
+            }
+       
+            .toast.logout-toast{
+             border-left: 6px solid #ffc107!important;
+            }
+            .toast.logout-toast .progress:before {
+                background-color: #ffc107;
+            }
+            .progress.active:before{
+                animation: progress 5s linear forwards;
+            }
+
+            @keyframes progress {
+                100%{
+                    right: 100%;
+                }
+            }
+        </style>
+        <c:if test="${not empty sessionScope.account}">
+            <div class="toast" id="toast">
+                <div class="toast-content">
+                    <i class="fas fa-solid fa-check check"></i>
+                    <div class="message">
+                        <span class="text text-1">Login Successfully !</span>
+                        <span class="text text-2">Welcome, ${sessionScope.account.name}</span>
+                    </div>
+                </div>
+                <span class="close">&times;</span>
+                <div class="progress active"></div>
+            </div>
+        </c:if>
+        <c:if test="${not empty param.name}">
+            <div class="toast logout-toast" id="toast">
+                <div class="toast-content">
+                    <i class="fas fa-solid fa-check check"></i>
+                    <div class="message">
+                        <span class="text text-1">Logout Successfully!</span>
+                        <span class="text text-2">Goodbye, ${param.name}</span>
+                    </div>
+                </div>
+                <span class="close">&times;</span>
+                <div class="progress active"></div>
+            </div>
+        </c:if>
         <!-- Carousel Start -->
         <div class="container-fluid mb-3">
             <div class="row px-xl-5">
@@ -56,7 +190,7 @@
                     <div class="product-offer mb-30" style="height: 200px;">
                         <img class="img-fluid" src="/clothesstore/assets/img/offer-1.jpg" alt="">
                         <div class="offer-text">
-                            <h6 class="text-white text-uppercase">Save 20%</h6>
+                            <h6 class="text-white text-uppercase">Quality Product</h6>
                             <h3 class="text-white mb-3">Special Offer</h3>
                             <a href="/clothesstore/shop" class="btn btn-primary">Shop Now</a>
                         </div>
@@ -64,7 +198,7 @@
                     <div class="product-offer mb-30" style="height: 200px;">
                         <img class="img-fluid" src="/clothesstore/assets/img/offer-2.jpg" alt="">
                         <div class="offer-text">
-                            <h6 class="text-white text-uppercase">Save 20%</h6>
+                            <h6 class="text-white text-uppercase">Quality Product</h6>
                             <h3 class="text-white mb-3">Special Offer</h3>
                             <a href="/clothesstore/shop" class="btn btn-primary">Shop Now</a>
                         </div>
@@ -107,5 +241,30 @@
         <!-- Featured End -->
 
         <jsp:include page="/shared/_footer.jsp" />
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('status') === 'loginSS' || urlParams.get('name')) {
+                    var toast = document.getElementById('toast');
+                    setTimeout(function () {
+                        toast.classList.add('active');
+                    }, 100);
+                    setTimeout(function () {
+                        toast.classList.remove('active');
+                    }, 6000);
+                }
+
+                var closeToast = document.querySelector('.toast .close');
+                if (closeToast) {
+                    closeToast.addEventListener('click', function () {
+                        var toast = document.getElementById('toast');
+                        toast.classList.remove('active');
+                    });
+                }
+                var pathname = window.location.pathname;
+                window.history.pushState({}, "", pathname);
+            });
+
+        </script>
     </body>
 </html>

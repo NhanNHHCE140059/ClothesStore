@@ -280,7 +280,8 @@ public class ProductService {
         }
         return list;
     }
-      public List<Product> searchByNameforStaff(String txtSearch) {
+
+    public List<Product> searchByNameforStaff(String txtSearch) {
         List<Product> list = new ArrayList<>();
         String query = "SELECT * FROM Products WHERE pro_name LIKE ?";
 
@@ -307,4 +308,36 @@ public class ProductService {
         }
         return list;
     }
+
+    public List<Product> getTop3BestSellingProducts() {
+        List<Product> list = new ArrayList<>();
+        String query = "SELECT TOP 3 p.pro_id, p.pro_name, p.pro_price, p.imageURL, p.description, p.cat_id, p.status_product, SUM(od.Quantity) AS TotalSold "
+                + "FROM Products p "
+                + "JOIN OrderDetails od ON p.pro_id = od.variant_id "
+                + "GROUP BY p.pro_id, p.pro_name, p.pro_price, p.imageURL, p.description, p.cat_id, p.status_product "
+                + "ORDER BY TotalSold DESC";
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Product(
+                        rs.getInt("pro_id"),
+                        rs.getString("pro_name"),
+                        rs.getDouble("pro_price"),
+                        rs.getString("imageURL"),
+                        rs.getString("description"),
+                        rs.getInt("cat_id"),
+                        ProductStatus.values()[rs.getInt("status_product")]
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi rồi bạn ơi");
+        } catch (Exception e) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return list;
+    }
+
 }

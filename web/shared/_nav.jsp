@@ -3,20 +3,22 @@
 <%@ page import="java.util.LinkedList"%>
 <%@page import="model.*" %>
 <%@page import="service.*" %>
-<% CartService cservice = new CartService();
-FavoriteService faS = new FavoriteService();
-int quantityPro = 0;
-int quantityF = 0;
-if (session.getAttribute("account") != null) {
-Account acc = (Account) session.getAttribute("account");
-for (Cart c : cservice.GetListCartByAccID(acc.getAcc_id())) {
-quantityPro++;
-    }  
-     for (Favorite fa : faS.getAllFavoriteByAccID(acc.getAcc_id()) ){
-     quantityF++;
-    }
+<% 
+    CartService cservice = new CartService();
+    FavoriteService faS = new FavoriteService();
+    int quantityPro = 0;
+    int quantityF = 0;
+    if (session.getAttribute("account") != null) {
+        Account acc = (Account) session.getAttribute("account");
+        for (Cart c : cservice.GetListCartByAccID(acc.getAcc_id())) {
+            quantityPro++;
+        }  
+        for (Favorite fa : faS.getAllFavoriteByAccID(acc.getAcc_id()) ){
+            quantityF++;
+        }
     };
 %>
+<!-- Navbar Start -->
 <!-- Navbar Start -->
 <div class="container-fluid bg-dark mb-30">
     <div class="row px-xl-5">
@@ -31,20 +33,13 @@ quantityPro++;
                 </button>
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                     <div class="navbar-nav mr-auto py-0">
-                        <a href="/clothesstore/home" class="nav-item nav-link active">Home</a>
-                        <a href="/clothesstore/shop" class="nav-item nav-link">Shop</a>
-                        <a href="/clothesstore/contact" class="nav-item nav-link">Contact</a>
+                        <a href="/clothesstore/home" class="nav-item nav-link" id="nav-home">Home</a>
+                        <a href="/clothesstore/shop" class="nav-item nav-link" id="nav-shop">Shop</a>
+                        <a href="/clothesstore/contact" class="nav-item nav-link" id="nav-contact">Contact</a>
                         <!-- Chỉ hiển thị Lịch sử đặt hàng cho vai trò Customer -->
-
                         <c:if test="${sessionScope.account.role == 'Customer'}">
-                            <a href="OrderHistoryControl" class="nav-item nav-link">Order History</a>
+                            <a href="OrderHistoryControl" class="nav-item nav-link" id="nav-order-history">Order History</a>
                         </c:if>
-
-                        <c:if test="${sessionScope.account.role == 'Staff'}">
-                            <a href="OrderHistoryStaffControl" class="nav-item nav-link">Order Management</a>
-                        </c:if>
-
-
                     </div>
                     <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
                         <a href="/clothesstore/favorite" class="btn px-0">
@@ -64,3 +59,29 @@ quantityPro++;
     </div>
 </div>
 <!-- Navbar End -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var navLinks = document.querySelectorAll('.nav-item.nav-link');
+        var activePage = localStorage.getItem('activePage');
+        if (activePage) {
+            var activeLink = document.querySelector("#"+activePage);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        } else {
+        
+            document.querySelector('#nav-home').classList.add('active');
+        }
+
+        navLinks.forEach(function (link) {
+            link.addEventListener('click', function () {
+                navLinks.forEach(function (link) {
+                    link.classList.remove('active');
+                });
+                this.classList.add('active');
+                localStorage.setItem('activePage', this.id);
+            });
+        });
+    });
+</script>

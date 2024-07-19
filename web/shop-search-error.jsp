@@ -41,6 +41,27 @@
                         </form>
                     </div>
                     <!-- Category End -->
+                    <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Top 3 Trending</span></h5>
+                    <div class="bg-light p-4 mb-30 top-3-products text-center" style="max-height: 73-px">
+                        <c:forEach var="product" items="${top3Sell}">
+                            <div class="product-items" style="height:230px; width: auto;border:1px solid;margin-top: 4px; border-radius:4px" >
+                                <div class="product-imgs">
+                                    <img class="img-fluid" style="width: 30%;height: auto;margin-top:4px;" src="${product.imageURL}">
+                                    <div class="product-actions">
+                                      
+                                        <a class="btn btn-outline-dark btn-sm" href="/clothesstore/detail?pid=${product.pro_id}"><i class="fa fa-info-circle"></i> More information and Buy</a>
+                                    </div>
+                                </div>
+                                <div class="text-center py-3">
+                                    <a class="h6 text-decoration-none text-truncate text-dark" href="/clothesstore/detail?pid=${product.pro_id}">${product.pro_name}</a>
+                                    <div class="d-flex align-items-center justify-content-center mt-2">
+                                        <h5 class="font-weight-bold"><fmt:formatNumber value="${product.pro_price}" type="number" pattern="#,##0"/> VND</h5>
+                                    </div>
+                                </div>
+                            </div>
+                                    
+                        </c:forEach>
+                    </div>
                 </div>
                 <!-- Shop Sidebar End -->
 
