@@ -70,16 +70,127 @@
                     opacity: 0;
                 }
             }
+            .toast{
+                position: fixed;
+                z-index: 99999;
+                width:400px;
+                top: 25px;
+                right: 30px;
+                border-radius: 12px;
+                background: #fff;
+                padding: 20px 35px 20px 25px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                border-left: 6px solid #4070f4;
+                overflow: hidden;
+                transform: translateX(calc(100% + 30px));
+                transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+                opacity: 1!important;
+            }
+
+            .toast.active{
+                transform: translateX(0%);
+                opacity: 1!important;
+            }
+
+            .toast .toast-content{
+                display: flex;
+                align-items: center;
+            }
+
+            .toast-content .check{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 35px;
+                width: 35px;
+                background-color: #4070f4;
+                color: #fff;
+                font-size: 20px;
+                border-radius: 50%;
+            }
+            .toast.logout-toast .check {
+                background-color: #ffc107;
+                height: 35px;
+                width: 35px;
+            }
+            .toast-content .message{
+                display: flex;
+                flex-direction: column;
+                margin: 0 20px;
+            }
+
+            .message .text{
+                font-size: 20px;
+                font-weight: 400;
+                color: #666666;
+            }
+
+            .message .text.text-1{
+                font-weight: 600;
+                color: #333;
+            }
+
+            .toast .close{
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                padding: 5px;
+                cursor: pointer;
+                opacity: 0.7;
+            }
+
+            .toast .close:hover{
+                opacity: 1;
+            }
+
+            .toast .progress{
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: 3px;
+                width: 100%;
+                background: #ddd;
+            }
+
+            .toast .progress:before{
+                content: '';
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                height: 100%;
+                width: 100%;
+                background-color: #4070f4;
+            }
+
+            .toast.logout-toast{
+                border-left: 6px solid #ffc107!important;
+            }
+            .toast.logout-toast .progress:before {
+                background-color: #ffc107;
+            }
+            .progress.active:before{
+                animation: progress 5s linear forwards;
+            }
+
+            @keyframes progress {
+                100%{
+                    right: 100%;
+                }
+            }
         </style>
         <!-- Breadcrumb Start -->
 
-        <c:if test="${ not empty message}">
-            <div class="box">
-                <div class="content">
-                    <p>Product successfully added to Favorite List!</p>
-                    <p class="product-name">${message.pro_name}</p>
+        <c:if test="${ not empty message}">     
+            <div class="toast" id="toast">
+                <div class="toast-content">
+                    <i class="fas fa-solid fa-check check"></i>
+                    <div class="message">
+                        <span class="text text-1">Add Successfully!!!!</span>
+                        <span class="text text-2">${message.pro_name}</span>
+                    </div>
                 </div>
-                <img src="${message.imageURL}" alt="Product Image">
+                <span class="close">&times;</span>
+                <div class="progress active"></div>
             </div>
         </c:if>    
         <div class="container-fluid">
@@ -124,10 +235,12 @@
                                             <a class="btn btn-outline-dark btn-sm" href="/clothesstore/detail?pid=${o.pro_id}"><i class="fa fa-shopping-cart"></i> Add to Cart</a>
                                             <form method="post" action="favorite">
                                                 <input  type="hidden" name = "pro_id" value="${o.pro_id}">
-                                                 <input  type="hidden" name = "page" value="${currentPage}">
-                                                       <button  type= "submit" class="btn btn-outline-dark btn-sm"><i class="fa fa-trash"></i> Delete favorite product</button>
+                                                <input  type="hidden" name = "page" value="${currentPage}">
+                                                <button style="all: unset;" type= "submit" >
+                                                    <a  class="btn btn-outline-dark btn-sm"><i class="fa fa-trash"></i> Delete favorite product</a>
+                                                </button>
                                             </form>
-                                     
+
                                         </div>
                                     </div>
                                     <div class="text-center py-3">
@@ -173,5 +286,29 @@
     <!-- Shop End -->
 
     <jsp:include page="/shared/_footer.jsp" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            setTimeout(function () {
+                toast.classList.add('active');
+            }, 100);
+            var toast = document.getElementById('toast');
+            setTimeout(function () {
+                toast.classList.remove('active');
+            }, 5000);
+
+
+            var closeToast = document.querySelector('.toast .close');
+            if (closeToast) {
+                closeToast.addEventListener('click', function () {
+                    var toast = document.getElementById('toast');
+                    toast.classList.remove('active');
+                });
+            }
+            var pathname = window.location.pathname;
+            window.history.pushState({}, "", pathname);
+        });
+
+    </script>
 </body>
 </html>

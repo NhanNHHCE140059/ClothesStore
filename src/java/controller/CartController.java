@@ -167,7 +167,7 @@ public class CartController extends HttpServlet {
                                 message = "The number of products in the Warehouse is no longer available!!!";
                             } else if (wservice.GetProByIdInWareHouse(proV_id).getInventory_number() > 0) {
                                 if (newquantity > wservice.GetProByIdInWareHouse(proV_id).getInventory_number()) {
-                                    message = "Increase the number of failed products ☺<br> Number of products in Warehouse: " + wservice.GetProByIdInWareHouse(proV_id).getInventory_number();
+                                    message = "Not enough quantity<br>Available: "+ wservice.GetProByIdInWareHouse(proV_id).getInventory_number();
                                     break;
                                 }
                                 int updateQuan = cservice.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getVariant_id());
@@ -204,7 +204,7 @@ public class CartController extends HttpServlet {
                     }
                     int quantityC = Integer.parseInt(request.getParameter("quantityC"));
                     if (quantityC <= 0) {
-                        message = "Update product quantity failed ☺ <br> Default product quantity is 1";
+                        message = "Please enter more than 0";
                         break;
                     }
                     for (Cart c : list_cart) {
@@ -239,7 +239,7 @@ public class CartController extends HttpServlet {
                                         break;
                                     }
                                 } else {
-                                    message = "The quantity of the product you want to buy is currently insufficient ☺<br> Number of products in Warehouse: " + wservice.GetProByIdInWareHouse(proV_id).getInventory_number();
+                                    message = "Not enough quantity<br>Available: " + wservice.GetProByIdInWareHouse(proV_id).getInventory_number();
                                     break;
                                 }
                             }

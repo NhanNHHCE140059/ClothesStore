@@ -54,7 +54,7 @@ public class LoginController extends HttpServlet {
 //            res.addCookie(u);
 //            res.addCookie(p);
             
-            res.sendRedirect("home");
+            res.sendRedirect("home?status=loginSS");
         } else {
             req.setAttribute("msgError", "Wrong username or password.");
             req.getRequestDispatcher("login.jsp").forward(req, res);

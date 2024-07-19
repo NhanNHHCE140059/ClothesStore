@@ -18,7 +18,7 @@
         <style>
             .bill-table-container {
                 overflow-x: auto;
-                margin-top: 20px;
+         
             }
             .bill-table {
                 width: 100%;
@@ -124,7 +124,7 @@
             }
             .container {
                 display: flex;
-                gap: 20px;
+             
             }
             .search-form-container,
             .bill-table-container {
@@ -262,7 +262,7 @@
                     <span><%= account.getRole()%> :</span><span><%= account.getName()%></span>
                 </div>
             </div>
-
+                    <h1 style="margin: 25px auto 15px auto;text-align: center;text-transform: uppercase">Bill Detail Management</h1>
             <div class="container">
                 <div class="search-form-container">
                     <h2>Search Import Bill Details</h2>
@@ -270,10 +270,10 @@
                         <input type="hidden" name="indexPageback" value="${param.indexPageback != null ?  param.indexPageback : indexPageback}">
 
                         <label for="detailBill_id">Detail Bill ID:</label>
-                        <input type="text" id="detailBill_id" name="detailBill_id" pattern="\d+" title="Detail Bill ID must be a positive number" value="${param.detailBill_id}"><br><br>
+                        <input type="text" id="detailBill_id" name="detailBill_id" pattern="\d+" title="Detail Bill ID must be a positive number" value="${param.detailBill_id}">
 
                         <label for="pro_name">Product Name:</label>
-                        <input type="text" id="pro_name" name="pro_name" value="${param.pro_name}"><br><br>
+                        <input type="text" id="pro_name" name="pro_name" value="${param.pro_name}">
 
                         <label for="size_id">Size:</label>
                         <select name="size_id" id="size_id">
@@ -281,7 +281,7 @@
                             <c:forEach var="size" items="${sizesInBill}">
                                 <option value="${size}" <c:if test="${size == selectedSize}">selected</c:if>>${size}</option>
                             </c:forEach>
-                        </select><br><br>
+                        </select>
 
                         <label for="color_name">Color:</label>
                         <select name="color_name" id="color">
@@ -289,19 +289,19 @@
                             <c:forEach var="color" items="${colorInBill}">
                                 <option value="${color}" <c:if test="${color == selectedColor}">selected</c:if>>${color}</option>
                             </c:forEach>
-                        </select><br><br>
+                        </select>
 
                         <label for="quantityFrom">Quantity From:</label>
-                        <input type="text" id="quantityFrom" name="quantityFrom" pattern="\d+" title="Quantity must be a positive number" value="${param.quantityFrom}"><br><br>
+                        <input type="text" id="quantityFrom" name="quantityFrom" pattern="\d+" title="Quantity must be a positive number" value="${param.quantityFrom}">
 
                         <label for="quantityTo">Quantity To:</label>
-                        <input type="text" id="quantityTo" name="quantityTo" pattern="\d+" title="Quantity must be a positive number" value="${param.quantityTo}"><br><br>
+                        <input type="text" id="quantityTo" name="quantityTo" pattern="\d+" title="Quantity must be a positive number" value="${param.quantityTo}">
 
                         <label for="import_priceFrom">Import Price From:</label>
-                        <input type="text" id="import_priceFrom" name="import_priceFrom" pattern="\d+(\.\d{1,2})?" title="Import Price must be a positive number" value="${param.import_priceFrom}"><br><br>
+                        <input type="text" id="import_priceFrom" name="import_priceFrom" pattern="\d+(\.\d{1,2})?" title="Import Price must be a positive number" value="${param.import_priceFrom}">
 
                         <label for="import_priceTo">Import Price To:</label>
-                        <input type="text" id="import_priceTo" name="import_priceTo" pattern="\d+(\.\d{1,2})?" title="Import Price must be a positive number" value="${param.import_priceTo}"><br><br>
+                        <input type="text" id="import_priceTo" name="import_priceTo" pattern="\d+(\.\d{1,2})?" title="Import Price must be a positive number" value="${param.import_priceTo}">
 
                         <input type="hidden" name="billId" value="${billId}">
                         <div class="button-group">
@@ -312,36 +312,36 @@
                     </form>
                 </div>
 
-                <div class="bill-table-container">
+                <div class="bill-table-container" style="text-align: center">
                     <h2>Import Bill Details</h2>
-                    <table class="bill-table">
+                    <table class="bill-table"style="text-align: center" >
                         <thead>
-                            <tr>
-                                <th>Detail Bill ID</th>
-                                <th>Bill ID</th>
-                                <th>Name</th>
-                                <th>Color</th>
-                                <th>Size</th>
-                                <th>Quantity</th>
-                                <th>Image</th>
-                                <th>Import Price</th>
+                            <tr style="text-align: center">
+                                <th style="text-align: center">Detail Bill ID</th>
+                                <th style="text-align: center">Bill ID</th>
+                                <th style="text-align: center">Name</th>
+                                <th style="text-align: center">Color</th>
+                                <th style="text-align: center">Size</th>
+                                <th style="text-align: center">Quantity</th>
+                                <th style="text-align: center">Image</th>
+                                <th style="text-align: center">Import Price</th>
                             </tr>
                         </thead>
                         <tbody>
                             <c:forEach var="detailBill" items="${prvlst}">
                                 <tr>
-                                    <td>${detailBill.detailBill_id}</td>
-                                    <td>${detailBill.bill_id}</td>
-                                    <td>${detailBill.pro_name}</td>
-                                    <td>${detailBill.color_name}</td>
-                                    <td>${detailBill.size_name}</td>
-                                    <td>${detailBill.quantity}</td>
-                                    <td><img src="${detailBill.imageURL}" alt="Product Image"></td>
-                                    <td class="totalAmount"><span><fmt:formatNumber value="${detailBill.import_price}" type="number" pattern="#,##0" /></span></td>
+                                    <td style="text-align: center">${detailBill.detailBill_id}</td>
+                                    <td style="text-align: center">${detailBill.bill_id}</td>
+                                    <td style="text-align: center">${detailBill.pro_name}</td>
+                                    <td style="text-align: center">${detailBill.color_name}</td>
+                                    <td style="text-align: center">${detailBill.size_name}</td>
+                                    <td style="text-align: center">${detailBill.quantity}</td>
+                                    <td style="text-align: center"><img src="${detailBill.imageURL}" alt="Product Image"></td>
+                                    <td style="text-align: center" class="totalAmount"><span><fmt:formatNumber value="${detailBill.import_price}" type="number" pattern="#,##0" />VND</span></td>
                                 </tr>
                             </c:forEach>
                             <c:if test="${empty prvlst}">
-                                <tr class="not-found-row">
+                                <tr class="not-found-row" >
                                     <td class="not-found-cell col-8" style="text-align: center" colspan="8">Not Found</td>
                                 </tr>
                             </c:if>

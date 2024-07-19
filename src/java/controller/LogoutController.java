@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import model.Account;
 
 /**
  *
@@ -19,9 +20,13 @@ public class LogoutController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         HttpSession session = req.getSession();
         session.removeAttribute("role");
+        String name = null;
+        if (session.getAttribute("account") != null) {
+            name = ((Account) session.getAttribute("account")).getName();
+        }
         session.removeAttribute("account");
         session.removeAttribute("quantitypro");
         session.removeAttribute("manageIndexPage");
-        res.sendRedirect("home");
-    } 
+        res.sendRedirect("home?name=" + name);
+    }
 }

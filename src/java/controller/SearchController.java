@@ -24,11 +24,18 @@ public class SearchController extends HttpServlet {
         String txtSearch = req.getParameter("txt");
         ProductService p = new ProductService();
         List<Product> list = p.searchByName(txtSearch);
-
+        if(txtSearch.trim().isEmpty()) {
+            resp.sendRedirect("shop");
+            return;
+        }
         if (list.size() <= 0) {
+            List<Product> top3Sell = p.getTop3BestSellingProducts();
+            req.setAttribute("top3Sell", top3Sell);
             System.out.println("Search not found");
             req.getRequestDispatcher("shop-search-error.jsp").forward(req, resp);
         } else {
+            List<Product> top3Sell = p.getTop3BestSellingProducts();
+            req.setAttribute("top3Sell", top3Sell);
             req.setAttribute("listP", list);
             req.setAttribute("txtS", txtSearch);
             req.getRequestDispatcher("shop.jsp").forward(req, resp);

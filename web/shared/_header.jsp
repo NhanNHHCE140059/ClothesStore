@@ -60,11 +60,13 @@
             <form action="/clothesstore/search">
                 <div class="input-group">
                     <input value="${txtS}" name="txt" type="text" class="form-control" placeholder="Search for products">
-                    <div class="input-group-append">
-                        <span class="input-group-text bg-transparent text-primary">
-                            <i class="fa fa-search"></i>
-                        </span>
-                    </div>
+                    <button style="all: unset;display: inline-block;cursor: pointer; " type="submit" >
+                        <div class="input-group-append">
+                            <span class="input-group-text bg-transparent text-primary" style="padding:10px 8px;">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </div>
+                    </button>
                 </div>
             </form>
         </div>

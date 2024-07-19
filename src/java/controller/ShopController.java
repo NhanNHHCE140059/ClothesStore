@@ -38,7 +38,9 @@ public class ShopController extends HttpServlet {
         List<Product> paginatedList = list.subList(start, end);
         int noOfRecords = list.size();
         int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / productsPerPage); //ceil => làm tròn lên
-
+        List<Product> top3Sell = p.getTop3BestSellingProducts();
+         req.setAttribute("top3Sell", top3Sell);
+        req.setAttribute("listP", paginatedList);
         req.setAttribute("noOfPages", noOfPages);
         req.setAttribute("currentPage", page);
         req.setAttribute("listP", paginatedList);

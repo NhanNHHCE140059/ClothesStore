@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
-<%@page import="model.Account"%>
+    <%@page import="model.Account"%>
     <%@page import="helper.Role"%>
 
     <% Account account = (Account) session.getAttribute("account"); %>
@@ -204,16 +204,16 @@
                     transform: scale(1);
                 }
             }
-       .header {
-    margin-top: 12px;
-    background-color: #fff;
-    padding: 15px 20px;
-    border-bottom: 1px solid #e9ecef;
-    display: flex;
-    align-items: center;
-   justify-content: flex-end;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+            .header {
+                margin-top: 12px;
+                background-color: #fff;
+                padding: 15px 20px;
+                border-bottom: 1px solid #e9ecef;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
             .close {
                 position: absolute;
                 top: 15px;
@@ -231,53 +231,59 @@
                 cursor: pointer;
             }
             .not-found-row {
-    height: 200px; /* Tùy ch?nh chi?u cao theo ý mu?n */
-    font-weight: bold; /* In ??m ch? */
+                height: 200px; /* Tùy ch?nh chi?u cao theo ý mu?n */
+                font-weight: bold; /* In ??m ch? */
 
-    justify-content: center;
+                justify-content: center;
 
-    text-align: center; /* C?n gi?a n?i dung */
-}
+                text-align: center; /* C?n gi?a n?i dung */
+            }
+            a{
+                text-decoration: none;
+            }
         </style>
     </head>
 
     <body>
 
-    <jsp:include page="/shared/_slideBar.jsp" />
+        <jsp:include page="/shared/_slideBar.jsp" />
 
         <div class="content">
+
             <a href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
 
             <div class="header">
 
                 <div class="role-info">
-                       <span><%= account.getRole()%> :</span><span><%= account.getName()%></span>
+                    <span><%= account.getRole()%> :</span><span><%= account.getName()%></span>
                 </div>
             </div>
+            <h1 style="margin: 25px auto auto auto;text-align: center;text-transform: uppercase">Bill Management</h1>
             <div class="container">
+
                 <div class="form-container">
                     <h2>Search Orders</h2>
-<form action="SearchImportBillController" method="get" id="searchForm">
-    <label for="billId">Bill ID:</label>
-    <input type="number" id="billId" name="billId" min="0" title="Bill ID must be a positive number" value="${param.billId}"><br><br>
+                    <form action="SearchImportBillController" method="get" id="searchForm">
+                        <label for="billId">Bill ID:</label>
+                        <input type="number" id="billId" name="billId" min="0" title="Bill ID must be a positive number" value="${param.billId}">
 
-    <label for="createDateFrom">Create Date From:</label>
-    <input type="date" id="createDateFrom" name="createDateFrom" value="${param.createDateFrom}"><br><br>
+                        <label for="createDateFrom">Create Date From:</label>
+                        <input type="date" id="createDateFrom" name="createDateFrom" value="${param.createDateFrom}">
 
-    <label for="createDateTo">Create Date To:</label>
-    <input type="date" id="createDateTo" name="createDateTo" value="${param.createDateTo}"><br><br>
+                        <label for="createDateTo">Create Date To:</label>
+                        <input type="date" id="createDateTo" name="createDateTo" value="${param.createDateTo}">
 
-    <label for="totalPriceFrom">Total Price From:</label>
-    <input type="number" id="totalPriceFrom" name="totalPriceFrom" step="0.01" min="0" title="Total Price must be a positive number" value="${param.totalPriceFrom}"><br><br>
+                        <label for="totalPriceFrom">Total Price From:</label>
+                        <input type="number" id="totalPriceFrom" name="totalPriceFrom" step="0.01" min="0" title="Total Price must be a positive number" value="${param.totalPriceFrom}">
 
-    <label for="totalPriceTo">Total Price To:</label>
-    <input type="number" id="totalPriceTo" name="totalPriceTo" step="0.01" min="0" title="Total Price must be a positive number" value="${param.totalPriceTo}"><br><br>
+                        <label for="totalPriceTo">Total Price To:</label>
+                        <input type="number" id="totalPriceTo" name="totalPriceTo" step="0.01" min="0" title="Total Price must be a positive number" value="${param.totalPriceTo}">
 
-    <div class="button-group">
-        <input type="submit" value="Search">
-        <a href="${pageContext.request.contextPath}/ImportBillController" class="reset-button">Reset</a>
-    </div>
-</form>
+                        <div class="button-group">
+                            <input type="submit" value="Search">
+                            <a href="${pageContext.request.contextPath}/ImportBillController" class="reset-button">Reset</a>
+                        </div>
+                    </form>
 
 
 
@@ -287,47 +293,47 @@
                                 </div>-->
 
 
-                <div class="bill-table-container">
+                <div class="bill-table-container" style="text-align: center">
                     <h2>Import Bills</h2>
-                    <table class="bill-table">
+                    <table class="bill-table" style="text-align: center">
                         <thead>
                             <tr>
-                                <th>Bill ID</th>
-                                <th>Create Date</th>
-                                <th>Total Amount</th>
-                                <th>Image Bill</th>
-                                <th>Action</th>
+                                <th style="text-align: center">Bill ID</th>
+                                <th style="text-align: center">Create Date</th>
+                                <th style="text-align: center">Total Amount</th>
+                                <th style="text-align: center">Image Bill</th>
+                                <th style="text-align: center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <c:forEach items="${lstBill}" var="o">
                                 <tr>
-                                    <td class="id"><span>${o.bill_id}</span></td>
-                                    <td class="date"><span>${o.create_date}</span></td>
-                                    <td class="totalAmount"><span><fmt:formatNumber value="${o.total_amount}" type="number" pattern="#,##0" /></span></td>
+                                    <td style="text-align: center" class="id"><span>${o.bill_id}</span></td>
+                                    <td  style="text-align: center" class="date"><span>${o.create_date}</span></td>
+                                    <td  style="text-align: center" class="totalAmount"><span><fmt:formatNumber value="${o.total_amount}" type="number" pattern="#,##0" /></span></td>
 
-                                    <td class="image"><img src="${o.image_bill}" alt="Bill Image" onclick="showImageModal(this)"></td>
-                                    <td>
+                                    <td style="text-align: center" class="image"><img src="${o.image_bill}" alt="Bill Image" onclick="showImageModal(this)"></td>
+                                    <td style="text-align: center">
                                         <c:if test="${ empty aaa}">
-                                      <a href="ImportBillDetailController?billId=${o.bill_id}&indexPageback=${param.indexPage != null ? param.indexPage : param.indexPageback}">
+                                            <a href="ImportBillDetailController?billId=${o.bill_id}&indexPageback=${param.indexPage != null ? param.indexPage : param.indexPageback}">
 
-                                            <i class="material-icons" data-toggle="tooltip" title="Detail">Detail</i>
-                                        </a>
-                                            </c:if>
-                                           <c:if test="${ not empty aaa}">
-                                               <a href="ImportBillDetailController?searchbillId=${searchbillId}&billId=${o.bill_id}&createDateFrom=${param.createDateFrom}&createDateTo=${param.createDateTo}&totalPriceFrom=${totalPriceFrom}&totalPriceTo=${param.totalPriceTo}&indexPageback=${param.indexPage}&search=true">
-                                                 
-                                            <i class="material-icons" data-toggle="tooltip" title="Detail">Detail</i>
-                                        </a>
-                                               </c:if>
+                                                <i class="material-icons" data-toggle="tooltip" title="Detail">Detail</i>
+                                            </a>
+                                        </c:if>
+                                        <c:if test="${ not empty aaa}">
+                                            <a href="ImportBillDetailController?searchbillId=${searchbillId}&billId=${o.bill_id}&createDateFrom=${param.createDateFrom}&createDateTo=${param.createDateTo}&totalPriceFrom=${totalPriceFrom}&totalPriceTo=${param.totalPriceTo}&indexPageback=${param.indexPage}&search=true">
+
+                                                <i class="material-icons" data-toggle="tooltip" title="Detail">Detail</i>
+                                            </a>
+                                        </c:if>
                                     </td>
                                 </tr>
                             </c:forEach>
-                                                               <c:if test="${empty lstBill}">
-                            <tr class="not-found-row">
-                                <td class="not-found-cell col-5 " style=" text-align: center" colspan="11">Not Found</td>
-                            </tr>
-                        </c:if>
+                            <c:if test="${empty lstBill}">
+                                <tr style="text-align: center" class="not-found-row">
+                                    <td class="not-found-cell col-5 " style=" text-align: center" colspan="11">Not Found</td>
+                                </tr>
+                            </c:if>
                         </tbody>
                     </table>
                     <c:if test="${not empty aaa}"> 
@@ -370,118 +376,118 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
-     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var pageIndex = getQueryParameter('indexPage') || getQueryParameter('indexPageback');
-        var links = document.querySelectorAll('.page-numbers .page-link');
-        var prevButton = document.querySelector('.page-link.prev');
-        var nextButton = document.querySelector('.page-link.next');
-        var currentPage = pageIndex ? parseInt(pageIndex) : 1;
-        var totalPages = links.length;
-        var maxVisiblePages = 5;
+        <script>
+                   document.addEventListener('DOMContentLoaded', function () {
+                       var pageIndex = getQueryParameter('indexPage') || getQueryParameter('indexPageback');
+                       var links = document.querySelectorAll('.page-numbers .page-link');
+                       var prevButton = document.querySelector('.page-link.prev');
+                       var nextButton = document.querySelector('.page-link.next');
+                       var currentPage = pageIndex ? parseInt(pageIndex) : 1;
+                       var totalPages = links.length;
+                       var maxVisiblePages = 5;
 
-        // Remove the 'active' class from prev and next buttons initially
-        prevButton.classList.remove('active');
-        nextButton.classList.remove('active');
+                       // Remove the 'active' class from prev and next buttons initially
+                       prevButton.classList.remove('active');
+                       nextButton.classList.remove('active');
 
-        function updatePageNumbers() {
-            var startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 1);
-            var endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+                       function updatePageNumbers() {
+                           var startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 1);
+                           var endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
 
-            if (endPage - startPage < maxVisiblePages - 1) {
-                startPage = Math.max(endPage - maxVisiblePages + 1, 1);
-            }
+                           if (endPage - startPage < maxVisiblePages - 1) {
+                               startPage = Math.max(endPage - maxVisiblePages + 1, 1);
+                           }
 
-            links.forEach(function (link, index) {
-                var pageNum = index + 1;
-                if (pageNum >= startPage && pageNum <= endPage) {
-                    link.style.display = 'inline-block';
-                } else {
-                    link.style.display = 'none';
-                }
-            });
-        }
+                           links.forEach(function (link, index) {
+                               var pageNum = index + 1;
+                               if (pageNum >= startPage && pageNum <= endPage) {
+                                   link.style.display = 'inline-block';
+                               } else {
+                                   link.style.display = 'none';
+                               }
+                           });
+                       }
 
-        function setActivePage(pageIndex) {
-            links.forEach(function (link) {
-                link.classList.remove('active');
-                if (parseInt(link.textContent) === pageIndex) {
-                    link.classList.add('active');
-                }
-            });
-        }
+                       function setActivePage(pageIndex) {
+                           links.forEach(function (link) {
+                               link.classList.remove('active');
+                               if (parseInt(link.textContent) === pageIndex) {
+                                   link.classList.add('active');
+                               }
+                           });
+                       }
 
-        prevButton.addEventListener('click', function (event) {
-            event.preventDefault();
-            if (currentPage > 1) {
-                currentPage--;
-                updatePageNumbers();
-            }
-        });
+                       prevButton.addEventListener('click', function (event) {
+                           event.preventDefault();
+                           if (currentPage > 1) {
+                               currentPage--;
+                               updatePageNumbers();
+                           }
+                       });
 
-        nextButton.addEventListener('click', function (event) {
-            event.preventDefault();
-            if (currentPage < totalPages) {
-                currentPage++;
-                updatePageNumbers();
-            }
-        });
+                       nextButton.addEventListener('click', function (event) {
+                           event.preventDefault();
+                           if (currentPage < totalPages) {
+                               currentPage++;
+                               updatePageNumbers();
+                           }
+                       });
 
-        links.forEach(function (link) {
-            link.addEventListener('click', function () {
-                currentPage = parseInt(link.textContent);
-                setActivePage(currentPage);
-                navigateToPage(currentPage);
-            });
-        });
+                       links.forEach(function (link) {
+                           link.addEventListener('click', function () {
+                               currentPage = parseInt(link.textContent);
+                               setActivePage(currentPage);
+                               navigateToPage(currentPage);
+                           });
+                       });
 
-        // Initialize page numbers and active page
-        updatePageNumbers();
-        if (!pageIndex) {
-            setActivePage(1);
-        } else {
-            setActivePage(currentPage);
-        }
+                       // Initialize page numbers and active page
+                       updatePageNumbers();
+                       if (!pageIndex) {
+                           setActivePage(1);
+                       } else {
+                           setActivePage(currentPage);
+                       }
 
-        function navigateToPage(pageIndex) {
-            var url = new URL(window.location.href);
-            url.searchParams.set('indexPage', pageIndex);
-            window.location.href = url.toString();
-        }
+                       function navigateToPage(pageIndex) {
+                           var url = new URL(window.location.href);
+                           url.searchParams.set('indexPage', pageIndex);
+                           window.location.href = url.toString();
+                       }
 
-        function getQueryParameter(name) {
-            var urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-    });
+                       function getQueryParameter(name) {
+                           var urlParams = new URLSearchParams(window.location.search);
+                           return urlParams.get(name);
+                       }
+                   });
 
-    // Image modal handling
-    function showImageModal(img) {
-        var modal = document.getElementById('imageModal');
-        var modalImg = document.getElementById('img01');
-        modal.style.display = 'block';
-        modalImg.src = img.src;
-    }
+                   // Image modal handling
+                   function showImageModal(img) {
+                       var modal = document.getElementById('imageModal');
+                       var modalImg = document.getElementById('img01');
+                       modal.style.display = 'block';
+                       modalImg.src = img.src;
+                   }
 
-    function closeImageModal() {
-        var modal = document.getElementById('imageModal');
-        modal.style.display = 'none';
-    }
+                   function closeImageModal() {
+                       var modal = document.getElementById('imageModal');
+                       modal.style.display = 'none';
+                   }
 
-    function openModal(imgURL) {
-        var modal = document.getElementById("myModal");
-        var modalImg = document.getElementById("img01");
-        var captionText = document.getElementById("caption");
-        modal.style.display = "block";
-        modalImg.src = imgURL;
-        captionText.innerHTML = imgURL;
-    }
+                   function openModal(imgURL) {
+                       var modal = document.getElementById("myModal");
+                       var modalImg = document.getElementById("img01");
+                       var captionText = document.getElementById("caption");
+                       modal.style.display = "block";
+                       modalImg.src = imgURL;
+                       captionText.innerHTML = imgURL;
+                   }
 
-    function closeModal() {
-        var modal = document.getElementById("myModal");
-        modal.style.display = "none";
-    }
-</script>
+                   function closeModal() {
+                       var modal = document.getElementById("myModal");
+                       modal.style.display = "none";
+                   }
+        </script>
 
     </body>
 

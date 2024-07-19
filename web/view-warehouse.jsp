@@ -14,28 +14,11 @@
             /* CSS để căn giữa bảng order */
             .section-padding-100 {
                 padding: 0; /* Loại bỏ padding để giảm khoảng trống phía trên */
-                text-align: center; /* Căn giữa nội dung */
+             
                 margin-left: 250px; /* Thêm khoảng cách để tránh bị che bởi sidebar */
                 margin-top: 0; /* Loại bỏ khoảng trắng phía trên */
             }
 
-            .back-home {
-                position: absolute; /* Đặt vị trí tuyệt đối */
-                top: 15px; /* Cách phía trên */
-                left: 260px; /* Cách phía bên trái sidebar */
-                padding: 10px 10px;
-                text-decoration: none;
-                color: #fff;
-                background-color: #4CAF50;
-                border-radius: 5px;
-                font-size: 15px;
-                font-weight: bold;
-                transition: background-color 0.3s ease;
-            }
-
-            .back-home:hover {
-                background-color: #45a049;
-            }
 
             table {
                 margin: 0 auto; /* căn giữa bảng */
@@ -141,17 +124,34 @@
             .pagination a.page-link.first:hover, .pagination a.page-link.last:hover {
                 background-color: #ccc;
             }
+              .header {
+                margin-top: 12px;
+                background-color: #fff;
+                padding: 15px 20px;
+                border-bottom: 1px solid #e9ecef;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                margin-bottom: 12px;
+            }
         </style>
     </head>
     <body>
  <jsp:include page="/shared/_slideBar.jsp" />
 
         <!-- Header Area -->
-        <div class="section-padding-100">
-            <!-- Đưa nút "Back to Home" vào đúng vị trí -->
-            <a href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
+        <div class="section-padding-100" style="padding: 12px 12px">
+            
+            <a style="text-decoration: none; " href="${pageContext.request.contextPath}/home" class=" back-home">Back to Home</a>
+            <div class="header" >
+
+                <div class="role-info">
+                    <span> :</span><span></span>
+                </div>
+            </div>
             <div class="cart-title mt-50">
-                <h2>Warehouse Manage</h2>
+                <h1 style="text-align: center">Warehouse Manage</h1>
             </div>
 
             <div>

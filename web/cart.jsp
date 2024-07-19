@@ -95,6 +95,180 @@
                 font-size: 18px;
                 border-radius: 4px;
             }
+            .toast {
+                position: fixed;
+                z-index: 99999;
+                width: 400px;
+                top: 25px;
+                right: 30px;
+                border-radius: 12px;
+                background: #fff;
+                padding: 20px 35px 20px 25px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                border-left: 6px solid #ffc107; /* Màu vàng */
+                overflow: hidden;
+                transform: translateX(calc(100% + 30px));
+                transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+                opacity: 1!important;
+            }
+
+            .toast.active {
+                transform: translateX(0%);
+                opacity: 1!important;
+            }
+
+            .toast .toast-content {
+                display: flex;
+                align-items: center;
+            }
+
+            .toast-content .check {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 35px;
+                width: 35px;
+                background-color: #ffc107; /* Màu vàng */
+                color: #ffc107;
+                font-size: 20px;
+                border-radius: 50%;
+            }
+
+            .toast-content .message {
+                display: flex;
+                flex-direction: column;
+                margin: 0 20px;
+            }
+
+            .message .text {
+                font-size: 20px;
+                font-weight: 400;
+                color: #666666;
+            }
+
+            .message .text.text-1 {
+                font-weight: 600;
+                color: #333;
+            }
+
+            .toast{
+                position: fixed;
+                z-index: 99999;
+                width:400px;
+                top: 25px;
+                right: 30px;
+                border-radius: 12px;
+                background: #fff;
+                padding: 20px 35px 20px 25px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                border-left: 6px solid #4070f4;
+                overflow: hidden;
+                transform: translateX(calc(100% + 30px));
+                transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+                opacity: 1!important;
+            }
+
+            .toast.active{
+                transform: translateX(0%);
+                opacity: 1!important;
+            }
+
+            .toast .toast-content{
+                display: flex;
+                align-items: center;
+            }
+
+            .toast-content .check{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 35px;
+                width: 35px;
+                background-color: #4070f4;
+                color: #fff;
+                font-size: 20px;
+                border-radius: 50%;
+            }
+            .toast.logout-toast .check {
+                background-color: #ffc107;
+                height: 35px;
+                width: 35px;
+            }
+            .toast-content .message{
+                display: flex;
+                flex-direction: column;
+                margin: 0 20px;
+            }
+
+            .message .text{
+                font-size: 20px;
+                font-weight: 400;
+                color: #666666;
+            }
+
+            .message .text.text-1{
+                font-weight: 600;
+                color: #333;
+            }
+
+            .toast .close{
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                padding: 5px;
+                cursor: pointer;
+                opacity: 0.7;
+            }
+
+            .toast .close:hover{
+                opacity: 1;
+            }
+
+            .toast .progress{
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: 3px;
+                width: 100%;
+                background: #ddd;
+            }
+
+            .toast .progress:before{
+                content: '';
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                height: 100%;
+                width: 100%;
+                background-color: #4070f4;
+            }
+            .toast-fail {
+                border-left: 6px solid #dc3545 !important;
+            }
+
+            .toast-fail .check {
+                background-color: #dc3545;
+            }
+
+            .toast-fail .progress:before {
+                background-color: #dc3545;
+            }
+
+            .toast.logout-toast{
+                border-left: 6px solid #ffc107!important;
+            }
+            .toast.logout-toast .progress:before {
+                background-color: #ffc107;
+            }
+            .progress.active:before{
+                animation: progress 5s linear forwards;
+            }
+
+            @keyframes progress {
+                100%{
+                    right: 100%;
+                }
+            }
         </style>
 
         <jsp:include page="/shared/_header.jsp" />
@@ -128,9 +302,16 @@
 
                         <c:if test="${not empty sessionScope.message}">
                             <c:set var="message" value="${sessionScope.message}" />
-                            <div id="message" style="display: none;">
-                                <h1 class="btn btn-block btn-primary font-weight-bold my-3 py-3">${sessionScope.message}</h1>
-                            </div>
+                            <div class="toast" id="toast" style="width:750px">
+                                <div class="toast-content" >
+                                    <i class="fas fa-solid fa-exclamation"></i>
+                                    <div class="message">
+                                        <span class="text text-1"> Notification!!</span>
+                                        <span class="text text-2">${sessionScope.message}</span>
+                                    </div>
+                                </div>
+                                <span class="close">&times;</span>
+                                <div class="progress active"></div>                     
                             <c:remove var="message" scope="session"/>
                         </c:if>
                         <tr>
@@ -214,10 +395,10 @@
                                         <span class="h1 text-uppercase text-primary bg-dark px-2">Clothes</span>
                                         <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Store</span>
                                     </div>
-                                    
+
                                     <div class="d-flex">
-                                    <h5 class="m-0">Total Price (${quantityProduct}):</h5> 
-                                    <h5 style="font-size: 28px"><fmt:formatNumber value="${totalPrice}" type="number" pattern="#,##0" /> VND</h5>
+                                        <h5 class="m-0">Total Price (${quantityProduct}):</h5> 
+                                        <h5 style="font-size: 28px"><fmt:formatNumber value="${totalPrice}" type="number" pattern="#,##0" /> VND</h5>
                                     </div>
                                     <div class="d-flex flex-column align-items-end">
                                         <a href="/clothesstore/checkout" class="btn btn-primary font-weight-bold py-3 px-4">Proceed To Checkout</a>
@@ -237,7 +418,27 @@
         document.addEventListener("DOMContentLoaded", function () {
             showDiv();
         });
+        document.addEventListener("DOMContentLoaded", function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            setTimeout(function () {
+                toast.classList.add('active');
+            }, 100);
+            var toast = document.getElementById('toast');
+            setTimeout(function () {
+                toast.classList.remove('active');
+            }, 5000);
 
+
+            var closeToast = document.querySelector('.toast .close');
+            if (closeToast) {
+                closeToast.addEventListener('click', function () {
+                    var toast = document.getElementById('toast');
+                    toast.classList.remove('active');
+                });
+            }
+            var pathname = window.location.pathname;
+            window.history.pushState({}, "", pathname);
+        });
         function showDiv() {
             var div = document.getElementById("message");
             div.style.display = "block";

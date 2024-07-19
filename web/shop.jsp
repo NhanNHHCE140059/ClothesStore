@@ -5,80 +5,122 @@
 <html>
     <jsp:include page="/shared/_head.jsp" />
     <body>
+        <style>
+          .toast {
+    position: fixed;
+    z-index: 99999;
+    width: 400px;
+    top: 25px;
+    right: 30px;
+    border-radius: 12px;
+    background: #fff;
+    padding: 20px 35px 20px 25px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    border-left: 6px solid #ffc107; /* Màu vàng */
+    overflow: hidden;
+    transform: translateX(calc(100% + 30px));
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+    opacity: 1!important;
+}
+
+.toast.active {
+    transform: translateX(0%);
+    opacity: 1!important;
+}
+
+.toast .toast-content {
+    display: flex;
+    align-items: center;
+}
+
+.toast-content .check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+    width: 35px;
+    background-color: #ffc107; /* Màu vàng */
+    color: #ffc107;
+    font-size: 20px;
+    border-radius: 50%;
+}
+
+.toast-content .message {
+    display: flex;
+    flex-direction: column;
+    margin: 0 20px;
+}
+
+.message .text {
+    font-size: 20px;
+    font-weight: 400;
+    color: #666666;
+}
+
+.message .text.text-1 {
+    font-weight: 600;
+    color: #333;
+}
+
+.toast .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    padding: 5px;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.toast .close:hover {
+    opacity: 1;
+}
+
+.toast .progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: #ddd;
+}
+
+.toast .progress:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #ffc107; /* Màu vàng */
+}
+
+.progress.active:before {
+    animation: progress 5s linear forwards;
+}
+
+@keyframes progress {
+    100% {
+        right: 100%;
+    }
+}
+
+        </style>
         <jsp:include page="/shared/_header.jsp" />
         <jsp:include page="/shared/_nav.jsp" />
-
-        <style>
-            .box {
-                width: 310px;
-                height: 100px;
-                background-color: #ffd333;
-                position: absolute;
-                top: 50%;
-                right: -350px; /* Start outside the screen */
-                transform: translateY(-50%);
-                animation: moveAndHide 5s forwards;
-                z-index: 1000;
-                border: 2px solid #3d464d;
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                display: flex;
-                align-items: center;
-                padding: 10px;
-            }
-
-            .box img {
-                width: 50px;
-                height: 50px;
-                border-radius: 5px;
-                margin-left: 10px;
-            }
-
-            .box .content {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                flex-grow: 1;
-            }
-
-            .box .content p {
-                color: #3d464d;
-                font-weight: 600;
-                margin: 0;
-            }
-
-            .box .content .product-name {
-                font-size: 1.2em;
-            }
-
-            .box .content .product-price {
-                color: #000;
-                font-size: 1.1em;
-            }
-
-            @keyframes moveAndHide {
-                0% {
-                    right: -350px; /* Start outside the screen */
-                    opacity: 1;
-                }
-                50% {
-                    right: 10px; /* Fully visible */
-                    opacity: 1;
-                }
-                100% {
-                    right: 10px;
-                    opacity: 0;
-                }
-            }
-        </style>
         <!-- Breadcrumb Start -->
         <c:if test="${param.fvss ==1}">
-            <div class="box" style="background-color: #d90c0c">
-                <div class="content">
-                    <p style="padding-left: 10px; color: #FFD333;">Product is available in Favorite List!!!</p>
+            <div class="toast" id="toast">
+                <div class="toast-content">
+                    <i class="fas fa-solid fa-exclamation"></i>
+                    <div class="message">
+                        <span class="text text-1"> Already in favorites!!</span>
+                        <span class="text text-2">Product is available in Favorite List!!!</span>
+                    </div>
                 </div>
+                <span class="close">&times;</span>
+                <div class="progress active"></div>
             </div>
-        </c:if>   
+        </c:if>
         <div class="container-fluid">
             <div class="row px-xl-5">
                 <div class="col-12">
@@ -91,7 +133,6 @@
             </div>
         </div>
         <!-- Breadcrumb End -->
-
 
         <!-- Shop Start -->
         <div class="container-fluid">
@@ -113,9 +154,33 @@
                         </form>
                     </div>
                     <!-- Category End -->
+
+
+                    <!-- Random Products Start -->
+                    <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Top 3 Trending</span></h5>
+                    <div class="bg-light p-4 mb-30 top-3-products text-center" style="max-height: 73-px">
+                        <c:forEach var="product" items="${top3Sell}">
+                            <div class="product-items" style="height:230px; width: auto;border:1px solid;margin-top: 4px; border-radius:4px" >
+                                <div class="product-imgs">
+                                    <img class="img-fluid" style="width: 30%;height: auto;margin-top:4px;" src="${product.imageURL}">
+                                    <div class="product-actions">
+
+                                        <a class="btn btn-outline-dark btn-sm" href="/clothesstore/detail?pid=${product.pro_id}"><i class="fa fa-info-circle"></i> More information and Buy</a>
+                                    </div>
+                                </div>
+                                <div class="text-center py-3">
+                                    <a class="h6 text-decoration-none text-truncate text-dark" href="/clothesstore/detail?pid=${product.pro_id}">${product.pro_name}</a>
+                                    <div class="d-flex align-items-center justify-content-center mt-2">
+                                        <h5 class="font-weight-bold"><fmt:formatNumber value="${product.pro_price}" type="number" pattern="#,##0"/> VND</h5>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </c:forEach>
+                    </div>
+                    <!-- Random Products End -->
                 </div>
                 <!-- Shop Sidebar End -->
-
 
                 <!-- Shop Product Start -->
                 <div class="col-lg-9 col-md-8">
@@ -161,7 +226,6 @@
                             </c:forEach>
                         </div>
 
-
                         <div class="col-12">
                             <nav>
                                 <ul class="pagination justify-content-center">
@@ -185,5 +249,29 @@
         <!-- Shop End -->
 
         <jsp:include page="/shared/_footer.jsp" />
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var urlParams = new URLSearchParams(window.location.search);
+                setTimeout(function () {
+                    toast.classList.add('active');
+                }, 100);
+                var toast = document.getElementById('toast');
+                setTimeout(function () {
+                    toast.classList.remove('active');
+                }, 5000);
+
+
+                var closeToast = document.querySelector('.toast .close');
+                if (closeToast) {
+                    closeToast.addEventListener('click', function () {
+                        var toast = document.getElementById('toast');
+                        toast.classList.remove('active');
+                    });
+                }
+                var pathname = window.location.pathname;
+                window.history.pushState({}, "", pathname);
+            });
+
+        </script>
     </body>
 </html>
