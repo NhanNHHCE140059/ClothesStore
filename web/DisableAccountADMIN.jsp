@@ -310,7 +310,7 @@
             <div class="sidebar-header">administrator</div>
             <a href="/clothesstore/statistic" class="menu-item">STATICAL</a>
             <a href="DisableAccountADMIN.jsp" class="menu-item" style="margin-bottom: 32px;">ACCOUNT MANAGEMENT</a>
-            <a href="logout.jsp" class="menu-item logout"  >LOG OUT</a>
+            <a href="logout" class="menu-item logout"  >LOG OUT</a>
         </div>
         <div class="content">
             <div class="header">
