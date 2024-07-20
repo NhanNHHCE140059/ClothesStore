@@ -125,7 +125,7 @@
         .thumbnail-container {
             display: flex;
             justify-content: center;
-            margin: 32px 30px 10px 0px;
+            margin: 32px 0 10px 0px;
         }
 
         .thumbnail {
@@ -424,11 +424,10 @@
     </style>
     <body>
         <jsp:include page="/shared/_header.jsp" />
-        <jsp:include page="/shared/_nav.jsp" />
-
-        <!-- Breadcrumb Start -->
+        <jsp:include page="/shared/_nav.jsp" />  
+        <!-- Breadcrumb Start -->       
         <c:if test="${param.error == 1}">
-               <div class="toast toast-fail" id="toast">
+            <div class="toast toast-fail" id="toast">
                 <div class="toast-content">
                     <i class="fas fa-times-circle check"></i>
                     <div class="message" >
@@ -443,7 +442,7 @@
         </c:if>
 
         <c:if test="${param.error == 2}">      
-                <div class="toast toast-fail" id="toast">
+            <div class="toast toast-fail" id="toast">
                 <div class="toast-content">
                     <i class="fas fa-times-circle check"></i>
                     <div class="message" >
@@ -471,7 +470,7 @@
         </c:if>  
 
         <c:if test="${param.error == 4}">
-                <div class="toast toast-fail" id="toast" style="width:550px">
+            <div class="toast toast-fail" id="toast" style="width:550px">
                 <div class="toast-content">
                     <i class="fas fa-times-circle check"></i>
                     <div class="message" >
@@ -484,7 +483,7 @@
             </div>
         </c:if>
         <c:if test="${param.error == 6}">
-             <div class="toast toast-fail" id="toast" style="width:550px">
+            <div class="toast toast-fail" id="toast" style="width:550px">
                 <div class="toast-content">
                     <i class="fas fa-times-circle check" style="padding:18px"></i>
                     <div class="message" >
@@ -497,7 +496,7 @@
             </div>
         </c:if>
         <c:if test="${param.error == 7}">       
-                <div class="toast toast-fail" id="toast" style="width:550px">
+            <div class="toast toast-fail" id="toast" style="width:550px">
                 <div class="toast-content">
                     <i class="fas fa-times-circle check" style="padding:18px"></i>
                     <div class="message" >
@@ -539,9 +538,9 @@
         <!-- Shop Detail Start -->
         <div class="container-fluid pb-5">
             <div class="row px-xl-5 align-items-center">
-                <div class="col-lg-5 mb-4 mb-lg-0 product-detail-img-container">
+                <div class="col-lg-5 mb-4 mb-lg-0 product-detail-img-container"  style="object-fit: fill;overflow:hidden" >
                     <!-- Thumbnail Images Start -->
-                    <div class="row px-xl-5">
+                    <div class="row px-xl-2">
 
                         <div class="col-12 text-center">
                             <%        if ( imgList!=null) {
@@ -627,7 +626,7 @@
                                 <button class="btn btn-primary add-cart-btn px-5" onclick="getValuesToAdd()">
                                     <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
                                 </button>
-                                <button id="buyNowBtn" class="btn buy-now-btn px-5">
+                                <button id="buyNowBtn" class="btn buy-now-btn px-5" onclick="handleBuyNow()">
                                     <i class="fa fa-credit-card mr-1"></i> Buy Now
                                 </button>
                             </div>
@@ -962,7 +961,10 @@
                                         var buttonSize = document.querySelector('.size-btn.active');
                                         var buttonColor = document.querySelector('.color-btn.active');
 
-
+                                        if (!buttonSize || !buttonColor) {
+                                            alert("Please choose color and size!!!");
+                                            return;
+                                        }
                                         var size = buttonSize.getAttribute('data-size');
                                         var color = buttonColor.getAttribute('data-color');
 
@@ -978,8 +980,27 @@
                                         console.log("Size: " + size + ", Color: " + color + ", Quantity: " + quantity);
                                     }
 
-                                    document.getElementById("buyNowBtn").addEventListener("click", function () {
-                                        window.location.href = "/clothesstore/checkout";
-                                    });
+                               
+                                    function handleBuyNow() {
+                                        var buttonSize = document.querySelector('.size-btn.active');
+                                        var buttonColor = document.querySelector('.color-btn.active');
+
+                                        if (!buttonSize || !buttonColor) {
+                                            alert("Please choose color and sizeSSSSS!!!");
+                                            return;
+                                        }
+                                        var size = buttonSize.getAttribute('data-size');
+                                        var color = buttonColor.getAttribute('data-color');
+                                        var quantity = document.getElementById('quantityInput').value;
+
+                                        if (size && color && quantity) {
+                                            var url = '${pageContext.request.contextPath}/checkout?buyNow=true&size=' + encodeURIComponent(size) + '&color=' + encodeURIComponent(color) + '&quantity=' + encodeURIComponent(quantity) + "&pro_id=${param.pid}";
+                                            window.location.href = url;
+                                        } else {
+                                            alert("Please choose color and size!!!");
+                                        }
+                                    }
+
+                                
     </script>
 </html>

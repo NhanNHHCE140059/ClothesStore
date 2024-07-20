@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import model.CartInfo;
 import java.util.LinkedList;
 import java.util.List;
@@ -112,7 +113,7 @@ public class CartController extends HttpServlet {
                                         response.sendRedirect("detail?error=4&pid=" + proID);
                                         return;
                                     }
-                                    response.sendRedirect("detail?succes=" + productVariant.getVariant_id() + "&pid=" + proID + "&size=" + size+ "&color=" +color);
+                                    response.sendRedirect("detail?succes=" + productVariant.getVariant_id() + "&pid=" + proID + "&size=" + size + "&color=" + color);
                                     return;
 
                                 }
@@ -128,7 +129,7 @@ public class CartController extends HttpServlet {
                                     response.sendRedirect("detail?error=4&pid=" + proID);
                                     return;
                                 }
-                                response.sendRedirect("detail?succes=" + productVariant.getVariant_id() + "&pid=" + proID +"&size=" + size+ "&color=" +color);
+                                response.sendRedirect("detail?succes=" + productVariant.getVariant_id() + "&pid=" + proID + "&size=" + size + "&color=" + color);
                                 return;
                             }
                         }
@@ -167,7 +168,7 @@ public class CartController extends HttpServlet {
                                 message = "The number of products in the Warehouse is no longer available!!!";
                             } else if (wservice.GetProByIdInWareHouse(proV_id).getInventory_number() > 0) {
                                 if (newquantity > wservice.GetProByIdInWareHouse(proV_id).getInventory_number()) {
-                                    message = "Not enough quantity<br>Available: "+ wservice.GetProByIdInWareHouse(proV_id).getInventory_number();
+                                    message = "Not enough quantity<br>Available: " + wservice.GetProByIdInWareHouse(proV_id).getInventory_number();
                                     break;
                                 }
                                 int updateQuan = cservice.UpdateQuan(newquantity, c.getPro_price() * newquantity, c.getCart_id(), c.getVariant_id());
@@ -257,7 +258,21 @@ public class CartController extends HttpServlet {
             endpage++;
         }
 
+        List<CartInfo> cartOutStock = new ArrayList<>();
+        List<CartInfo> allInCartUser = cservice.getAllCartItemsByAccID(acc.getAcc_id());
+        for (CartInfo cart : allInCartUser) {
+            if (cart.getPro_quantity() > wservice.GetProByIdInWareHouse(cart.getVariant_id()).getInventory_number()) {
+                int updateQuatity = wservice.GetProByIdInWareHouse(cart.getVariant_id()).getInventory_number();
+                int updateQuan = cservice.UpdateQuan(updateQuatity, cart.getPro_price() * updateQuatity, cart.getCart_id(), cart.getVariant_id());
+            }
+            if (wservice.GetProByIdInWareHouse(cart.getVariant_id()).getInventory_number() == 0) {
+                cartOutStock.add(cart);
+            }
+        }
         LinkedList<CartInfo> carttop5 = cservice.GetTop5CartByAccID(acc.getAcc_id(), indexPage);
+        for (CartInfo outStockItem : cartOutStock) {
+            carttop5.removeIf(cart -> cart.getVariant_id() == outStockItem.getVariant_id());
+        }
         if (carttop5.isEmpty() && indexPage != 1) {
             response.sendRedirect(request.getContextPath() + "/cart?indexPage=" + (indexPage - 1));
             return;
@@ -270,6 +285,8 @@ public class CartController extends HttpServlet {
             quantityProduct += c.getPro_quantity();
             ++quantityCart;
         }
+        System.out.println(cartOutStock.size());
+        request.setAttribute("cartOutStock", cartOutStock);
         request.setAttribute("quantityProduct", quantityProduct);
         request.setAttribute("quantityCart", quantityCart);
         request.setAttribute("totalPrice", totalPrice);
@@ -279,7 +296,7 @@ public class CartController extends HttpServlet {
         RequestDispatcher dispatcher = request.getRequestDispatcher("cart.jsp");
         dispatcher.forward(request, response);
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

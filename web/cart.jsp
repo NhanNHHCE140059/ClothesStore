@@ -269,6 +269,21 @@
                     right: 100%;
                 }
             }
+            .disabled-row {
+                background-color: white;        
+            }
+            .disabled-row td:not(.remove-button) {
+               color: #aaa;
+                pointer-events: none;
+                opacity: 0.5;
+            }
+            .disabled-row .remove-button {
+                pointer-events: auto;
+                opacity: 1!important;
+                z-index:10!important;
+                color: black;
+                background-color: red;
+            }
         </style>
 
         <jsp:include page="/shared/_header.jsp" />
@@ -312,73 +327,129 @@
                                 </div>
                                 <span class="close">&times;</span>
                                 <div class="progress active"></div>                     
-                            <c:remove var="message" scope="session"/>
-                        </c:if>
-                        <tr>
-                            <th>Products</th>
-                            <th></th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th>Remove</th>
-                        </tr>
-                        </thead>
-                        <tbody class="align-middle">
-                            <c:forEach var="cart" items="${carttop5}">
-                                <tr>
-                                    <td class="align-middle" style="display: flex; align-items: center;">
-                                        <img src="${cart.imageURL}" alt="imgProduct" style="width: 100px; height: 100px; margin-right: 20px;">
-                                        <div>
-                                            <span style="display: block; font-size: 18px; font-weight: bold;">${cart.pro_name}</span>
-                                            <span style="display: inline-block; padding: 2px 5px; border: 1px solid red; color: red; margin-top: 5px;">Change your mind for free for 15 days</span>
-                                            <div style="margin-top: 10px;">
-                                                <span style="background-color: orange; color: white; padding: 2px 5px; margin-right: 5px;">QUALITY</span>
-                                                <span style="background-color: green; color: white; padding: 2px 5px; margin-right: 5px;">TREND</span>
-                                                <span style="background-color: yellow; color: black; padding: 2px 5px;">SPECTACULAR</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <% CartInfo cartInfo = (CartInfo) pageContext.findAttribute("cart"); %>
-                                    <td class="align-middle">Product Classification <br>Color: ${cart.color_name}, Size: <%= ProductSizeType.values()[cartInfo.getSize_id()] %></td>
-                                    <td class="align-middle">
-                                        <fmt:formatNumber value="${cart.pro_price}" type="number" pattern="#,##0" /> VND
-                                    </td>
-                                    <td class="align-middle">
-                                        <div class="input-group quantity mx-auto" style="width: 120px;">
-
-                                            <a href="${pageContext.request.contextPath}/cart?action=decQuan&proV_id=${cart.variant_id}&indexPage=${indexPage}">  <div class="input-group-btn">
-                                                    <button class="btn btn-sm btn-primary btn-plus" style="height: 34px;">
-                                                        <i class="fa fa-minus"></i>
-                                                    </button>
-                                                </div></a>
-
-                                            <input id="quantityCustom_${cart.variant_id}" class="form-control form-control-sm bg-secondary border-0 text-center quantity-custom" style="width: 60px;" type="number" value="${cart.pro_quantity}" name="quantityC" onblur="handleBlur(${cart.variant_id})" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                                            <a href="${pageContext.request.contextPath}/cart?action=incQuan&proV_id=${cart.variant_id}&indexPage=${indexPage}">  <div class="input-group-btn">
-                                                    <div class="input-group-btn">
-
-                                                        <button class="btn btn-sm btn-primary btn-plus" style="height: 34px;">
-                                                            <i class="fa fa-plus"></i>
-                                                        </button>
+                                <c:remove var="message" scope="session"/>
+                            </c:if>
+                            <tr>
+                                <th>Products</th>
+                                <th></th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Remove</th>
+                            </tr>
+                            </thead>
+                            <tbody class="align-middle">
+                                <c:if test="${not empty cartOutStock}">
+                                    <c:forEach var="cartOut" items="${cartOutStock}">
+                                        <tr class="disabled-row">
+                                            <td class="align-middle" style="display: flex; align-items: center;">
+                                                <img src="${cartOut.imageURL}" alt="imgProduct" style="width: 100px; height: 100px; margin-right: 20px;">
+                                                <div>
+                                                    <span style="display: block; font-size: 18px; font-weight: bold;">${cart.pro_name}</span>
+                                                    <span style="display: inline-block; padding: 2px 5px; border: 1px solid red; color: red; margin-top: 5px;">Change your mind for free for 15 days</span>
+                                                    <div style="margin-top: 10px;">
+                                                        <span style="background-color: orange; color: white; padding: 2px 5px; margin-right: 5px;">QUALITY</span>
+                                                        <span style="background-color: green; color: white; padding: 2px 5px; margin-right: 5px;">TREND</span>
+                                                        <span style="background-color: yellow; color: black; padding: 2px 5px;">SPECTACULAR</span>
                                                     </div>
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle">
-                                        <fmt:formatNumber value="${cart.total_price}" type="number" pattern="#,##0" /> VND
-                                    </td>
-                                    <td class="align-middle">
-                                        <form action="cart" method="get">
-                                            <input type="hidden" name="cart_id" value="${cart.cart_id}">
-                                            <input type="hidden" name="indexPage" value="${indexPage}">
-                                            <button type="submit" name="action" value="delete" onclick="return confirm('Do you want to delete this cart?')" class="btn btn-sm btn-danger" style="margin-left: 2px">
-                                                <i class="fa fa-times"></i>
-                                                Remove
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                        </tbody>
+                                                </div>
+                                            </td>
+                                            <% CartInfo cartOutInfo = (CartInfo) pageContext.findAttribute("cartOut"); %>
+                                            <td class="align-middle">Product Classification <br>Color: ${cartOut.color_name}, Size: <%= ProductSizeType.values()[cartOutInfo.getSize_id()] %></td>
+                                            <td class="align-middle">
+                                                <fmt:formatNumber value="${cartOut.pro_price}" type="number" pattern="#,##0" /> VND
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="input-group quantity mx-auto" style="width: 120px;">
+
+                                                    <a href="${pageContext.request.contextPath}/cart?action=decQuan&proV_id=${cartOut.variant_id}&indexPage=${indexPage}">  <div class="input-group-btn">
+                                                            <button class="btn btn-sm btn-primary btn-plus" style="height: 34px;">
+                                                                <i class="fa fa-minus"></i>
+                                                            </button>
+                                                        </div></a>
+
+                                                    <input id="quantityCustom_${cartOut.variant_id}" class="form-control form-control-sm bg-secondary border-0 text-center quantity-custom" style="width: 60px;" type="number" value="${cartOut.pro_quantity}" name="quantityC" onblur="handleBlur(${cartOut.variant_id})" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                                    <a href="${pageContext.request.contextPath}/cart?action=incQuan&proV_id=${cartOut.variant_id}&indexPage=${indexPage}">  <div class="input-group-btn">
+                                                            <div class="input-group-btn">
+
+                                                                <button class="btn btn-sm btn-primary btn-plus" style="height: 34px;">
+                                                                    <i class="fa fa-plus"></i>
+                                                                </button>
+                                                            </div>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <fmt:formatNumber value="${cartOut.total_price}" type="number" pattern="#,##0" /> VND
+                                            </td>
+                                            <td class="align-middle">
+                                                <form action="cart" method="get">
+                                                    <input type="hidden" name="cart_id" value="${cartOut.cart_id}">
+                                                    <input type="hidden" name="indexPage" value="${indexPage}">
+                                                    <button type="submit" name="action" value="delete" onclick="return confirm('Do you want to delete this cart?')" class="btn btn-sm btn-danger remove-button" style="margin-left: 2px">
+                                                        <i class="fa fa-times"></i>
+                                                        Remove
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:if>
+                                <c:forEach var="cart" items="${carttop5}">
+                                    <tr>
+                                        <td class="align-middle" style="display: flex; align-items: center;">
+                                            <img src="${cart.imageURL}" alt="imgProduct" style="width: 100px; height: 100px; margin-right: 20px;">
+                                            <div>
+                                                <span style="display: block; font-size: 18px; font-weight: bold;">${cart.pro_name}</span>
+                                                <span style="display: inline-block; padding: 2px 5px; border: 1px solid red; color: red; margin-top: 5px;">Change your mind for free for 15 days</span>
+                                                <div style="margin-top: 10px;">
+                                                    <span style="background-color: orange; color: white; padding: 2px 5px; margin-right: 5px;">QUALITY</span>
+                                                    <span style="background-color: green; color: white; padding: 2px 5px; margin-right: 5px;">TREND</span>
+                                                    <span style="background-color: yellow; color: black; padding: 2px 5px;">SPECTACULAR</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <% CartInfo cartInfo = (CartInfo) pageContext.findAttribute("cart"); %>
+                                        <td class="align-middle">Product Classification <br>Color: ${cart.color_name}, Size: <%= ProductSizeType.values()[cartInfo.getSize_id()] %></td>
+                                        <td class="align-middle">
+                                            <fmt:formatNumber value="${cart.pro_price}" type="number" pattern="#,##0" /> VND
+                                        </td>
+                                        <td class="align-middle">
+                                            <div class="input-group quantity mx-auto" style="width: 120px;">
+
+                                                <a href="${pageContext.request.contextPath}/cart?action=decQuan&proV_id=${cart.variant_id}&indexPage=${indexPage}">  <div class="input-group-btn">
+                                                        <button class="btn btn-sm btn-primary btn-plus" style="height: 34px;">
+                                                            <i class="fa fa-minus"></i>
+                                                        </button>
+                                                    </div></a>
+
+                                                <input id="quantityCustom_${cart.variant_id}" class="form-control form-control-sm bg-secondary border-0 text-center quantity-custom" style="width: 60px;" type="number" value="${cart.pro_quantity}" name="quantityC" onblur="handleBlur(${cart.variant_id})" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                                <a href="${pageContext.request.contextPath}/cart?action=incQuan&proV_id=${cart.variant_id}&indexPage=${indexPage}">  <div class="input-group-btn">
+                                                        <div class="input-group-btn">
+
+                                                            <button class="btn btn-sm btn-primary btn-plus" style="height: 34px;">
+                                                                <i class="fa fa-plus"></i>
+                                                            </button>
+                                                        </div>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <fmt:formatNumber value="${cart.total_price}" type="number" pattern="#,##0" /> VND
+                                        </td>
+                                        <td class="align-middle">
+                                            <form action="cart" method="get">
+                                                <input type="hidden" name="cart_id" value="${cart.cart_id}">
+                                                <input type="hidden" name="indexPage" value="${indexPage}">
+                                                <button type="submit" name="action" value="delete" onclick="return confirm('Do you want to delete this cart?')" class="btn btn-sm btn-danger" style="margin-left: 2px">
+                                                    <i class="fa fa-times"></i>
+                                                    Remove
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
                     </table>
                     <div class="pagination" id="pagination">
                         <c:if test="${endpage != 0}">

@@ -10,7 +10,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Cart;
@@ -197,6 +199,107 @@ public class CartService {
 
         }
         return count;
+    }
+
+    public LinkedList<CartInfo> getAllCartItemsByAccID(int acc_id) {
+        LinkedList<CartInfo> list = new LinkedList<>();
+        String sql = "SELECT c.cart_id, c.variant_id, c.pro_quantity, c.pro_price, c.Total_price, "
+                + "pc.color_name, pv.size_id, p.pro_name, p.imageURL "
+                + "FROM Carts c "
+                + "JOIN ProductVariants pv ON c.variant_id = pv.variant_id "
+                + "JOIN ProductColors pc ON pv.color_id = pc.color_id "
+                + "JOIN Products p ON pv.pro_id = p.pro_id "
+                + "WHERE c.acc_id = ?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, acc_id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                CartInfo cartInfo = new CartInfo(
+                        rs.getInt("cart_id"),
+                        rs.getInt("variant_id"),
+                        rs.getInt("pro_quantity"),
+                        rs.getDouble("pro_price"),
+                        rs.getDouble("Total_price"),
+                        rs.getString("color_name"),
+                        rs.getInt("size_id"),
+                        rs.getString("pro_name"),
+                        rs.getString("imageURL")
+                );
+                list.add(cartInfo);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return list;
+    }
+
+    public List<CartInfo> getAvailableCartItemsByAccID(int acc_id) {
+        List<CartInfo> availableCartItems = new ArrayList<>();
+        String sql = "SELECT c.cart_id, c.variant_id, c.pro_quantity, c.pro_price, c.Total_price, "
+                + "pc.color_name, pv.size_id, p.pro_name, p.imageURL "
+                + "FROM Carts c "
+                + "JOIN ProductVariants pv ON c.variant_id = pv.variant_id "
+                + "JOIN ProductColors pc ON pv.color_id = pc.color_id "
+                + "JOIN Products p ON pv.pro_id = p.pro_id "
+                + "JOIN Warehouses w ON c.variant_id = w.variant_id "
+                + "WHERE c.acc_id = ? AND w.inventory_number > 0";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, acc_id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                CartInfo cartInfo = new CartInfo(
+                        rs.getInt("cart_id"),
+                        rs.getInt("variant_id"),
+                        rs.getInt("pro_quantity"),
+                        rs.getDouble("pro_price"),
+                        rs.getDouble("Total_price"),
+                        rs.getString("color_name"),
+                        rs.getInt("size_id"),
+                        rs.getString("pro_name"),
+                        rs.getString("imageURL")
+                );
+                availableCartItems.add(cartInfo);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(CartService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return availableCartItems;
     }
 
     public static void main(String[] args) {

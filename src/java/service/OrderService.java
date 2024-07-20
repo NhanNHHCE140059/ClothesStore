@@ -20,6 +20,7 @@ import java.util.List;
 import model.Account;
 import model.Order;
 import model.OrderDetail;
+import model.ProductsVariant;
 import model.StaticTopBillValue;
 import model.TopProduct;
 
@@ -474,7 +475,10 @@ public class OrderService {
     }
 
     public void placeOrder(Account account, String shippingAddress, String shippingPhone) {
-        String getCartItemsQuery = "SELECT variant_id, pro_quantity, pro_price FROM Carts WHERE acc_id = ?";
+        String getCartItemsQuery = "SELECT c.variant_id, c.pro_quantity, c.pro_price "
+                + "FROM Carts c "
+                + "JOIN Warehouses w ON c.variant_id = w.variant_id "
+                + "WHERE c.acc_id = ? AND w.inventory_number >= c.pro_quantity";
         String insertOrderQuery = "INSERT INTO Orders (feedback_order, orderDate, addressReceive, phone, acc_id, username, totalPrice, order_status, pay_status, shipping_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String insertOrderDetailQuery = "INSERT INTO OrderDetails (order_id, variant_id, UnitPrice, Quantity, feedback_details) VALUES (?, ?, ?, ?, ?)";
         String deleteCartQuery = "DELETE FROM Carts WHERE acc_id = ?";
@@ -498,6 +502,11 @@ public class OrderService {
                 totalPrice += unitPrice;
 
                 orderDetails.add(new OrderDetail(0, 0, variantId, price, quantity, null));
+            }
+
+            if (orderDetails.isEmpty()) {
+                System.out.println("Không có sản phẩm nào trong giỏ hàng hoặc không đủ số lượng trong kho.");
+                return;
             }
 
             Order order = new Order(
@@ -548,6 +557,7 @@ public class OrderService {
             ps.executeUpdate();
 
             connection.commit();
+            System.out.println("Đặt hàng thành công.");
         } catch (SQLException e) {
             try {
                 connection.rollback();
@@ -558,7 +568,89 @@ public class OrderService {
         } catch (Exception e) {
             System.out.println("An unexpected error occurred: " + e.getMessage());
         }
-        System.out.println("Susscessfully di ngu thoai");
+    }
+
+    public void placeOrderNow(Account account, int variantId, int quantity, String shippingAddress, String shippingPhone) {
+        String getProductPriceQuery = "SELECT p.pro_price "
+                + "FROM ProductVariants pv "
+                + "JOIN Products p ON pv.pro_id = p.pro_id "
+                + "WHERE pv.variant_id = ?";
+        String insertOrderQuery = "INSERT INTO Orders (feedback_order, orderDate, addressReceive, phone, acc_id, username, totalPrice, order_status, pay_status, shipping_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertOrderDetailQuery = "INSERT INTO OrderDetails (order_id, variant_id, UnitPrice, Quantity, feedback_details) VALUES (?, ?, ?, ?, ?)";
+
+        try {
+            connection = dbcontext.getConnection();
+            connection.setAutoCommit(false);
+
+ 
+            ps = connection.prepareStatement(getProductPriceQuery);
+            ps.setInt(1, variantId);
+            rs = ps.executeQuery();
+            double unitPrice = 0.0;
+            if (rs.next()) {
+                unitPrice = rs.getDouble("pro_price");
+            } else {
+                System.out.println("Không tìm thấy sản phẩm với variant_id đã cung cấp.");
+                return;
+            }
+            double totalPrice = unitPrice * quantity;
+
+       
+            Order order = new Order(
+                    0,
+                    null,
+                    new java.sql.Date(System.currentTimeMillis()),
+                    shippingAddress,
+                    shippingPhone,
+                    account.getAcc_id(),
+                    account.getUsername(),
+                    totalPrice,
+                    OrderStatus.NOT_YET,
+                    PayStatus.NOT_YET,
+                    ShipStatus.NOT_YET
+            );
+
+     
+            ps = connection.prepareStatement(insertOrderQuery, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setString(1, order.getFeedback_order());
+            ps.setDate(2, order.getOrderDate());
+            ps.setString(3, order.getAddressReceive());
+            ps.setString(4, order.getPhone());
+            ps.setInt(5, order.getAcc_id());
+            ps.setString(6, order.getUsername());
+            ps.setDouble(7, order.getTotalPrice());
+            ps.setInt(8, order.getOrder_status().ordinal());
+            ps.setInt(9, order.getPay_status().ordinal());
+            ps.setInt(10, order.getShipping_status().ordinal());
+            ps.executeUpdate();
+
+            rs = ps.getGeneratedKeys();
+            int orderId = 0;
+            if (rs.next()) {
+                orderId = rs.getInt(1);
+            }
+
+        
+            ps = connection.prepareStatement(insertOrderDetailQuery);
+            ps.setInt(1, orderId);
+            ps.setInt(2, variantId);
+            ps.setDouble(3, unitPrice);
+            ps.setInt(4, quantity);
+            ps.setString(5, null); 
+            ps.executeUpdate();
+
+            connection.commit();
+            System.out.println("Đặt hàng thành công.");
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                System.out.println("Rollback failed: " + ex.getMessage());
+            }
+            System.out.println("SQL error occurred while placing order: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+        }
     }
 
     public int countPageOrderCustomer(String username) {
