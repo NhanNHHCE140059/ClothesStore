@@ -136,7 +136,7 @@
             <a href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
             <div class="header" style="justify-content:right;">
                 <div class="role-info">
-                    <span> :</span><span></span>
+                     <span>${sessionScope.account.role}:</span><span>${sessionScope.account.name}</span>
                 </div>
             </div>
         </div>

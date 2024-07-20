@@ -18,11 +18,6 @@
     
     %>
     <head>
-
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Producter Feedback Dashboard</title>
@@ -351,7 +346,7 @@
             }
 
             .menu-item::after {
-                content: '?';
+                content: 'V';
                 float: right;
                 margin-right: -4px;
                 transition: transform 0.3s ease;

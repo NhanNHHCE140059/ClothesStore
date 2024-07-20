@@ -15,12 +15,12 @@
     <%@page import="service.*" %>
 
     <%@page import="java.util.*"%>
+    <% Account account = (Account) session.getAttribute("account"); %>
     <%ProductColorService color = new ProductColorService(); %>
     <%ProductImageService img = new ProductImageService(); %>
     <%ProductService product = new ProductService(); %>
     <%CategoryService cate = new CategoryService(); %>
     <%Integer quantity = (Integer) session.getAttribute("quantity");%>
-    <% Account account = (Account) request.getAttribute("account"); %>
     <% List<ProductsVariant> list = (List<ProductsVariant>) request.getAttribute("list"); %>
     <% Integer endPage = (Integer) request.getAttribute("endPage");%>
     <% String searchText = (String) request.getAttribute("searchText"); %>
@@ -573,7 +573,7 @@
             <div class="header" >
 
                 <div class="role-info">
-                    <span> :</span><span></span>
+                    <span><%= account.getRole()%> :</span><span><%= account.getName()%></span>
                 </div>
             </div>
 
@@ -673,7 +673,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
-            <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
+        <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
         <script>
 
             function sendGetRequest(indexPage, param = null) {

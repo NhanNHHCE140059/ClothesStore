@@ -6,10 +6,10 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Create New Product</title>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/create-product.css" />
+
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
-
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/feedbackManagement.css"/>
 
         <style>
             body {
@@ -17,64 +17,12 @@
                 margin: 0;
                 padding: 0;
                 background-color: #f8f9fa;
-            }
 
-            .sidebar {
-                width: 250px;
-                background-color: #2c3e50;
-                color: #ecf0f1;
-                height: 100vh;
-                position: fixed;
-                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-                padding-top: 20px;
-            }
-
-            .sidebar-header {
-                background-color: #1a252f;
-                padding: 20px;
-                text-align: center;
-                font-size: 20px;
-                font-weight: bold;
-                color: #ecf0f1;
-            }
-
-            .sidebar a {
-                display: block;
-                color: #bdc3c7;
-                padding: 15px 20px;
-                text-decoration: none;
-                border-left: 4px solid transparent;
-                transition: all 0.3s ease;
-            }
-
-            .sidebar a:hover {
-                background-color: #34495e;
-                border-left: 4px solid #3498db;
-                color: #ecf0f1;
-            }
-
-            .sidebar .separator {
-                height: 1px;
-                background-color: #34495e;
-                margin: 0 20px;
-            }
-
-            .sidebar .submenu {
-                display: none;
-                background-color: #34495e;
-            }
-
-            .sidebar .submenu a {
-                padding: 10px 35px;
-                border-top: 1px solid #2c3e50;
-            }
-
-            .content {
-                margin-left: 260px;
-                padding: 20px;
             }
 
             .card {
+                margin: auto auto;
+                width: 60%;
                 background-color: #fff;
                 border: 1px solid #ddd;
                 border-radius: 8px;
@@ -344,11 +292,21 @@
                 display: none;
                 color : #cc0000;
             }
+               .back-home {
+                background-color: #34db86;
+                color: white;
+                text-align: center;
+                padding: 5px 10px;
+                border-radius: 5px;
+                font-size: 0.9em;
+                text-decoration: none;
+            }
 
         </style>
     </head>
 
     <body>
+        <jsp:include page="/shared/_slideBar.jsp" />
         <!--Noti-->
         <c:if test="${param.error != null && param.error == 'ColorError'}">
             <div class="toast error" id='message-noti'>
@@ -423,9 +381,16 @@
             </div>
         </c:if>
         <!--endNoti-->
-   <jsp:include page="/shared/_slideBar.jsp" />
+
 
         <div class="content">
+            <a style="margin-top:12px" href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
+            <div class="header" style="padding: 7px 20px 15px 20px; margin-bottom:24px;justify-content: end;">
+
+                <div style="margin-top:12px;" class="role-info">
+                    <span>Staff :</span><span>Staff</span>
+                </div>
+            </div>
             <div class="card">
                 <div class="card-header">Create New Product (Variant)</div>
                 <div class="card-body">
@@ -485,12 +450,12 @@
                                     </label>
                                     <br>
                                 </c:forEach>
-                                <button type="button" onclick="addColor()">New Color</button>
+
                             </fieldset>
                         </div>
                         <div class="form-group d-flex justify-content-center">
-                            <input type="submit" name="action" value="create-new-variant" value="Create" class="btn-create">
-                            <a href="${pageContext.request.contextPath}/manage-product" class="back-home">Cancel</a>
+                            <input type="submit" name="action" value="Create" value="Create" class="btn-create">
+                            <a href="${pageContext.request.contextPath}/manage-product" style=" padding-top:9px"" class="back-home">Cancel</a>
                         </div>
                     </form>
                 </div>
@@ -500,237 +465,237 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
-
+        <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
 
         <script>
-                                    function previewImage(input) {
-                                        if (input.files && input.files[0]) {
-                                            var reader = new FileReader();
-                                            reader.onload = function (e) {
-                                                var preview = input.nextElementSibling.nextElementSibling;
-                                                preview.src = e.target.result;
-                                                preview.style.display = 'block';
-                                            };
-                                            reader.readAsDataURL(input.files[0]);
-                                        }
-                                    }
-
-                                    document.addEventListener("DOMContentLoaded", function () {
-
-                                        var firstFileInput = document.querySelector('.input-group input[type="file"]');
-                                        var firstPreviewImage = document.querySelector('.input-group .image-preview');
-                                        if (firstFileInput && firstPreviewImage) {
-                                            firstFileInput.addEventListener('change', function () {
-                                                if (this.files && this.files[0]) {
+                                            function previewImage(input) {
+                                                if (input.files && input.files[0]) {
                                                     var reader = new FileReader();
                                                     reader.onload = function (e) {
-                                                        firstPreviewImage.src = e.target.result;
-                                                        firstPreviewImage.style.display = 'block';
+                                                        var preview = input.nextElementSibling.nextElementSibling;
+                                                        preview.src = e.target.result;
+                                                        preview.style.display = 'block';
                                                     };
-                                                    reader.readAsDataURL(this.files[0]);
+                                                    reader.readAsDataURL(input.files[0]);
                                                 }
-                                            });
-                                        }
-                                    });
-                                    function enableOnlyColors(enabledColors) {
-                                        var inputs = document.querySelectorAll('input[name="color"]');
-                                        inputs.forEach(function (input) {
-                                            var label = input.closest('label');
-
-                                            var existingSpan = label.querySelector('.disabled-text');
-                                            if (existingSpan) {
-                                                label.removeChild(existingSpan);
                                             }
-                                            if (!enabledColors.includes(input.value)) {
-                                                input.disabled = true;
 
-                                                if (input.checked) {
-                                                    input.checked = false;
-                                                }
+                                            document.addEventListener("DOMContentLoaded", function () {
 
-                                                var span = document.createElement('span');
-                                                span.classList.add('disabled-text');
-                                                span.style.color = 'red';
-                                                span.style.marginLeft = '10px';
-                                                span.textContent = 'Products with the same size and color already exist';
-                                                label.appendChild(span);
-                                            } else {
-                                                input.disabled = false;
-                                            }
-                                        });
-                                    }
-
-                                    function ajaxColorBySize(size) {
-                                        var name = document.getElementById('productInput').value;
-                                        console.log(size, name);
-                                        $.ajax({
-                                            url: "/clothesstore/createVariants",
-                                            type: "get",
-                                            data: {
-                                                size: size,
-                                                name: name
-
-                                            },
-                                            success: function (data) {
-                                                console.log("Data Colors: ", data.colors);
-                                                enableOnlyColors(data.colors);
-                                            },
-                                            error: function (xhr) {
-
-                                            }
-                                        });
-
-                                    }
-                                    function onInputChange(value) {
-                                        console.log("imhere");
-                                        console.log(value);
-                                        if (value === "") {
-
-                                        } else {
-                                            $.ajax({
-                                                url: "/clothesstore/createVariants",
-                                                type: "get",
-                                                data: {
-                                                    proName: value
-                                                },
-                                                success: function (data) {
-                                                    $('#price').val(data.price);
-                                                    $('#description').val(data.description);
-                                                    $('#categoryName').val(data.categoryName);
-                                                },
-                                                error: function (xhr) {
-
-                                                }
-                                            });
-                                        }
-                                    }
-
-                                    document.addEventListener("DOMContentLoaded", () => {
-                                        const toast = document.querySelector(".toast"),
-                                                closeIcon = document.querySelector(".close"),
-                                                progress = document.querySelector(".progress");
-                                        let timer1, timer2;
-                                        if (toast) {
-                                            toast.classList.add("active");
-                                            progress.classList.add("active");
-
-                                            toast.style.visibility = "visible";
-                                            toast.style.opacity = "1";
-                                            progress.style.visibility = "visible";
-                                            progress.style.opacity = "1";
-
-                                            timer1 = setTimeout(() => {
-                                                toast.style.visibility = "hidden";
-                                                toast.style.opacity = "0";
-                                            }, 4000);
-
-                                            timer2 = setTimeout(() => {
-                                                progress.style.visibility = "hidden";
-                                                progress.style.opacity = "0";
-                                            }, 4300);
-
-                                            closeIcon.addEventListener("click", () => {
-                                                toast.style.visibility = "hidden";
-                                                toast.style.opacity = "0";
-                                                setTimeout(() => {
-                                                    progress.style.visibility = "hidden";
-                                                    progress.style.opacity = "0";
-                                                }, 300);
-                                                clearTimeout(timer1);
-                                                clearTimeout(timer2);
-                                            });
-                                        }
-                                    });
-                                    document.addEventListener("DOMContentLoaded", function () {
-
-                                        function removeQueryString() {
-                                            var currentURL = window.location.href;
-                                            var baseURL = currentURL.split("?")[0];
-                                            return baseURL;
-                                        }
-
-
-                                        var newURL = removeQueryString();
-                                        window.history.pushState({}, "", newURL);
-                                    });
-                                    function hideDiv() {
-                                        if (document.getElementById('message-noti')) {
-                                            document.getElementById('message-noti').style.display = 'none';
-                                        }
-                                    }
-
-
-                                    setTimeout(hideDiv, 4000);
-                                    function validateProductSelection() {
-                                        var input = document.getElementById('productInput');
-                                        var datalist = document.getElementById('nameProduct');
-                                        var options = datalist.options;
-                                        var valid = false;
-
-                                        for (var i = 0; i < options.length; i++) {
-                                            if (input.value === options[i].value) {
-                                                valid = true;
-                                                break;
-                                            }
-                                            if (valid === false) {
-                                                var sizeSelected = document.querySelector('input[name="size"]:checked');
-                                                var colorSelected = document.querySelector('input[name="color"]:checked');
-                                                if (sizeSelected) {
-                                                    sizeSelected.checked = false;
-                                                    var sizeSelecteds = document.querySelectorAll('.disabled-text');
-                                                    sizeSelecteds.forEach(function (sizeSelected) {
-                                                        sizeSelected.style.display = 'none';
+                                                var firstFileInput = document.querySelector('.input-group input[type="file"]');
+                                                var firstPreviewImage = document.querySelector('.input-group .image-preview');
+                                                if (firstFileInput && firstPreviewImage) {
+                                                    firstFileInput.addEventListener('change', function () {
+                                                        if (this.files && this.files[0]) {
+                                                            var reader = new FileReader();
+                                                            reader.onload = function (e) {
+                                                                firstPreviewImage.src = e.target.result;
+                                                                firstPreviewImage.style.display = 'block';
+                                                            };
+                                                            reader.readAsDataURL(this.files[0]);
+                                                        }
                                                     });
                                                 }
-                                                if (colorSelected) {
-                                                    colorSelected.checked = false;
+                                            });
+                                            function enableOnlyColors(enabledColors) {
+                                                var inputs = document.querySelectorAll('input[name="color"]');
+                                                inputs.forEach(function (input) {
+                                                    var label = input.closest('label');
+
+                                                    var existingSpan = label.querySelector('.disabled-text');
+                                                    if (existingSpan) {
+                                                        label.removeChild(existingSpan);
+                                                    }
+                                                    if (!enabledColors.includes(input.value)) {
+                                                        input.disabled = true;
+
+                                                        if (input.checked) {
+                                                            input.checked = false;
+                                                        }
+
+                                                        var span = document.createElement('span');
+                                                        span.classList.add('disabled-text');
+                                                        span.style.color = 'red';
+                                                        span.style.marginLeft = '10px';
+                                                        span.textContent = 'Products with the same size and color already exist';
+                                                        label.appendChild(span);
+                                                    } else {
+                                                        input.disabled = false;
+                                                    }
+                                                });
+                                            }
+
+                                            function ajaxColorBySize(size) {
+                                                var name = document.getElementById('productInput').value;
+                                                console.log(size, name);
+                                                $.ajax({
+                                                    url: "/clothesstore/createVariants",
+                                                    type: "get",
+                                                    data: {
+                                                        size: size,
+                                                        name: name
+
+                                                    },
+                                                    success: function (data) {
+                                                        console.log("Data Colors: ", data.colors);
+                                                        enableOnlyColors(data.colors);
+                                                    },
+                                                    error: function (xhr) {
+
+                                                    }
+                                                });
+
+                                            }
+                                            function onInputChange(value) {
+                                                console.log("imhere");
+                                                console.log(value);
+                                                if (value === "") {
+
+                                                } else {
+                                                    $.ajax({
+                                                        url: "/clothesstore/createVariants",
+                                                        type: "get",
+                                                        data: {
+                                                            proName: value
+                                                        },
+                                                        success: function (data) {
+                                                            $('#price').val(data.price);
+                                                            $('#description').val(data.description);
+                                                            $('#categoryName').val(data.categoryName);
+                                                        },
+                                                        error: function (xhr) {
+
+                                                        }
+                                                    });
                                                 }
-                                                document.getElementById('price').value = '';
-                                                document.getElementById('description').value = '';
-                                                document.getElementById('categoryName').value = '';
-
                                             }
-                                        }
 
-                                        if (!valid) {
-                                            document.getElementById('error-message').style.display = 'inline-block';
-                                            input.value = '';
-                                            return false;
-                                        } else {
-                                            document.getElementById('error-message').style.display = 'none';
-                                            return true;
-                                        }
-                                    }
-                                    function validateForm() {
+                                            document.addEventListener("DOMContentLoaded", () => {
+                                                const toast = document.querySelector(".toast"),
+                                                        closeIcon = document.querySelector(".close"),
+                                                        progress = document.querySelector(".progress");
+                                                let timer1, timer2;
+                                                if (toast) {
+                                                    toast.classList.add("active");
+                                                    progress.classList.add("active");
 
-                                        var productInput = document.getElementById('productInput').value;
-                                        var sizeSelected = document.querySelector('input[name="size"]:checked');
-                                        var colorSelected = document.querySelector('input[name="color"]:checked');
-                                        console.log(colorSelected);
-                                        if (!productInput) {
-                                            validateProductSelection();
-                                            if (sizeSelected) {
-                                                sizeSelected.checked = false;
+                                                    toast.style.visibility = "visible";
+                                                    toast.style.opacity = "1";
+                                                    progress.style.visibility = "visible";
+                                                    progress.style.opacity = "1";
+
+                                                    timer1 = setTimeout(() => {
+                                                        toast.style.visibility = "hidden";
+                                                        toast.style.opacity = "0";
+                                                    }, 4000);
+
+                                                    timer2 = setTimeout(() => {
+                                                        progress.style.visibility = "hidden";
+                                                        progress.style.opacity = "0";
+                                                    }, 4300);
+
+                                                    closeIcon.addEventListener("click", () => {
+                                                        toast.style.visibility = "hidden";
+                                                        toast.style.opacity = "0";
+                                                        setTimeout(() => {
+                                                            progress.style.visibility = "hidden";
+                                                            progress.style.opacity = "0";
+                                                        }, 300);
+                                                        clearTimeout(timer1);
+                                                        clearTimeout(timer2);
+                                                    });
+                                                }
+                                            });
+                                            document.addEventListener("DOMContentLoaded", function () {
+
+                                                function removeQueryString() {
+                                                    var currentURL = window.location.href;
+                                                    var baseURL = currentURL.split("?")[0];
+                                                    return baseURL;
+                                                }
+
+
+                                                var newURL = removeQueryString();
+                                                window.history.pushState({}, "", newURL);
+                                            });
+                                            function hideDiv() {
+                                                if (document.getElementById('message-noti')) {
+                                                    document.getElementById('message-noti').style.display = 'none';
+                                                }
                                             }
-                                            if (colorSelected) {
-                                                colorSelected.checked = false;
+
+
+                                            setTimeout(hideDiv, 4000);
+                                            function validateProductSelection() {
+                                                var input = document.getElementById('productInput');
+                                                var datalist = document.getElementById('nameProduct');
+                                                var options = datalist.options;
+                                                var valid = false;
+
+                                                for (var i = 0; i < options.length; i++) {
+                                                    if (input.value === options[i].value) {
+                                                        valid = true;
+                                                        break;
+                                                    }
+                                                    if (valid === false) {
+                                                        var sizeSelected = document.querySelector('input[name="size"]:checked');
+                                                        var colorSelected = document.querySelector('input[name="color"]:checked');
+                                                        if (sizeSelected) {
+                                                            sizeSelected.checked = false;
+                                                            var sizeSelecteds = document.querySelectorAll('.disabled-text');
+                                                            sizeSelecteds.forEach(function (sizeSelected) {
+                                                                sizeSelected.style.display = 'none';
+                                                            });
+                                                        }
+                                                        if (colorSelected) {
+                                                            colorSelected.checked = false;
+                                                        }
+                                                        document.getElementById('price').value = '';
+                                                        document.getElementById('description').value = '';
+                                                        document.getElementById('categoryName').value = '';
+
+                                                    }
+                                                }
+
+                                                if (!valid) {
+                                                    document.getElementById('error-message').style.display = 'inline-block';
+                                                    input.value = '';
+                                                    return false;
+                                                } else {
+                                                    document.getElementById('error-message').style.display = 'none';
+                                                    return true;
+                                                }
                                             }
-                                            return false;
-                                        }
+                                            function validateForm() {
 
-                                        if (!sizeSelected) {
-                                            if (colorSelected) {
-                                                document.getElementById('size-error-message').style.display = 'inline-block';
+                                                var productInput = document.getElementById('productInput').value;
+                                                var sizeSelected = document.querySelector('input[name="size"]:checked');
+                                                var colorSelected = document.querySelector('input[name="color"]:checked');
+                                                console.log(colorSelected);
+                                                if (!productInput) {
+                                                    validateProductSelection();
+                                                    if (sizeSelected) {
+                                                        sizeSelected.checked = false;
+                                                    }
+                                                    if (colorSelected) {
+                                                        colorSelected.checked = false;
+                                                    }
+                                                    return false;
+                                                }
 
-                                                colorSelected.checked = false;
+                                                if (!sizeSelected) {
+                                                    if (colorSelected) {
+                                                        document.getElementById('size-error-message').style.display = 'inline-block';
+
+                                                        colorSelected.checked = false;
+                                                    }
+                                                    return false;
+                                                } else {
+                                                    document.getElementById('size-error-message').style.display = 'none';
+                                                }
+
+                                                return true;
                                             }
-                                            return false;
-                                        } else {
-                                            document.getElementById('size-error-message').style.display = 'none';
-                                        }
-
-                                        return true;
-                                    }
         </script>
     </body>
 

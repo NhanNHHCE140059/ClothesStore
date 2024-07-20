@@ -11,6 +11,7 @@
 <%@page import="model.*" %>
 <%@page import="helper.*" %>
 <%@page import="java.util.*" %>
+    <% Account account = (Account) session.getAttribute("account"); %>
 <% CategoryService cateSv =  new CategoryService();%>
 <% Integer endPage = (Integer) request.getAttribute("endPage");%>
 <% Integer currentPage =(Integer) request.getAttribute("indexPage"); %>
@@ -138,7 +139,7 @@
 
                 </form>
                 <div class="role-info">
-                    <span></span><span></span>
+                  <span><%= account.getRole()%> :</span><span><%= account.getName()%></span>
                 </div>
 
             </div>

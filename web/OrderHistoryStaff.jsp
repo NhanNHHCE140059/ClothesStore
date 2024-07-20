@@ -12,7 +12,7 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <style>     
             .section-padding-100 {
-                padding: 100px 0;
+                padding: 24px 0;
                 text-align: center;
             }
             table {
@@ -153,7 +153,7 @@
 
             .search-form-container .button-group input[type="submit"],
             .search-form-container .button-group .reset-button {
-                padding: 10px 15px;
+                
                 border: none;
                 border-radius: 4px;
                 cursor: pointer;
@@ -318,7 +318,7 @@
 
             .search-form-container .button-group input[type="submit"],
             .search-form-container .button-group .reset-button {
-                padding: 6px 12px; /* Reduced padding */
+        
                 border: none;
                 border-radius: 4px;
                 cursor: pointer;
@@ -381,12 +381,11 @@
             }
             .header {
                 background-color: #fff;
-                margin-top: 0px !important;
-                padding: 0px 15px 20px 20px;
+                padding: 10px 15px 20px 20px;
                 border-bottom: 1px solid #e9ecef;
                 display: flex;
                 align-items: center;
-                justify-content: space-between;
+                justify-content: end;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             }
 
@@ -436,11 +435,11 @@
     <body>
             <jsp:include page="/shared/_slideBar.jsp" />
         <div class="content">
-   
-        <div class="header">
-             <a style="margin-top:12px" href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
+        <a style="margin-top:12px" href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
+        <div class="header" style="margin-top:12px">
+        
             <div style="margin-top:12px" class="role-info">
-                <span>Staff :</span><span>Staff</span>
+                <span>${sessionScope.account.role}:</span><span>${sessionScope.account.name}</span>
             </div>
         </div>
         <div class="section-padding-100">
@@ -490,8 +489,8 @@
                         <input type="number" id="totalPriceTo" name="totalPriceTo" value="${param.totalPriceTo}">
 
                         <div class="button-group">
-                            <input type="submit" value="Search">
-                            <a style="height:31px" href="${pageContext.request.contextPath}/OrderHistoryStaffControl" class="reset-button">Reset</a>
+                            <input style="padding-bottom: 6px; text-align:center;justify-content: center" type="submit" value="Search">
+                            <a style="height:20px;padding: 3px 8px;" href="${pageContext.request.contextPath}/OrderHistoryStaffControl" class="reset-button">Reset</a>
                         </div>
                     </form>
                 </div>
@@ -602,6 +601,7 @@
                         link.classList.remove('active');
                         if (link.textContent == pageIndex) {
                             link.classList.add('active');
+                            prevButton.classList.remove('active')
                         }
                     });
                 }

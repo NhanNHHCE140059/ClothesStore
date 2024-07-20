@@ -147,7 +147,7 @@
             <div class="header" >
 
                 <div class="role-info">
-                    <span> :</span><span></span>
+                          <span>${sessionScope.account.role}:</span><span>${sessionScope.account.name}</span>
                 </div>
             </div>
             <div class="cart-title mt-50">
