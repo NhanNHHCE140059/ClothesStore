@@ -327,7 +327,7 @@
                                 <c:forEach items="${lstof}" var="o">
                                     <tr>
                                         <td class="id"><span>${o.order_id}</span></td>
-                                        <td class="date"><span>${o.orderDate}</span></td>
+                                        <td class="date"><span> <fmt:formatDate value="${o.orderDate}" pattern="dd-MM-yyyy" /></span></td>
                                         <td class="pro_name"><span>${o.pro_name}</span></td>
                                         <td class="UnitPrice"><span><fmt:formatNumber value="${o.unitPrice}" type="number" pattern="#,##0" /></span></td>
                                         <td class="Quantity"><span>${o.quantity}</span></td>

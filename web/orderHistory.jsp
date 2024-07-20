@@ -383,10 +383,10 @@ th, td {
                                 <tr>
                                     <td class="id"><span>${o.order_id}</span></td>
                                     <td class="name"><span>${sessionScope.account.name}</span></td>
-                                    <td class="date"><span>${o.orderDate}</span></td>
+                                    <td style="min-width: 130px" class="date"><span>    <fmt:formatDate value="${o.orderDate}" pattern="dd-MM-yyyy" /></span></td>
                                     <td class="address"><span>${o.addressReceive}</span></td>
                                     <td class="sdt"><span>${o.phone}</span></td>
-                                    <td class="totalPrice"><span><fmt:formatNumber value="${o.totalPrice}" type="number" pattern="#,##0" /></span></td>
+                                    <td class="totalPrice"><span><fmt:formatNumber value="${o.totalPrice}" type="number" pattern="#,##0" />VND</span></td>
                                     <td class="ship_status"><span>${o.shipping_status}</span></td>
                                     <td class="order_status"><span>${o.order_status}</span></td>
                                     <td class="pay_status"><span>${o.pay_status}</span></td>

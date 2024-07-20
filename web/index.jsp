@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
     <jsp:include page="/shared/_head.jsp" />
-    <body style="overflow: hidden; position: relative">
+    <body style=" position: relative"">
         <jsp:include page="/shared/_header.jsp" />
 
         <jsp:include page="/shared/_nav.jsp" />
@@ -48,7 +48,7 @@
             }
             .toast.logout-toast .check {
                 background-color: #ffc107;
-                      height: 35px;
+                height: 35px;
                 width: 35px;
             }
             .toast-content .message{
@@ -99,9 +99,9 @@
                 width: 100%;
                 background-color: #4070f4;
             }
-       
+
             .toast.logout-toast{
-             border-left: 6px solid #ffc107!important;
+                border-left: 6px solid #ffc107!important;
             }
             .toast.logout-toast .progress:before {
                 background-color: #ffc107;
@@ -237,10 +237,11 @@
                     </div>
                 </div>
             </div>
+              
         </div>
         <!-- Featured End -->
-
-        <jsp:include page="/shared/_footer.jsp" />
+   <jsp:include page="/shared/_footer.jsp" />   
+   
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 var urlParams = new URLSearchParams(window.location.search);

@@ -192,7 +192,19 @@
                 <span class="close">&times;</span>
                 <div class="progress active"></div>
             </div>
-        </c:if>    
+        </c:if>  
+        <c:if test="${ not empty param.delete}">     
+            <div class="toast" id="toast">
+                <div class="toast-content">
+                    <i class="fas fa-solid fa-check check"></i>
+                    <div class="message">
+                        <span class="text text-1">Delete Successfully!!!!</span>
+                    </div>
+                </div>
+                <span class="close">&times;</span>
+                <div class="progress active"></div>
+            </div>
+        </c:if>  
         <div class="container-fluid">
             <div class="row px-xl-5">
                 <div class="col-12">

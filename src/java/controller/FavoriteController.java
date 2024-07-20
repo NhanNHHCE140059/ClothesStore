@@ -87,7 +87,7 @@ public class FavoriteController extends HttpServlet {
                 p.deleteProductFavoriteByProId(fv.getPro_id(), acc.getAcc_id());
             }
         }
-        response.sendRedirect(request.getContextPath()+"/favorite?page="+request.getParameter("page"));
+        response.sendRedirect(request.getContextPath()+"/favorite?page="+request.getParameter("page")+"&delete=true");
         
     }
 }

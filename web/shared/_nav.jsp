@@ -35,7 +35,6 @@
                     <div class="navbar-nav mr-auto py-0">
                         <a href="/clothesstore/home" class="nav-item nav-link" id="nav-home">Home</a>
                         <a href="/clothesstore/shop" class="nav-item nav-link" id="nav-shop">Shop</a>
-                        <a href="/clothesstore/contact" class="nav-item nav-link" id="nav-contact">Contact</a>
                         <!-- Chỉ hiển thị Lịch sử đặt hàng cho vai trò Customer -->
                         <c:if test="${sessionScope.account.role == 'Customer'}">
                             <a href="OrderHistoryControl" class="nav-item nav-link" id="nav-order-history">Order History</a>

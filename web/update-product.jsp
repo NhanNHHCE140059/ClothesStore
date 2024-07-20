@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -285,7 +286,7 @@
     <body>
         <jsp:include page="/shared/_slideBar.jsp" />
         <div class="content">
-               <a style="background-color:#34db86;" href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
+            <a style="background-color:#34db86;" href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
             <div class="header" style="padding: 7px 20px 15px 20px; margin-bottom:24px;justify-content: end;">
 
                 <div style="margin-top:12px;" class="role-info">

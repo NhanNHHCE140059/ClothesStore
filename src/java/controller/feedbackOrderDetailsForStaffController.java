@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import model.Account;
 import model.OrderDetailCustomer;
@@ -23,7 +25,7 @@ public class feedbackOrderDetailsForStaffController extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Account account = (Account) session.getAttribute("account");
-              if (session.getAttribute("account") == null) {
+        if (session.getAttribute("account") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
@@ -72,9 +74,19 @@ public class feedbackOrderDetailsForStaffController extends HttpServlet {
         out.println("<tbody>");
 
         for (OrderDetailCustomer detail : paginatedList) {
+            Date orderDate = detail.getOrderDate(); // Thay thế bằng phương thức lấy ngày tháng thực tế
+
+            // Định dạng mong muốn
+            SimpleDateFormat desiredFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+            // Định dạng lại đối tượng Date
+            String formattedOrderDate = "";
+            if (orderDate != null) {
+                formattedOrderDate = desiredFormat.format(orderDate);
+            }
             out.println("<tr>");
             out.println("<td>" + detail.getOrder_id() + "</td>");
-            out.println("<td >" + detail.getOrderDate() + "</td>");
+            out.println("<td >" + formattedOrderDate + "</td>");
             out.println("<td >" + detail.getPhone() + "</td>");
             out.println("<td >" + detail.getPro_name() + "</td>");
             out.println("<td>" + detail.getSize_name() + "</td>");
@@ -82,7 +94,7 @@ public class feedbackOrderDetailsForStaffController extends HttpServlet {
             if (detail.getFeedback_details() != null) {
                 out.println("<td >" + detail.getFeedback_details() + "</td>");
                 out.println("<td >");
-out.println("<button class='action-button' onclick='sendPostRequest(" + indexPage + ",\"" + haveFeedback + "\"," + detail.getOrder_detail_id() + ", document.getElementById(\"autoSubmitInput\"))' type='submit'>Delete Feedback</button>");
+                out.println("<button class='action-button' onclick='sendPostRequest(" + indexPage + ",\"" + haveFeedback + "\"," + detail.getOrder_detail_id() + ", document.getElementById(\"autoSubmitInput\"))' type='submit'>Delete Feedback</button>");
                 out.println("</td>");
             } else {
                 out.println("<td >Customers do not give feedback or feedback has been removed before</td>");

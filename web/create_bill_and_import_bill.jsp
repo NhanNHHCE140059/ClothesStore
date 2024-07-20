@@ -136,7 +136,7 @@
             <a href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
             <div class="header" style="justify-content:right;">
                 <div class="role-info">
-                     <span>${sessionScope.account.role}:</span><span>${sessionScope.account.name}</span>
+                    <span>${sessionScope.account.role}:</span><span>${sessionScope.account.name}</span>
                 </div>
             </div>
         </div>
@@ -187,15 +187,12 @@
                 <div class="invoice">
                     <div class="invoice-header">
                         <h1>Import Bill</h1>
-                        <h3>Invoice No: 12345</h3>
                     </div>
                     <div class="invoice-details">
                         <div class="row">
                             <div class="col-sm-6">
                                 <label>Staff Info</label>
                                 <br>
-                                Account Phone: <span id="accountPhone"></span><br>
-                                Account Name: <span id="accountName"></span><br>
                                 Date Create: <span id="importDateDisplay"></span></p>
                             </div>
                         </div>
@@ -233,6 +230,7 @@
         </form>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
         <script>
                             var selectedOptions = [];
@@ -349,7 +347,9 @@
                                     let isValid = true;
                                     let errorMsg = '';
                                     let importDate = $('#importDate').val();
+                                    let formattedImportDate = formatDate(importDate);
                                     let fileUpload = $('#file-upload').val();
+
 
                                     if (!importDate) {
                                         isValid = false;
@@ -413,9 +413,23 @@
                                     $('#invoiceBody').html(invoiceBody);
                                     $('#totalQuantity').text(totalQuantity);
                                     $('#totalPrice').text(totalPriceFormatted);
-                                    $('#importDateDisplay').text(importDate);
+                                    $('#importDateDisplay').text(formattedImportDate);
                                     $('#overlay').show();
                                 });
+                                function formatDate(dateString) {
+                                    let date = new Date(dateString);
+                                    let day = date.getDate();
+                                    let month = date.getMonth() + 1;
+                                    let year = date.getFullYear();
+                                    if (day < 10) {
+                                        day = '0' + day;
+                                    }
+                                    if (month < 10) {
+                                        month = '0' + month;
+                                    }
+
+                                    return month + '-' + day + '-' + year;
+                                }
                             });
 
         </script>

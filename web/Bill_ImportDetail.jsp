@@ -305,8 +305,8 @@
 
                         <input type="hidden" name="billId" value="${billId}">
                         <div class="button-group">
-                            <input type="submit" value="Search">
-                            <a href="${pageContext.request.contextPath}/ImportBillDetailController?billId=${param.billId}&indexPageback=${param.indexPageback}" class="reset-button">Reset</a>
+                            <input style="background-color: green; width: 20%;margin-right: auto;"type="submit" value="Search">
+                            <a style="background: red;" href="${pageContext.request.contextPath}/ImportBillDetailController?billId=${param.billId}&indexPageback=${param.indexPageback}" class="reset-button">Reset</a>
 
                         </div>
                     </form>

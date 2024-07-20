@@ -33,9 +33,9 @@ public class Create_Import_Bill extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-          HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
         Account account = (Account) session.getAttribute("account");
-              if (session.getAttribute("account") == null) {
+        if (session.getAttribute("account") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
@@ -53,9 +53,9 @@ public class Create_Import_Bill extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-          HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
         Account account = (Account) session.getAttribute("account");
-              if (session.getAttribute("account") == null) {
+        if (session.getAttribute("account") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
@@ -103,9 +103,9 @@ public class Create_Import_Bill extends HttpServlet {
             System.out.println(variantId);
             int quantity = Integer.parseInt(quantities[i]);
             double importPrice = Double.parseDouble(importPrices[i].replaceAll("[^\\d]", ""));
-            totalPrice += importPrice;
-            listIMD.add(new ImportBillDetail(-1, -1, variantId , quantity, importPrice));
-        } 
+            totalPrice += importPrice * quantity;
+            listIMD.add(new ImportBillDetail(-1, -1, variantId, quantity, importPrice));
+        }
         int bill_id = importBillSV.createImportBill(sqlDate, totalPrice, relativeFilePath);
         System.out.println(listIMD.size());
         importDT.addImportBillDetails(bill_id, listIMD);
