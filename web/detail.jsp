@@ -962,7 +962,7 @@
                                         var buttonColor = document.querySelector('.color-btn.active');
 
                                         if (!buttonSize || !buttonColor) {
-                                            alert("Please choose color and size!!!");
+                                            alert("Please choose color, size and quantity!!!");
                                             return;
                                         }
                                         var size = buttonSize.getAttribute('data-size');
@@ -974,7 +974,7 @@
                                             var url = '${pageContext.request.contextPath}/cart?action=addToCart&size=' + encodeURIComponent(size) + '&color=' + encodeURIComponent(color) + '&quantity=' + encodeURIComponent(quantity) + "&pro_id=${param.pid}";
                                             window.location.href = url;
                                         } else {
-                                            alert("Vui lòng chọn kích thước, màu và nhập số lượng.");
+                                            alert("Please choose color, size and quantity !!!");
                                         }
 
                                         console.log("Size: " + size + ", Color: " + color + ", Quantity: " + quantity);
@@ -986,7 +986,7 @@
                                         var buttonColor = document.querySelector('.color-btn.active');
 
                                         if (!buttonSize || !buttonColor) {
-                                            alert("Please choose color and sizeSSSSS!!!");
+                                            alert("Please choose color, size and quantity!!!");
                                             return;
                                         }
                                         var size = buttonSize.getAttribute('data-size');
@@ -997,7 +997,7 @@
                                             var url = '${pageContext.request.contextPath}/checkout?buyNow=true&size=' + encodeURIComponent(size) + '&color=' + encodeURIComponent(color) + '&quantity=' + encodeURIComponent(quantity) + "&pro_id=${param.pid}";
                                             window.location.href = url;
                                         } else {
-                                            alert("Please choose color and size!!!");
+                                            alert("Please choose color, size and quantity !!!");
                                         }
                                     }
 

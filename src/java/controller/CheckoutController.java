@@ -24,6 +24,10 @@ public class CheckoutController extends HttpServlet {
         HttpSession session = request.getSession();
         CartService cartSV = new CartService();
         Account account = (Account) session.getAttribute("account");
+        if (account == null) {
+            response.sendRedirect("login"); //chuyen den trang login va bat nguoi dung login lai
+            return;
+        }
         double totalPrice = 0;
         for (Cart cart : cartSV.GetListCartByAccID(account.getAcc_id())) {
             totalPrice += cart.getTotal_price();
