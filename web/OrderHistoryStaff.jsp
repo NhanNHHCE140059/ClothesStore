@@ -435,7 +435,7 @@
     <body>
             <jsp:include page="/shared/_slideBar.jsp" />
         <div class="content">
-        <a style="margin-top:12px" href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
+        <a style="margin-top:12px; border:none!important;outline:none" href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
         <div class="header" style="margin-top:12px">
         
             <div style="margin-top:12px" class="role-info">

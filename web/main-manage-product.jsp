@@ -145,7 +145,7 @@
             </div>
             <a style="margin-top: 15px;display: inline-block;background-color: greenyellow;color:black" href="/clothesstore/main-create-product" class="btn-create addNew">Add new product</a>
             <a style="margin-top: 15px;display: inline-block;background-color: lightskyblue" href="/clothesstore//main-manage-product" class="btn-create addNew">View All Product</a>
-            <table class="table">
+            <table class="table" style="margin:20px auto 20px auto">
                 <thead>
                     <tr>
                         <th>ID Product</th>

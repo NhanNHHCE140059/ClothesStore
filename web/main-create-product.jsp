@@ -13,6 +13,7 @@
     <% Integer indexPage =(Integer) request.getAttribute("indexPage"); %>
     <head>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/create-product.css"/>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/feedbackManagement.css"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -147,7 +148,7 @@
             }
 
         </style>
-     <jsp:include page="/shared/_slideBar.jsp" />
+        <jsp:include page="/shared/_slideBar.jsp" />
 
         <div class="toast" id="toast">
             <div class="toast-content">
@@ -162,6 +163,13 @@
         </div>
 
         <div class="content">
+            <a style="margin-top:12px" href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
+            <div class="header" style="padding: 7px 20px 15px 20px; margin-bottom:24px;justify-content: end;">
+
+                <div style="margin-top:12px;" class="role-info">
+                    <span>${sessionScope.account.role}:</span><span>${sessionScope.account.name}</span>
+                </div>
+            </div>
             <div class="card">
                 <div class="card-header">Create New Product</div>
                 <div class="card-body">
@@ -216,6 +224,7 @@
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
         <script>
                                 document.addEventListener("DOMContentLoaded", function () {
                                     var errorMessage = document.getElementById('error-message');

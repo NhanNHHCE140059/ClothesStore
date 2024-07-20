@@ -388,7 +388,7 @@
             <div class="header" style="padding: 7px 20px 15px 20px; margin-bottom:24px;justify-content: end;">
 
                 <div style="margin-top:12px;" class="role-info">
-                    <span>Staff :</span><span>Staff</span>
+                     <span>${sessionScope.account.role}:</span><span>${sessionScope.account.name}</span>
                 </div>
             </div>
             <div class="card">
@@ -455,7 +455,7 @@
                         </div>
                         <div class="form-group d-flex justify-content-center">
                             <input type="submit" name="action" value="Create" value="Create" class="btn-create">
-                            <a href="${pageContext.request.contextPath}/manage-product" style=" padding-top:9px"" class="back-home">Cancel</a>
+                            <a href="${pageContext.request.contextPath}/manage-product" style=" padding-top:9px;padding-bottom:10px"  class="back-home">Cancel</a>
                         </div>
                     </form>
                 </div>

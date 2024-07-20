@@ -62,13 +62,14 @@ public class UpdateProductController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-
+        System.out.println("Im here");
+        ProductService prdS = new ProductService();
         if (session.getAttribute("account") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
         Account acc = (Account) session.getAttribute("account");
-        if (acc.getRole() != Role.Customer) {
+        if (acc.getRole() != Role.Staff) {
             response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
@@ -101,9 +102,11 @@ public class UpdateProductController extends HttpServlet {
             relativeFilePath = "assets/img/" + filename;
 
             part.write(absoluteFilePath);
+        } else {
+            relativeFilePath = prdS.GetProById(Integer.parseInt(productID)).getImageURL();
         }
         if (nameProduct != null && proPrice != null && description != null && categoryID != null && productID != null) {
-            ProductService prdS = new ProductService();
+
             prdS.updateProduct(nameProduct, Double.parseDouble(proPrice), description, relativeFilePath, Integer.parseInt(categoryID), Integer.parseInt(productID));
         }
 

@@ -195,7 +195,7 @@
             <div class="header">
 
                 <div class="role-info">
-                    <span>Admin</span><span>Admin</span>
+                      <span>${sessionScope.account.role}:</span><span>${sessionScope.account.name}</span>
                 </div>
             </div>
             <div class="main-content">

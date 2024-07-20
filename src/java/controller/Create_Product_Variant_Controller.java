@@ -16,6 +16,7 @@ import model.*;
 import service.*;
 import helper.*;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.nio.file.Paths;
@@ -136,7 +137,9 @@ public class Create_Product_Variant_Controller extends HttpServlet {
             ProductColorService productColorService = new ProductColorService();
             ProductVariantService productVaService = new ProductVariantService();
             switch (action) {
-                case "create-new-variant":
+                case "Create":
+                    System.out.println("Im here");
+                
                     String proName = request.getParameter("pro_Name");
                     Product product = productService.GetProByName(proName);
                     String colorName = request.getParameter("color");

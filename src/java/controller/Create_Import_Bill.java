@@ -4,6 +4,7 @@
  */
 package controller;
 
+import helper.Role;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -11,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.nio.file.Paths;
@@ -31,6 +33,17 @@ public class Create_Import_Bill extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+          HttpSession session = request.getSession();
+        Account account = (Account) session.getAttribute("account");
+              if (session.getAttribute("account") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        Account acc = (Account) session.getAttribute("account");
+        if (acc.getRole() != Role.Staff) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
         ProductVariantService prvSV = new ProductVariantService();
         List<ProductVariantInfo> listAll = prvSV.getAllVariantInfo();
         request.setAttribute("listAll", listAll);
@@ -40,6 +53,17 @@ public class Create_Import_Bill extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+          HttpSession session = request.getSession();
+        Account account = (Account) session.getAttribute("account");
+              if (session.getAttribute("account") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        Account acc = (Account) session.getAttribute("account");
+        if (acc.getRole() != Role.Staff) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
         ImportBillService importBillSV = new ImportBillService();
         ImportBillDetailService importDT = new ImportBillDetailService();
         String importDate = request.getParameter("importDate");
