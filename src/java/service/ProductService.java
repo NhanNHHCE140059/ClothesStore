@@ -281,6 +281,69 @@ public class ProductService {
         return list;
     }
 
+    public List<Product> getFilteredProducts(List<Integer> catIds) {
+        List<Product> list = new ArrayList<>();
+        StringBuilder query = new StringBuilder("SELECT * FROM Products WHERE status_product = 0");
+
+        // Thêm điều kiện vào câu truy vấn dựa trên danh sách catIds
+        if (catIds != null && !catIds.isEmpty()) {
+            query.append(" AND cat_id IN (");
+            for (int i = 0; i < catIds.size(); i++) {
+                query.append("?");
+                if (i < catIds.size() - 1) {
+                    query.append(",");
+                }
+            }
+            query.append(")");
+        }
+
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query.toString());
+
+            int paramIndex = 1;
+            if (catIds != null && !catIds.isEmpty()) {
+                for (Integer catId : catIds) {
+                    ps.setInt(paramIndex++, catId);
+                }
+            }
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Product(rs.getInt("pro_id"),
+                        rs.getString("pro_name"),
+                        rs.getDouble("pro_price"),
+                        rs.getString("imageURL"),
+                        rs.getString("description"),
+                        rs.getInt("cat_id"),
+                        ProductStatus.values()[rs.getInt("status_product")]));
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred while fetching products: " + e.getMessage());
+        } finally {
+            // Đóng các tài nguyên sau khi sử dụng
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                /* ignored */ }
+        }
+        return list;
+    }
+
     public List<Product> searchByNameforStaff(String txtSearch) {
         List<Product> list = new ArrayList<>();
         String query = "SELECT * FROM Products WHERE pro_name LIKE ?";

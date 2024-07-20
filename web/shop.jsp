@@ -6,103 +6,103 @@
     <jsp:include page="/shared/_head.jsp" />
     <body>
         <style>
-          .toast {
-    position: fixed;
-    z-index: 99999;
-    width: 400px;
-    top: 25px;
-    right: 30px;
-    border-radius: 12px;
-    background: #fff;
-    padding: 20px 35px 20px 25px;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-    border-left: 6px solid #ffc107; /* Màu vàng */
-    overflow: hidden;
-    transform: translateX(calc(100% + 30px));
-    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
-    opacity: 1!important;
-}
+            .toast {
+                position: fixed;
+                z-index: 99999;
+                width: 400px;
+                top: 25px;
+                right: 30px;
+                border-radius: 12px;
+                background: #fff;
+                padding: 20px 35px 20px 25px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                border-left: 6px solid #ffc107; /* Màu vàng */
+                overflow: hidden;
+                transform: translateX(calc(100% + 30px));
+                transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+                opacity: 1!important;
+            }
 
-.toast.active {
-    transform: translateX(0%);
-    opacity: 1!important;
-}
+            .toast.active {
+                transform: translateX(0%);
+                opacity: 1!important;
+            }
 
-.toast .toast-content {
-    display: flex;
-    align-items: center;
-}
+            .toast .toast-content {
+                display: flex;
+                align-items: center;
+            }
 
-.toast-content .check {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 35px;
-    width: 35px;
-    background-color: #ffc107; /* Màu vàng */
-    color: #ffc107;
-    font-size: 20px;
-    border-radius: 50%;
-}
+            .toast-content .check {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 35px;
+                width: 35px;
+                background-color: #ffc107; /* Màu vàng */
+                color: #ffc107;
+                font-size: 20px;
+                border-radius: 50%;
+            }
 
-.toast-content .message {
-    display: flex;
-    flex-direction: column;
-    margin: 0 20px;
-}
+            .toast-content .message {
+                display: flex;
+                flex-direction: column;
+                margin: 0 20px;
+            }
 
-.message .text {
-    font-size: 20px;
-    font-weight: 400;
-    color: #666666;
-}
+            .message .text {
+                font-size: 20px;
+                font-weight: 400;
+                color: #666666;
+            }
 
-.message .text.text-1 {
-    font-weight: 600;
-    color: #333;
-}
+            .message .text.text-1 {
+                font-weight: 600;
+                color: #333;
+            }
 
-.toast .close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    padding: 5px;
-    cursor: pointer;
-    opacity: 0.7;
-}
+            .toast .close {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                padding: 5px;
+                cursor: pointer;
+                opacity: 0.7;
+            }
 
-.toast .close:hover {
-    opacity: 1;
-}
+            .toast .close:hover {
+                opacity: 1;
+            }
 
-.toast .progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 3px;
-    width: 100%;
-    background: #ddd;
-}
+            .toast .progress {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: 3px;
+                width: 100%;
+                background: #ddd;
+            }
 
-.toast .progress:before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    height: 100%;
-    width: 100%;
-    background-color: #ffc107; /* Màu vàng */
-}
+            .toast .progress:before {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                height: 100%;
+                width: 100%;
+                background-color: #ffc107; /* Màu vàng */
+            }
 
-.progress.active:before {
-    animation: progress 5s linear forwards;
-}
+            .progress.active:before {
+                animation: progress 5s linear forwards;
+            }
 
-@keyframes progress {
-    100% {
-        right: 100%;
-    }
-}
+            @keyframes progress {
+                100% {
+                    right: 100%;
+                }
+            }
 
         </style>
         <jsp:include page="/shared/_header.jsp" />
@@ -142,15 +142,20 @@
                     <!-- Category Start -->
                     <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by Category</span></h5>
                     <div class="bg-light p-4 mb-30">
-                        <form>
-                            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                                <input type="checkbox" class="custom-control-input" id="price-3">
-                                <label class="custom-control-label" for="price-3">SHORTS AND TROUSERS</label>
-                            </div>
-                            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                                <input type="checkbox" class="custom-control-input" id="price-4">
-                                <label class="custom-control-label" for="price-4">T-SHIRT</label>
-                            </div>
+                        <form method="get" action="shop">
+                            <c:forEach var="cate" items="${listAllCate}">
+                                <div class="align-items-center justify-content-between mb-3">
+                                    <input type="checkbox" name="cate_ids" value="${cate.cat_id}" id="price-${cate.cat_id}"
+                                           <c:if test="${selectedCatIds != null && selectedCatIds.contains(cate.cat_id)}">
+                                               checked
+                                           </c:if>
+                                           >
+                                    <label for="price-${cate.cat_id}">${cate.cat_name}</label>
+                                </div>
+                            </c:forEach>
+                            <button type="submit" style="background-color: #ffd333; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; cursor: pointer;">
+                                Filter
+                            </button>
                         </form>
                     </div>
                     <!-- Category End -->
@@ -230,14 +235,20 @@
                             <nav>
                                 <ul class="pagination justify-content-center">
                                     <c:if test="${currentPage > 1}">
-                                        <li class="page-item"><a class="page-link" href="shop?page=${currentPage - 1}">Previous</a></li>
-                                        </c:if>
-                                        <c:forEach var="i" begin="1" end="${noOfPages}">
-                                        <li class="page-item ${i == currentPage ? 'active' : ''}"><a class="page-link" href="shop?page=${i}">${i}</a></li>
-                                        </c:forEach>
-                                        <c:if test="${currentPage < noOfPages}">
-                                        <li class="page-item"><a class="page-link" href="shop?page=${currentPage + 1}">Next</a></li>
-                                        </c:if>
+                                        <li class="page-item">
+                                            <a class="page-link" href="shop?page=${currentPage - 1}&<c:forEach var="id" items="${selectedCatIds}">cate_ids=${id}&</c:forEach>">Previous</a>
+                                            </li>
+                                    </c:if>
+                                    <c:forEach var="i" begin="1" end="${noOfPages}">
+                                        <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                            <a class="page-link" href="shop?page=${i}&<c:forEach var="id" items="${selectedCatIds}">cate_ids=${id}&</c:forEach>">${i}</a>
+                                            </li>
+                                    </c:forEach>
+                                    <c:if test="${currentPage < noOfPages}">
+                                        <li class="page-item">
+                                            <a class="page-link" href="shop?page=${currentPage + 1}&<c:forEach var="id" items="${selectedCatIds}">cate_ids=${id}&</c:forEach>">Next</a>
+                                            </li>
+                                    </c:if>
                                 </ul>
                             </nav>
                         </div>
