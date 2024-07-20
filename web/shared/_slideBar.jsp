@@ -47,9 +47,11 @@
             <div class="submenu">
                 <a href="/clothesstore/Color">Create Color</a>
             </div>
-
-
-
+             <a href="#" class="menu-item">Size Management</a>
+            <div class="separator"></div>
+            <div class="submenu">
+                <a href="/clothesstore/ViewSizeController">View Size</a>
+            </div>
         </div>
     </body>
 </html>
