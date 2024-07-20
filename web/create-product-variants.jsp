@@ -292,7 +292,7 @@
                 display: none;
                 color : #cc0000;
             }
-               .back-home {
+            .back-home {
                 background-color: #34db86;
                 color: white;
                 text-align: center;
@@ -388,10 +388,12 @@
             <div class="header" style="padding: 7px 20px 15px 20px; margin-bottom:24px;justify-content: end;">
 
                 <div style="margin-top:12px;" class="role-info">
-                     <span>${sessionScope.account.role}:</span><span>${sessionScope.account.name}</span>
+                    <span>${sessionScope.account.role}:</span><span>${sessionScope.account.name}</span>
                 </div>
             </div>
+
             <div class="card">
+              
                 <div class="card-header">Create New Product (Variant)</div>
                 <div class="card-body">
                     <form action="createVariants" method="post" enctype="multipart/form-data">

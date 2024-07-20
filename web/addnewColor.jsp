@@ -234,7 +234,7 @@
             }
         </style>
 
-       <jsp:include page="/shared/_slideBar.jsp" />
+        <jsp:include page="/shared/_slideBar.jsp" />
         <div class="toast" id="toast">
             <div class="toast-content">
                 <i class="fas fa-solid fa-check check"></i>
@@ -250,22 +250,16 @@
             <a href="${pageContext.request.contextPath}/home" class="back-home">Back to Home</a>
             <div class="header">
                 <div class="role-info">
-                   <span>${sessionScope.account.role}:</span><span>${sessionScope.account.name}</span>
+                    <span>${sessionScope.account.role}:</span><span>${sessionScope.account.name}</span>
                 </div>
             </div>
 
             <div class="add-color">
-                <h2>Add New Category</h2>
-                <form action="Color" method="post">
-                    <label for="colorName">Color Name:</label>
-                    <p class="duplicate">Color name already exists</p>
-                    <input onkeydown="return /[a-z ]/i.test(event.key)" id="colorName" name="colorName" required>
-                    <button type="submit">Submit</button>
-                </form>
+                <h2>VIEW COLOR</h2>             
             </div>
 
             <div class="list-color">
-                <h2>LIST CATEGORY</h2>
+                <h2>LIST COLOR</h2>
                 <c:forEach var="color" items="${listColor}">
                     <div class="color-item" data-color-name="${color.color_name}"><div class="color-box" style="background-color:${color.color_name}"></div><span class="color_color">${color.color_name}</span></div>                  
                         </c:forEach>
@@ -275,44 +269,44 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="./assets/js/feedbackManagement.js" type="text/javascript"></script>
         <script>
-                        $(document).ready(function () {
-                            $('form').on('submit', function (event) {
-                                var inputVal = $('#colorName').val().trim().toLowerCase();
-                                var isDuplicate = false;
-                                $('.color-item').each(function () {
-                                    if (inputVal === $(this).data('color-name').toLowerCase()) {
-                                        var el = $(this);
+            $(document).ready(function () {
+                $('form').on('submit', function (event) {
+                    var inputVal = $('#colorName').val().trim().toLowerCase();
+                    var isDuplicate = false;
+                    $('.color-item').each(function () {
+                        if (inputVal === $(this).data('color-name').toLowerCase()) {
+                            var el = $(this);
 
-                                        el.addClass('highlight show');
-                                        setTimeout(function () {
-                                            el.removeClass('highlight');
-                                        }, 1000);
-
-
-                                        isDuplicate = true;
-                                    }
-                                });
-                                if (isDuplicate) {
-                                    var message = document.getElementsByClassName("duplicate")[0];
-                                    message.style.display = "block";
-
-                                    setTimeout(function () {
-                                        message.style.display = "none";
-                                    }, 5000);
-                                    event.preventDefault();
-                                }
-                            });
-                        });
-                        var urlParams = new URLSearchParams(window.location.search);
-                        if (urlParams.get('success') === 'true') {
-                            var toast = document.getElementById('toast');
-                            toast.classList.add('active');
+                            el.addClass('highlight show');
                             setTimeout(function () {
-                                toast.classList.remove('active');
-                            }, 5000);
+                                el.removeClass('highlight');
+                            }, 1000);
+
+
+                            isDuplicate = true;
                         }
-                        var pathname = window.location.pathname;
-                        window.history.pushState({}, "", pathname);
+                    });
+                    if (isDuplicate) {
+                        var message = document.getElementsByClassName("duplicate")[0];
+                        message.style.display = "block";
+
+                        setTimeout(function () {
+                            message.style.display = "none";
+                        }, 5000);
+                        event.preventDefault();
+                    }
+                });
+            });
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('success') === 'true') {
+                var toast = document.getElementById('toast');
+                toast.classList.add('active');
+                setTimeout(function () {
+                    toast.classList.remove('active');
+                }, 5000);
+            }
+            var pathname = window.location.pathname;
+            window.history.pushState({}, "", pathname);
         </script>
     </body>
 </html>

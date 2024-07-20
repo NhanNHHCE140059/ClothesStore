@@ -150,7 +150,7 @@
         </style>
         <jsp:include page="/shared/_slideBar.jsp" />
 
-        <div class="toast" id="toast">
+        <div class="toast" id="toast" style="z-index:1000000">
             <div class="toast-content">
                 <i class="fas fa-solid fa-check check"></i>
                 <div class="message">
