@@ -582,7 +582,6 @@ public class OrderService {
             connection = dbcontext.getConnection();
             connection.setAutoCommit(false);
 
- 
             ps = connection.prepareStatement(getProductPriceQuery);
             ps.setInt(1, variantId);
             rs = ps.executeQuery();
@@ -595,7 +594,6 @@ public class OrderService {
             }
             double totalPrice = unitPrice * quantity;
 
-       
             Order order = new Order(
                     0,
                     null,
@@ -610,7 +608,6 @@ public class OrderService {
                     ShipStatus.NOT_YET
             );
 
-     
             ps = connection.prepareStatement(insertOrderQuery, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, order.getFeedback_order());
             ps.setDate(2, order.getOrderDate());
@@ -630,13 +627,12 @@ public class OrderService {
                 orderId = rs.getInt(1);
             }
 
-        
             ps = connection.prepareStatement(insertOrderDetailQuery);
             ps.setInt(1, orderId);
             ps.setInt(2, variantId);
             ps.setDouble(3, unitPrice);
             ps.setInt(4, quantity);
-            ps.setString(5, null); 
+            ps.setString(5, null);
             ps.executeUpdate();
 
             connection.commit();
@@ -1182,6 +1178,109 @@ public class OrderService {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+        return 0;
+    }
+
+    public Order getOrderById(int orderId) {
+        String query = "SELECT * from [Orders] where order_id=?";
+        try {
+            List<Order> ls = new ArrayList<>();
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, orderId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                return new Order(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getDate(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getInt(6),
+                        rs.getString(7),
+                        rs.getDouble(8),
+                        OrderStatus.values()[rs.getInt(9)],
+                        PayStatus.values()[rs.getInt(10)],
+                        ShipStatus.values()[rs.getInt(11)]
+                );
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+        return null;
+    }
+
+    public int deleteOrderDetailsByOrderID(int orderId) {
+        String sql = "DELETE FROM OrderDetails WHERE order_id=?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, orderId);
+            int result = ps.executeUpdate();
+            System.out.println(result);
+            return result;
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+        return 0;
+    }
+
+    public int deleteOrder(int orderId) {
+        int detailsDeleted = deleteOrderDetailsByOrderID(orderId);
+        if (detailsDeleted > 0) {
+            String sql = "DELETE FROM [Orders] WHERE order_id=?";
+            try {
+                connection = dbcontext.getConnection();
+                ps = connection.prepareStatement(sql);
+                ps.setInt(1, orderId);
+                return ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Error: " + e);
+            }
+        }
+        return 0;
+    }
+     public int changeStatusPay(int pay, int orderId) {
+        String sql = "update [Orders] set pay_status=? where order_id=?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, pay);
+            ps.setInt(2, orderId);
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Eror: " + e);
+        }
+        return 0;
+    }
+     
+    public int changeStatusShip(int ship, int orderId) {
+        String sql = "update [Orders] set shipping_status=? where order_id=?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, ship);
+            ps.setInt(2, orderId);
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Eror: " + e);
+        }
+        return 0;
+    }
+    
+    public int changeStatusOrder(int status, int orderId) {
+        String sql = "update [Orders] set order_status=? where order_id=?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, status);
+            ps.setInt(2, orderId);
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Eror: " + e);
         }
         return 0;
     }

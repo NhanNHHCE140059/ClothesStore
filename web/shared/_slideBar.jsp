@@ -17,20 +17,21 @@
             <a href="#" class="menu-item">Orders Management</a>
             <div class="separator"></div>
             <div class="submenu">
-                <a href="/clothesstore/OrderHistoryStaffControl">View Orders</a>            
+                <a href="/clothesstore/OrderHistoryStaffControl">View Orders</a>        
+                <a href="/clothesstore/OrderHistoryStaffControllerManagement">Actions Orders</a>  
             </div>
             <a href="#" class="menu-item">Warehouse Management</a>
             <div class="separator"></div>
             <div class="submenu">
                 <a href="/clothesstore/ViewWarehouse">View Warehouse</a>
             </div>
-              <a href="#" class="menu-item">Bill Management</a>
+            <a href="#" class="menu-item">Bill Management</a>
             <div class="separator"></div>
             <div class="submenu">
                 <a href="/clothesstore/ImportBillController">View Bill</a>
-                    <a href="/clothesstore/createBill">Create Bill</a>
+                <a href="/clothesstore/createBill">Create Bill</a>
             </div>
-              <a href="#" class="menu-item">Feedback Management</a>
+            <a href="#" class="menu-item">Feedback Management</a>
             <div class="separator"></div>
             <div class="submenu">
                 <a href="/clothesstore/managementfeedback">View Feedback Orders</a>
@@ -46,7 +47,7 @@
             <div class="submenu">
                 <a href="/clothesstore/Color">Create Color</a>
             </div>
-          
+
 
 
         </div>

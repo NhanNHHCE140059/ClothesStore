@@ -148,6 +148,33 @@ public class WarehouseService {
         return wplist;
     }
 
+    public int updateInventoryByVariantId(int variantId, int newInventoryNumber) {
+        String sql = "UPDATE Warehouses SET inventory_number = inventory_number + ? WHERE variant_id = ?";
+        try {
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, newInventoryNumber);
+            ps.setInt(2, variantId);
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return 0;
+    }
+
     public static void main(String[] args) {
         WarehouseService service = new WarehouseService();
         List<WarehouseProduct> warehouseProducts = service.search("Summer");
