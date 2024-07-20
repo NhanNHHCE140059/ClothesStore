@@ -28,7 +28,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: white;
             color: #3d464d;
         }
 
@@ -70,6 +69,7 @@
         .content {
             margin-left: 260px;
             padding: 20px;
+
         }
 
         .header {
@@ -77,6 +77,7 @@
             padding: 15px 20px;
             border-bottom: 1px solid #e9ecef;
             display: flex;
+            border-radius: 8px;
             align-items: center;
             justify-content: space-between;
             box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1);
@@ -288,171 +289,186 @@
             background-color: #ccc;
             color: #666;
             cursor: not-allowed;
+        }
+        .sidebar a.logout {
+            background-color: red;
+            color: #fff;
+            text-align: center;
+            font-weight: 700;
+        }
 
-        </style>
-        <body onload="updateTime()">
-            <div class="sidebar">
-                <div class="sidebar-header">administrator</div>
-                <a href="/clothesstore/statistic" class="menu-item">STATICAL</a>
-                <a href="#" class="menu-item">ACCOUNT MANAGEMENT</a>
-            </div>
-            <div class="content">
-                <div class="header">
-                    <h2>ACCOUNT MANAGEMENT</h2>
-                    <div class="header-actions">
-                        <span class="date-time"></span>
-                        <div class="user-info">
-                            <img src="https://static.vecteezy.com/system/resources/previews/000/287/517/original/administration-vector-icon.jpg" alt="User Avatar">
-                            <span style="text-transform: uppercase;
-                                  font-weight: 600;"><%= account.getName() %></span>
-                        </div>
+        .sidebar a.logout:hover {
+            background-color: #e74c3c;
+            border-left: 4px solid #c0392b;
+        }
+        .menu-item{
+            text-align: center;
+        }
+    </style>
+    <body onload="updateTime()">
+        <div class="sidebar">
+            <div class="sidebar-header">administrator</div>
+            <a href="/clothesstore/statistic" class="menu-item">STATICAL</a>
+            <a href="DisableAccountADMIN.jsp" class="menu-item" style="margin-bottom: 32px;">ACCOUNT MANAGEMENT</a>
+            <a href="logout.jsp" class="menu-item logout"  >LOG OUT</a>
+        </div>
+        <div class="content">
+            <div class="header">
+                <h2>ACCOUNT MANAGEMENT</h2>
+                <div class="header-actions">
+                    <span class="date-time"></span>
+                    <div class="user-info">
+                        <img src="https://static.vecteezy.com/system/resources/previews/000/287/517/original/administration-vector-icon.jpg" alt="User Avatar">
+                        <span style="text-transform: uppercase;
+                              font-weight: 600;"><%= account.getName() %></span>
                     </div>
                 </div>
+            </div>
 
 
 
-                <div class="filters">
-                    <div class="search-container">
-                        <input id="searchUsernameInput" oninput="searchUsername(1,this)" type="text" placeholder="Search...">
-                    </div>
-                    <button onclick="sendAjaxRequest(1, -1);setActive(this)" class="btn filter-button showall">Show All Accounts</button>
-                    <button onclick="sendAjaxRequest(1, 0);setActive(this)" class="btn filter-button">Show Active Accounts</button>
-                    <button onclick="sendAjaxRequest(1, 1);setActive(this)"  class="btn filter-button">Show Deactivated Accounts</button>
-
-
+            <div class="filters">
+                <div class="search-container">
+                    <input id="searchUsernameInput" oninput="searchUsername(1,this)" type="text" placeholder="Search...">
                 </div>
-                <div id="content-table">
-                </div>  
+                <button onclick="sendAjaxRequest(1, -1);setActive(this)" class="btn filter-button showall">Show All Accounts</button>
+                <button onclick="sendAjaxRequest(1, 0);setActive(this)" class="btn filter-button">Show Active Accounts</button>
+                <button onclick="sendAjaxRequest(1, 1);setActive(this)"  class="btn filter-button">Show Deactivated Accounts</button>
+
 
             </div>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-            <script>
-                        sendAjaxRequest(1);
-                        document.querySelectorAll('.menu-item').forEach(item => {
-                            item.addEventListener('click', () => {
-                                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-                                item.classList.add('active');
-                            });
+            <div id="content-table">
+            </div>  
+
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script>
+                    sendAjaxRequest(1);
+                    document.querySelectorAll('.menu-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                            item.classList.add('active');
+                        });
+                    });
+
+                    function sendAjaxRequest(indexPage, status) {
+                        $.ajax({
+                            url: "ajaxForAM",
+                            type: "GET",
+                            data: {
+                                indexPage: indexPage,
+                                status: status
+                            },
+                            success: function (data) {
+                                document.getElementById('content-table').innerHTML = data;
+                            },
+                            error: function (xhr, status, error) {
+
+                                console.error("AJAX request failed:", status, error);
+                            }
+                        });
+                    }
+
+                    function sendPostRequest(action, accID, indexPage, status, param) {
+                        console.log("da vao dc sendPost");
+                        $.ajax({
+                            url: "ajaxForAM",
+                            type: "POST",
+                            data: {
+                                action: action,
+                                accID: accID
+                            },
+                            success: function () {
+                                if (param === undefined) {
+                                    sendAjaxRequest(indexPage, status);
+                                } else {
+                                    searchUsername(indexPage, param);
+                                }
+
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("POST request failed:", status, error);
+                            }
+                        });
+                    }
+                    function setActive(button) {
+
+                        var buttons = document.querySelectorAll('.btn');
+
+
+                        buttons.forEach(function (btn) {
+                            btn.classList.remove('active');
                         });
 
-                        function sendAjaxRequest(indexPage, status) {
-                            $.ajax({
-                                url: "ajaxForAM",
-                                type: "GET",
-                                data: {
-                                    indexPage: indexPage,
-                                    status: status
-                                },
-                                success: function (data) {
-                                    document.getElementById('content-table').innerHTML = data;
-                                },
-                                error: function (xhr, status, error) {
 
-                                    console.error("AJAX request failed:", status, error);
-                                }
-                            });
+                        button.classList.add('active');
+                    }
+                    document.addEventListener('DOMContentLoaded', (event) => {
+                        const buttons = document.querySelectorAll('.btn');
+                        if (buttons.length > 0) {
+                            buttons[0].classList.add('active');
                         }
+                    });
+                    function searchUsername(indexPage, param) {
+                        activateFirstButton();
+                        var Username = param.value.trim();
+                        var buttons = document.querySelectorAll('.filter-button');
 
-                        function sendPostRequest(action, accID, indexPage, status, param) {
-                            console.log("da vao dc sendPost");
-                            $.ajax({
-                                url: "ajaxForAM",
-                                type: "POST",
-                                data: {
-                                    action: action,
-                                    accID: accID
-                                },
-                                success: function () {
-                                    if (param === undefined) {
-                                        sendAjaxRequest(indexPage, status);
-                                    } else {
-                                        searchUsername(indexPage, param);
-                                    }
-
-                                },
-                                error: function (xhr, status, error) {
-                                    console.error("POST request failed:", status, error);
-                                }
-                            });
-                        }
-                        function setActive(button) {
-
-                            var buttons = document.querySelectorAll('.btn');
-
-
+                        if (Username !== "") {
                             buttons.forEach(function (btn) {
-                                btn.classList.remove('active');
+                                btn.disabled = true;
                             });
-
-
-                            button.classList.add('active');
-                        }
-                        document.addEventListener('DOMContentLoaded', (event) => {
-                            const buttons = document.querySelectorAll('.btn');
-                            if (buttons.length > 0) {
-                                buttons[0].classList.add('active');
-                            }
-                        });
-                        function searchUsername(indexPage, param) {
-                            activateFirstButton();
-                            var Username = param.value.trim();
-                            var buttons = document.querySelectorAll('.filter-button');
-
-                            if (Username !== "") {
-                                buttons.forEach(function (btn) {
-                                    btn.disabled = true;
-                                });
-                            } else {
-                                buttons.forEach(function (btn) {
-                                    btn.disabled = false;
-                                });
-                            }
-                            if (Username === "") {
-                                sendAjaxRequest(1);
-                                return;
-                            }
-
-                            $.ajax({
-                                url: "ajaxForAM",
-                                type: "get",
-                                data: {
-                                    Username: Username,
-                                    indexPage: indexPage
-                                },
-                                success: function (data) {
-                                    document.getElementById('content-table').innerHTML = data;
-
-                                },
-                                error: function (xhr) {
-
-                                }
+                        } else {
+                            buttons.forEach(function (btn) {
+                                btn.disabled = false;
                             });
                         }
-                        function activateFirstButton() {
-                            const buttons = document.querySelectorAll('.btn');
-                            buttons.forEach(button => button.classList.remove('active'));
-                            if (buttons.length > 0) {
-                                buttons[0].classList.add('active');
+                        if (Username === "") {
+                            sendAjaxRequest(1);
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "ajaxForAM",
+                            type: "get",
+                            data: {
+                                Username: Username,
+                                indexPage: indexPage
+                            },
+                            success: function (data) {
+                                document.getElementById('content-table').innerHTML = data;
+
+                            },
+                            error: function (xhr) {
+
                             }
-                        }
-                        function updateTime() {
-                            var now = new Date();
-                            var options = {
-                                weekday: 'short',
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true
-                            };
-                            document.querySelector('.date-time').innerText = now.toLocaleString('en-US', options);
-                        }
-                        document.addEventListener('DOMContentLoaded', function () {
-                            updateTime();
-                            setInterval(updateTime, 1000);
                         });
-            </script>
-            <script src="dashboardStaff.js" type="text/javascript"></script>
-        </body>
-    </html>
+                    }
+                    function activateFirstButton() {
+                        const buttons = document.querySelectorAll('.btn');
+                        buttons.forEach(button => button.classList.remove('active'));
+                        if (buttons.length > 0) {
+                            buttons[0].classList.add('active');
+                        }
+                    }
+                    function updateTime() {
+                        var now = new Date();
+                        var options = {
+                            weekday: 'short',
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true
+                        };
+                        document.querySelector('.date-time').innerText = now.toLocaleString('en-US', options);
+                    }
+                    document.addEventListener('DOMContentLoaded', function () {
+                        updateTime();
+                        setInterval(updateTime, 1000);
+                    });
+        </script>
+        <script src="dashboardStaff.js" type="text/javascript"></script>
+    </body>
+</html>
