@@ -463,8 +463,8 @@
                             <div class="pt-2">
                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                     <div>
-                                        <span class="h1 text-uppercase text-primary bg-dark px-2">Clothes</span>
-                                        <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Store</span>
+                                        <span class="h1 text-uppercase text-primary bg-dark px-2" style="border-radius: 10px">Clothes</span>
+                                        <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1" style="border-radius: 10px">Store</span>
                                     </div>
 
                                     <div class="d-flex">

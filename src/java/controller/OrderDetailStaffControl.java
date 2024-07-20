@@ -69,7 +69,7 @@ public class OrderDetailStaffControl extends HttpServlet {
             }
             if (request.getParameter("search") != null && !request.getParameter("search").isEmpty()) {
 
-                String nameProduct = request.getParameter("NameProduct");
+                String nameProduct = request.getParameter("NameProduct").trim();
                 String priceFromStr = request.getParameter("priceFrom");
                 String priceToStr = request.getParameter("priceTo");
                 String orderDateFrom = request.getParameter("orderDateFrom");

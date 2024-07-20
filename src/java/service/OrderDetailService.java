@@ -541,22 +541,106 @@ public class OrderDetailService {
         }
     }
 
-//    public static void main(String[] args) {
-//        OrderDetailService test = new OrderDetailService();
-//        List<OrderDetailStaff> results = test.searchOrderDetailsStaff(
-//                "170",
-//                "Polo Shirt",
-//                null,
-//                null,
-//                null,
-//               null,
-//                null,
-//                null,
-//                null
-//        );
-//
-//        for (OrderDetailStaff detail : results) {
-//            System.out.println(detail);
-//        }
-//    }
+    public List<OrderDetailCustomer> searchOrderDetailsCustomer(String orderId, String nameProduct, String priceFromStr, String priceToStr, String orderDateFrom, String orderDateTo, String size, String color) {
+        String baseQuery = "SELECT o.order_id, o.orderDate, p.pro_name, od.UnitPrice, od.Quantity, pc.color_name, ps.size_name, oi.imageURL, o.username, o.acc_id, o.addressReceive, o.phone, od.feedback_details, o.feedback_order, o.order_status, o.pay_status, o.shipping_status, od.order_detail_id "
+                + "FROM Orders o "
+                + "JOIN OrderDetails od ON o.order_id = od.order_id "
+                + "JOIN ProductVariants pv ON od.variant_id = pv.variant_id "
+                + "JOIN Products p ON pv.pro_id = p.pro_id "
+                + "JOIN ProductColors pc ON pv.color_id = pc.color_id "
+                + "JOIN ProductSizes ps ON pv.size_id = ps.size_id "
+                + "JOIN ProductImages oi ON pv.image_id = oi.image_id "
+                + "WHERE o.order_id = ? ";
+
+        if (nameProduct != null && !nameProduct.isEmpty()) {
+            baseQuery += " AND p.pro_name LIKE ?";
+        }
+        if (priceFromStr != null && !priceFromStr.isEmpty()) {
+            baseQuery += " AND od.UnitPrice >= ?";
+        }
+        if (priceToStr != null && !priceToStr.isEmpty()) {
+            baseQuery += " AND od.UnitPrice <= ?";
+        }
+        if (orderDateFrom != null && !orderDateFrom.isEmpty()) {
+            baseQuery += " AND o.orderDate >= ?";
+        }
+        if (orderDateTo != null && !orderDateTo.isEmpty()) {
+            baseQuery += " AND o.orderDate <= ?";
+        }
+        if (size != null && !size.isEmpty()) {
+            baseQuery += " AND ps.size_name = ?";
+        }
+        if (color != null && !color.isEmpty()) {
+            baseQuery += " AND pc.color_name LIKE ?";
+        }
+
+        try {
+            List<OrderDetailCustomer> ls = new ArrayList<>();
+            connection = dbcontext.getConnection();
+            ps = connection.prepareStatement(baseQuery);
+            int paramIndex = 1;
+            ps.setString(paramIndex++, orderId);
+
+            if (nameProduct != null && !nameProduct.isEmpty()) {
+                ps.setString(paramIndex++, "%" + nameProduct + "%");
+            }
+            if (priceFromStr != null && !priceFromStr.isEmpty()) {
+                ps.setDouble(paramIndex++, Double.parseDouble(priceFromStr));
+            }
+            if (priceToStr != null && !priceToStr.isEmpty()) {
+                ps.setDouble(paramIndex++, Double.parseDouble(priceToStr));
+            }
+            if (orderDateFrom != null && !orderDateFrom.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(orderDateFrom));
+            }
+            if (orderDateTo != null && !orderDateTo.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(orderDateTo));
+            }
+            if (size != null && !size.isEmpty()) {
+                ps.setString(paramIndex++, size);
+            }
+            if (color != null && !color.isEmpty()) {
+                ps.setString(paramIndex++, "%" + color + "%");
+            }
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                ls.add(new OrderDetailCustomer(
+                        rs.getInt("order_id"),
+                        rs.getDate("orderDate"),
+                        OrderStatus.values()[rs.getInt("order_status")],
+                        ShipStatus.values()[rs.getInt("shipping_status")],
+                        rs.getInt("order_detail_id"), // Include order_detail_id here
+                        rs.getString("pro_name"),
+                        rs.getDouble("UnitPrice"),
+                        rs.getInt("Quantity"),
+                        rs.getString("color_name"),
+                        rs.getString("size_name"),
+                        rs.getString("imageURL"),
+                        rs.getString("feedback_details"),
+                        rs.getString("addressReceive"),
+                        rs.getString("phone")
+                ));
+            }
+            return ls;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
 }
