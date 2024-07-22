@@ -11,8 +11,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import model.Account;
+import helper.*;
 import service.AccountService;
 
 /**
@@ -43,6 +45,8 @@ public class AjaxAccountManagementController extends HttpServlet {
             userName = request.getParameter("Username");
             listAllAcc = acSV.searchListAccountByUserName(userName);
         }
+        listAllAcc.removeIf(acc -> acc.getRole() == Role.Admin);
+        listAllAcc.removeIf(acc -> acc.getRole() == Role.Staff);
         int start = (indexPage - 1) * productsPerPage;
         int end = Math.min(start + productsPerPage, listAllAcc.size());
 

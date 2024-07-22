@@ -39,6 +39,10 @@
                     </div>
                     <div class="card-footer d-flex flex-column align-items-center">
                         <span class="text-danger mb-3">${msgError}</span>
+                        <c:if test="${not empty param.status}">
+                              <span class="text-danger mb-3">You banned! Contact for support. </span>
+                        </c:if>
+                        
                         <div class="d-flex justify-content-center links">
                             <a href="/clothesstore">Back to home</a>
                         </div>

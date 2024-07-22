@@ -1,5 +1,6 @@
 package controller;
 
+import helper.AccountStatus;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 //import jakarta.servlet.http.Cookie;
@@ -34,6 +35,10 @@ public class LoginController extends HttpServlet {
         AccountService acsv = new AccountService();
         Account acc = acsv.getAccount(username, hash.getMd5(password));
         if (acc != null) {
+            if ( acc.getAcc_status() == AccountStatus.DEACTIVATE ) {
+                   res.sendRedirect("login.jsp?status=Banned");
+                   return;
+            }
             CartService cservice = new CartService();
             int quantitypro = 0;
             for (Cart c : cservice.GetListCartByAccID(acc.getAcc_id())) {

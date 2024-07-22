@@ -92,6 +92,9 @@ public class SearchImportBillDetailController extends HttpServlet {
             Double import_priceTo = null;
 
             try {
+                if (pro_name != null && !pro_name.isEmpty()) {
+                    pro_name = pro_name.trim();
+                }
                 if (billIdStr != null && !billIdStr.isEmpty()) {
                     billId = Integer.parseInt(billIdStr);
                 }

@@ -347,8 +347,8 @@
                                                     <c:when test="${o.shipping_status != 'SUCCESS'}">
                                                 <td class="Feed_Back"><span>Not delivered yet</span></td>
                                             </c:when>
-                                            <c:when test="${o.shipping_status == 'SUCCESS' && o.feedback_details == null}">
-                                                <td class="Feed_Back"><span><a href="${pageContext.request.contextPath}/OrderDetailControl?feedbackid=${o.order_detail_id}&orderId=${param.orderId}"><button>Click to feedback</button></a></span></td>
+                                            <c:when test="${o.shipping_status == 'SUCCESS' && o.feedback_details == null && empty o.feedback_details }">
+                                                <td>No have FEEDBACK </td>
                                                         </c:when>
                                                     </c:choose>
                                         <td class="phone"><span>${o.phone}</span></td>

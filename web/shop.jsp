@@ -229,6 +229,9 @@
                                     </div>
                                 </div>
                             </c:forEach>
+                            <c:if test="${empty listP}">
+                                <h1 style="text-align: center">Product Not Found</h1>
+                            </c:if>
                         </div>
 
                         <div class="col-12">

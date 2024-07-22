@@ -40,8 +40,8 @@ public class MainManageProductController extends HttpServlet {
         int productsPerPage = 5;
         List<Product> listAllProduct = productService.getAllProducts();
         String searchTxt = null;
-        if (request.getParameter("searchTxt") != null && !request.getParameter("searchTxt").isEmpty()) {
-            searchTxt = request.getParameter("searchTxt");
+        if (request.getParameter("searchTxt") != null && !request.getParameter("searchTxt").trim().isEmpty()) {
+            searchTxt = request.getParameter("searchTxt").trim();
             listAllProduct = productService.searchByNameforStaff(searchTxt);
         }
         if (request.getParameter("page") != null && !request.getParameter("page").isEmpty()) {

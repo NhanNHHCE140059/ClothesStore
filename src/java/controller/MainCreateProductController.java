@@ -110,7 +110,7 @@ public class MainCreateProductController extends HttpServlet {
         }
 
         if (nameProduct != null && proPrice != null && description != null && categoryID != null) {
-            int statusNUM = status.equals("active") ? 1 : 0;
+            int statusNUM = status.equals("hidden") ? 1 : 0;
             ProductService prdS = new ProductService();
             ProductImageService prImageService = new ProductImageService();
             int productId = prdS.createProduct(nameProduct, Double.parseDouble(proPrice), description, relativeFilePath, Integer.parseInt(categoryID), statusNUM);

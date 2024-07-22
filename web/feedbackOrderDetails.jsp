@@ -509,7 +509,7 @@
                 function sendGetRequest(indexPage, haveFeedback, param = null) {
 
                     if (param !== null) {
-                        var nameSearch = param.value;
+                        var nameSearch = param.value.trim();
                     }
                     $.ajax({
                         url: "/clothesstore/feedbackorderForStaff",

@@ -45,6 +45,8 @@ public class CheckoutController extends HttpServlet {
             try {
                 proID = Integer.parseInt(pro_id);
                 quantity = Integer.parseInt(quantityString);
+                System.out.println("check check");
+                System.out.println(proID + " Quantity " + quantity);
             } catch (NumberFormatException e) {
                 response.sendRedirect("detail?error=1&pid=" + proID);
                 //// loi khong the chuyen doi quantity va id 
@@ -84,14 +86,17 @@ public class CheckoutController extends HttpServlet {
         HttpSession session = request.getSession();
         Account account = (Account) session.getAttribute("account");
         CartService cart = new CartService();
-        if (cart.GetListCartByAccID(account.getAcc_id()).size() == 0) {
-            response.sendRedirect("checkout?error=1");
-            return;
+        if (request.getParameter("buyNow") == null && request.getParameter("buyNow").isEmpty()) {
+            if (cart.GetListCartByAccID(account.getAcc_id()).size() == 0) {
+                response.sendRedirect("checkout?error=1");
+                return;
+            }
+            if (cart.getAvailableCartItemsByAccID(account.getAcc_id()).size() <= 0) {
+                response.sendRedirect("checkout?error=2");
+                return;
+            }
         }
-        if (cart.getAvailableCartItemsByAccID(account.getAcc_id()).size() <= 0) {
-            response.sendRedirect("checkout?error=2");
-            return;
-        }
+
         double totalP = 0;
         for (Cart c : cart.GetListCartByAccID(account.getAcc_id())) {
             totalP += c.getTotal_price();
@@ -138,6 +143,10 @@ public class CheckoutController extends HttpServlet {
             totalP = pService.GetProById(pVservice.getVariantByID(Integer.parseInt(pvIDString)).getPro_id()).getPro_price() * Integer.parseInt(quantityString);
             response.sendRedirect("checkout?price=" + totalP);
             return;
+        }
+        if(totalP == 0) {
+             response.sendRedirect("checkout?error=1");
+             return;
         }
         odSV.placeOrder(account, shippingAddress, shippingPhone);
         response.sendRedirect("checkout?price=" + totalP);

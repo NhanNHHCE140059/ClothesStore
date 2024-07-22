@@ -108,7 +108,7 @@ public class SearchProductWarehouse extends HttpServlet {
     private void processSearch(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String content = request.getParameter("searchName");
+            String content = request.getParameter("searchName").trim();
             WarehouseService ws = new WarehouseService();
             int pageSize = 15; // Số sản phẩm trên mỗi trang
             int pageIndex = 1; // Trang mặc định là trang 1

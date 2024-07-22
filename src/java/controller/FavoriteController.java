@@ -64,6 +64,13 @@ public class FavoriteController extends HttpServlet {
             int end = Math.min(start + productsPerPage, list.size());
 
             List<Product> paginatedList = list.subList(start, end);
+            if (paginatedList.size() == 0 && page != 1) {
+                page = page - 1;
+                start = (page - 1) * productsPerPage;
+                end = Math.min(start + productsPerPage, list.size());
+
+                paginatedList = list.subList(start, end);
+            }
             int noOfRecords = list.size();
             int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / productsPerPage); //ceil => làm tròn lên
 
@@ -74,20 +81,20 @@ public class FavoriteController extends HttpServlet {
             request.getRequestDispatcher("favorite.jsp").forward(request, response);
         }
     }
-    
-        @Override
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-                HttpSession session = request.getSession();
+
+        HttpSession session = request.getSession();
         Account acc = (Account) session.getAttribute("account");
         FavoriteService p = new FavoriteService();
-        for(Favorite fv : p.getAllFavoriteByAccID(acc.getAcc_id())){
-            if(fv.getPro_id()== Integer.parseInt(request.getParameter("pro_id")) ){
+        for (Favorite fv : p.getAllFavoriteByAccID(acc.getAcc_id())) {
+            if (fv.getPro_id() == Integer.parseInt(request.getParameter("pro_id"))) {
                 p.deleteProductFavoriteByProId(fv.getPro_id(), acc.getAcc_id());
             }
         }
-        response.sendRedirect(request.getContextPath()+"/favorite?page="+request.getParameter("page")+"&delete=true");
-        
+        response.sendRedirect(request.getContextPath() + "/favorite?page=" + request.getParameter("page") + "&delete=true");
+
     }
 }
