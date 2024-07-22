@@ -249,7 +249,7 @@
             <a href="DisableAccountADMIN.jsp" class="menu-item"  style="margin-bottom: 32px;">ACCOUNT MANAGEMENT</a>
             <a href="logout" class="menu-item logout">LOG OUT</a>
         </div>
-        <div class="container">
+        <div class="container" style="margin-right: 260px">
             <div class="header">
                 <h2>STATICAL MANAGEMENT</h2>
                 <div class="header-actions">
