@@ -84,11 +84,6 @@ public class CancelOrderControl extends HttpServlet {
             WarehouseService wareService = new WarehouseService();
             Order order = orderDao.getOrderById(Integer.parseInt(orderId));
             if (order != null) {
-//                int result = orderDao.changeStatusOrder(1, order.getOrder_id());
-                List<OrderDetail> ors = ords.getOrderDetailByOrderID(order.getOrder_id());
-                for (OrderDetail or : ors) {
-                    wareService.updateInventoryByVariantId(or.getVariant_id(), or.getQuantity());
-                }
                 int result = orderDao.deleteOrder(order.getOrder_id());
                 if (result > 0) {
                     response.sendRedirect("OrderHistoryStaffControllerManagement" + "?success=Cancel order successfully");

@@ -262,7 +262,7 @@
             <div class="container">
 
                 <div class="form-container">
-                    <h2>Search Orders</h2>
+                    <h2>Search Bill</h2>
                     <form action="SearchImportBillController" method="get" id="searchForm">
                         <label for="billId">Bill ID:</label>
                         <input type="number" id="billId" name="billId" min="0" title="Bill ID must be a positive number" value="${param.billId}">

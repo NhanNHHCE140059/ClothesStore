@@ -261,7 +261,6 @@
                                 datalistOptions.each(function () {
                                     if (value === $(this).val() && !selectedOptions.includes(value)) {
                                         isValid = true;
-                                        selectedOptions.push(value);
                                         return false; // break loop
                                     }
                                 });
