@@ -91,17 +91,17 @@ public class CancelOrderControl extends HttpServlet {
                 }
                 int result = orderDao.deleteOrder(order.getOrder_id());
                 if (result > 0) {
-                    response.sendRedirect("OrderHistoryStaffControllerManagement" + "&success=Cancel order successfully");
+                    response.sendRedirect("OrderHistoryStaffControllerManagement" + "?success=Cancel order successfully");
                     return;
                 }
 
-                response.sendRedirect("OrderHistoryStaffControllerManagement" + "&error=Cancel order fail");
+                response.sendRedirect("OrderHistoryStaffControllerManagement" + "?error=Cancel order fail");
             } else {
-                response.sendRedirect("OrderHistoryStaffControllerManagement" + "&error=Cancel not found this order");
+                response.sendRedirect("OrderHistoryStaffControllerManagement" + "?error=Cancel not found this order");
             }
         } catch (Exception e) {
             System.out.println("Cancel order: " + e);
-            response.sendRedirect("OrderHistoryStaffControllerManagement" + "&error=Have a error with this order");
+            response.sendRedirect("OrderHistoryStaffControllerManagement" + "?error=Have a error with this order");
         }
 
     }

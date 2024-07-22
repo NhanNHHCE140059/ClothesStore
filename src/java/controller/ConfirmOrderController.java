@@ -80,16 +80,16 @@ public class ConfirmOrderController extends HttpServlet {
             if (order != null) {
                 int result = orderDao.changeStatusOrder(0, order.getOrder_id());
                 if (result > 0) {
-                    response.sendRedirect("OrderHistoryStaffControllerManagement" +"&success=Confirm order successfully");
+                    response.sendRedirect("OrderHistoryStaffControllerManagement" +"?success=Confirm order successfully");
                 } else {
-                    response.sendRedirect("OrderHistoryStaffControllerManagement"+"&error=Confirm order fail");
+                    response.sendRedirect("OrderHistoryStaffControllerManagement"+"?error=Confirm order fail");
                 }
             } else {
-                response.sendRedirect("OrderHistoryStaffControllerManagement"+"&error=Can not found this order");
+                response.sendRedirect("OrderHistoryStaffControllerManagement"+"?error=Can not found this order");
             }
         } catch (Exception e) {
             System.out.println("Cancel order: " + e);
-            response.sendRedirect("OrderHistoryStaffControllerManagement"+"&error=Have a error with this order");
+            response.sendRedirect("OrderHistoryStaffControllerManagement"+"?error=Have a error with this order");
         }
 
     }

@@ -17,7 +17,6 @@ import model.Account;
 import model.Order;
 import service.OrderService;
 
-
 /**
  *
  * @author HP
@@ -67,7 +66,7 @@ public class OrderHistoryControl extends HttpServlet {
             OrderService ordersv = new OrderService();
             String username = a.getUsername();
             int indexPage;
-            if (request.getParameter("indexPage") != null&& !request.getParameter("indexPage").isEmpty()) {
+            if (request.getParameter("indexPage") != null && !request.getParameter("indexPage").isEmpty()) {
 
                 indexPage = Integer.parseInt(request.getParameter("indexPage"));
             } else {
@@ -81,14 +80,12 @@ public class OrderHistoryControl extends HttpServlet {
                 endPage++;
 
             }
-            if(request.getParameter("feedbackid")!= null){
+            if (request.getParameter("feedbackid") != null) {
                 String orderid = (request.getParameter("feedbackid"));
                 request.setAttribute("orderid", orderid);
             }
             List<Order> lstOrder = ordersv.getTop50OrderHistoryByAccountID(a.getUsername(), indexPage);
 
-            
-            
             request.setAttribute("lstOrder", lstOrder);
             request.setAttribute("endPage", endPage);
             System.out.println(lstOrder.toString());
@@ -107,18 +104,22 @@ public class OrderHistoryControl extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-             String feedback = request.getParameter("feedback");
-               int orderid =Integer.parseInt( request.getParameter("orderid"));
-                       int indexPage =Integer.parseInt( request.getParameter("indexPage"));
-             OrderService ordersv = new OrderService();
-             if(feedback== null || feedback.trim().length()==0){
-                              response.sendRedirect(request.getContextPath()+"/OrderHistoryControl?indexPage="+indexPage);
-return;
-             }
-             ordersv.updateFbCustomer(feedback, orderid);
-             response.sendRedirect(request.getContextPath()+"/OrderHistoryControl?indexPage="+indexPage);
-             
+
+        String feedback = request.getParameter("feedback");
+        int orderid = Integer.parseInt(request.getParameter("orderid"));
+        int indexPage = 1;
+        if (request.getParameter("indexPage") != null && !request.getParameter("indexPage").isEmpty()) {
+            indexPage = Integer.parseInt(request.getParameter("indexPage"));
+        }
+
+        OrderService ordersv = new OrderService();
+        if (feedback == null || feedback.trim().length() == 0) {
+            response.sendRedirect(request.getContextPath() + "/OrderHistoryControl?indexPage=" + indexPage);
+            return;
+        }
+        ordersv.updateFbCustomer(feedback, orderid);
+        response.sendRedirect(request.getContextPath() + "/OrderHistoryControl?indexPage=" + indexPage);
+
     }
 
     /**
