@@ -136,17 +136,29 @@ public class CheckoutController extends HttpServlet {
         }
         if (request.getParameter("buyNow") != null && !request.getParameter("buyNow").isEmpty()) {
             ProductService pService = new ProductService();
+            WarehouseService wService = new WarehouseService();
             ProductVariantService pVservice = new ProductVariantService();
             String quantityString = request.getParameter("quantity");
             String pvIDString = request.getParameter("pvID");
-            odSV.placeOrderNow(account, Integer.parseInt(pvIDString), Integer.parseInt(quantityString), shippingAddress, shippingPhone);
-            totalP = pService.GetProById(pVservice.getVariantByID(Integer.parseInt(pvIDString)).getPro_id()).getPro_price() * Integer.parseInt(quantityString);
-            response.sendRedirect("checkout?price=" + totalP);
-            return;
+            for (Cart c : cart.GetListCartByAccID(account.getAcc_id())) {
+                if (c.getVariant_id() == Integer.parseInt(pvIDString)) {
+                    if ((c.getPro_quantity() + Integer.parseInt(quantityString)) > wService.GetProByIdInWareHouse(c.getVariant_id()).getInventory_number()) {
+//                         public int UpdateQuan(int pro_quantity, double Total_price, int cart_id, int variant_id) { 
+                        if (c.getPro_quantity() >= Integer.parseInt(quantityString)) {
+                            int newQ = c.getPro_quantity()-Integer.parseInt(quantityString);
+                            cart.UpdateQuan(newQ, c.getPro_price()*newQ, c.getCart_id(), c.getVariant_id());
+                        }
+                    }
+                }
+                odSV.placeOrderNow(account, Integer.parseInt(pvIDString), Integer.parseInt(quantityString), shippingAddress, shippingPhone);
+                totalP = pService.GetProById(pVservice.getVariantByID(Integer.parseInt(pvIDString)).getPro_id()).getPro_price() * Integer.parseInt(quantityString);
+                response.sendRedirect("checkout?price=" + totalP);
+                return;
+            }
         }
-        if(totalP == 0) {
-             response.sendRedirect("checkout?error=1");
-             return;
+        if (totalP == 0) {
+            response.sendRedirect("checkout?error=1");
+            return;
         }
         odSV.placeOrder(account, shippingAddress, shippingPhone);
         response.sendRedirect("checkout?price=" + totalP);
