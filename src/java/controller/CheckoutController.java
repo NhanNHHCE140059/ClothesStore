@@ -88,6 +88,7 @@ public class CheckoutController extends HttpServlet {
         CartService cart = new CartService();
         if (request.getParameter("buyNow") == null && request.getParameter("buyNow").isEmpty()) {
             if (cart.GetListCartByAccID(account.getAcc_id()).size() == 0) {
+                System.out.println("Im here 1 ");
                 response.sendRedirect("checkout?error=1");
                 return;
             }
@@ -149,14 +150,15 @@ public class CheckoutController extends HttpServlet {
                             cart.UpdateQuan(newQ, c.getPro_price()*newQ, c.getCart_id(), c.getVariant_id());
                         }
                     }
-                }
-                odSV.placeOrderNow(account, Integer.parseInt(pvIDString), Integer.parseInt(quantityString), shippingAddress, shippingPhone);
+                }              
+            }
+             odSV.placeOrderNow(account, Integer.parseInt(pvIDString), Integer.parseInt(quantityString), shippingAddress, shippingPhone);
                 totalP = pService.GetProById(pVservice.getVariantByID(Integer.parseInt(pvIDString)).getPro_id()).getPro_price() * Integer.parseInt(quantityString);
                 response.sendRedirect("checkout?price=" + totalP);
                 return;
-            }
         }
         if (totalP == 0) {
+             System.out.println("Im here 2 ");
             response.sendRedirect("checkout?error=1");
             return;
         }

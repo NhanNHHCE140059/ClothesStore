@@ -250,7 +250,7 @@
 
         <div class="content">
             <c:if  test ="${not empty param.search}">
-                <a href="${pageContext.request.contextPath}/SearchImportBillController?searchbillId=${param.searchbillId}&createDateFrom=${param.createDateFrom}&createDateTo=${param.createDateTo}&totalPriceFrom=${totalPriceFrom}&totalPriceTo=${param.totalPriceTo}&indexPageback=${param.indexPageback}" class="back-button">Back to Order Management</a>
+                <a class="back-home" href="${pageContext.request.contextPath}/SearchImportBillController?searchbillId=${param.searchbillId}&createDateFrom=${param.createDateFrom}&createDateTo=${param.createDateTo}&totalPriceFrom=${totalPriceFrom}&totalPriceTo=${param.totalPriceTo}&indexPageback=${param.indexPageback}" class="back-button">Back to View ImportBill</a>
             </c:if>
             <c:if  test ="${ empty param.search}">
                 <a href="${pageContext.request.contextPath}/ImportBillController?indexPageback=${param.indexPageback}" class="back-home">Back to View ImportBill</a>

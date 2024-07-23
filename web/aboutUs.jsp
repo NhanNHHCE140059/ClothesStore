@@ -80,29 +80,29 @@
             <p>Mentor Quach Luyl Da</p>
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-6 service">
-                    <img src="https://images.vexels.com/media/users/3/145908/raw/52eabf633ca6414e60a7677b0b917d92-male-avatar-maker.jpg" alt="Nguyen Thanh Thien">
+                    <img src="assets/img/TT.jpg" alt="Nguyen Thanh Thien">
                     <div class="service-title">Nguyen Thanh Thien</div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6 service">
-                    <img src="https://images.vexels.com/media/users/3/145908/raw/52eabf633ca6414e60a7677b0b917d92-male-avatar-maker.jpg" alt="Nguyen Hoang Hue Nhan">
+                    <img src="assets/img/HN.jpg" alt="Nguyen Hoang Hue Nhan">
                     <div class="service-title">Nguyen Hoang Hue Nhan (Leader)</div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6 service">
-                    <img src="https://images.vexels.com/media/users/3/145908/raw/52eabf633ca6414e60a7677b0b917d92-male-avatar-maker.jpg" alt="Vo Cao Tai">
+                    <img src="assets/img/CT.jpg" alt="Vo Cao Tai">
                     <div class="service-title">Vo Cao Tai</div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-6 service">
-                    <img src="https://images.vexels.com/media/users/3/145908/raw/52eabf633ca6414e60a7677b0b917d92-male-avatar-maker.jpg" alt="Nguyen Thi Bich Tien">
+                    <img src="assets/img/BT.jpg" alt="Nguyen Thi Bich Tien">
                     <div class="service-title">Nguyen Thi Bich Tien</div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6 service">
-                    <img src="https://images.vexels.com/media/users/3/145908/raw/52eabf633ca6414e60a7677b0b917d92-male-avatar-maker.jpg" alt="Nguyen Khanh Duy">
+                    <img src="assets/img/KD.jpg" alt="Nguyen Khanh Duy">
                     <div class="service-title">Nguyen Khanh Duy</div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6 service">
-                    <img src="https://images.vexels.com/media/users/3/145908/raw/52eabf633ca6414e60a7677b0b917d92-male-avatar-maker.jpg" alt="Lai Le Tuan Kiet">
+                    <img src="assets/img/TK.jpg" alt="Lai Le Tuan Kiet">
                     <div class="service-title">Lai Le Tuan Kiet</div>
                 </div>
             </div>
