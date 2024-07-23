@@ -404,7 +404,7 @@
                                                 <td class="Feed_Back"><span>${o.feedback_details}</span></td>
                                                     </c:when>   
                                                     <c:when test = "${o.shipping_status!='SUCCESS'}">
-                                                <td class="Feed_Back"><span>chua đc giao hang nên ch đc fb</span></td>
+                                                <td class="Feed_Back"><span>Feedback After Received</span></td>
 
                                             </c:when>
                                             <c:when test = "${o.shipping_status=='SUCCESS'&& o.feedback_details == null }">

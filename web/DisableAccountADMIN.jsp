@@ -308,7 +308,7 @@
     <body onload="updateTime()">
         <div class="sidebar">
             <div class="sidebar-header">administrator</div>
-            <a href="/clothesstore/statistic" class="menu-item">STATICAL</a>
+            <a href="/clothesstore/statistic" class="menu-item">STATISTICAL</a>
             <a href="DisableAccountADMIN.jsp" class="menu-item" style="margin-bottom: 32px;">ACCOUNT MANAGEMENT</a>
             <a href="logout" class="menu-item logout"  >LOG OUT</a>
         </div>

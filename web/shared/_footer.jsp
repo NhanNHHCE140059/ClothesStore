@@ -3,7 +3,8 @@
 <div class="container-fluid bg-dark text-secondary mt-5 pt-5">
     <div class="row px-xl-5 pt-5">
         <div class="col-lg-4 col-md-6 mb-5">
-            <p class="mb-4">No dolore ipsum accusam no lorem. Invidunt sed clita kasd clita et et dolor sed dolor. Rebum tempor no vero est magna amet no</p>
+            <p class="mb-4">Thank you for visiting our website. We hope that your shopping experience here will make you feel better. If you have any questions, please contact us to discuss the matter.
+</p>
         </div>
         <div class="col-lg-4 col-md-6 mb-5">
             <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>Dai Hoc FPT Can Tho</p>

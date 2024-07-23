@@ -396,7 +396,7 @@ th, td {
                                                 <span>${o.feedback_order}</span>
                                             </c:when>
                                             <c:when test="${o.shipping_status != 'SUCCESS'}">
-                                                <span>Chưa được giao hàng nên chưa được feedback</span>
+                                                <span>Feedback After Received</span>
                                             </c:when>
                                             <c:when test="${o.shipping_status == 'SUCCESS' && o.feedback_order == null}">
                                                 <span>
